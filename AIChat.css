@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+}
+
+.content_background{
+    background-color: #d4d4d4;
+    width: 100%;
+}
+
+/* 분기점 그냥 무신사 따라함 */
+.content_container{
+    background-color: white;
+    width: 600px;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 600px) {
+    .content_container{
+        width: 100%;
+    }
+}
