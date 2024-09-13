@@ -1,0 +1,193 @@
+/* 버튼 기본스타일 삭제 */
+button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* 리스트 기본스타일 삭제 */
+li {
+    list-style: none;
+}
+
+/* input 기본스타일 삭제 */
+input {
+   background: none;
+   border: none;
+   outline: none;
+}
+
+/* p태그 기본마진 제거*/
+p {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+html {
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    width: 600px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.max-div {
+    width: 100%;
+    height: 100%;
+}
+
+/* 헤더 */
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 1.5vw;
+}
+
+.cover-navbar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height .7s ease, opacity .5s ease;
+}
+
+.cover-navbar-menu.active {
+    display: flex;
+    max-height: 500px; 
+    opacity: 1;
+}
+
+.navbar-menu {
+    display: flex;
+    padding: 0;
+}
+
+.navbar-right {
+    display: flex;
+}
+
+.navbar-searchBtn {
+    padding: .75vw;
+}
+
+.navbar-searchBtn:hover {
+    color: rgb(90, 90, 90);
+}
+
+.navbar-toggleBtn {
+    padding: .75vw;
+    color: black;
+}
+
+.navbar-toggleBtn:hover {
+    color: rgb(90, 90, 90);
+}
+
+/* 메인 */
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.default-div {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+}
+
+.back-btn-div{
+    padding: 1.5vw;
+    align-self: flex-start;
+}
+
+.back-btn:hover svg path {
+    stroke: rgb(90, 90, 90);
+}
+
+.welcome-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.welcome-div p {
+    margin-top: 1vw;
+}
+
+.start-div {
+    width: 100%;
+    text-align: left;
+    padding-left: 3vw;
+}
+
+.border-line {
+    width: 90%;
+    border-top: solid 1px black;
+    border-bottom: solid 1px rgb(201, 200, 200);
+    padding-top: 1.5vw;
+    padding-bottom: 1.5vw;
+}
+
+.cover-agree-div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 3vw;
+} 
+
+.agree-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1vw;
+    width: 100%;
+    padding-left: .5vw;
+    padding-right: .5vw;
+}
+
+.inner-agree-div { 
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.agree-div span {
+    margin-left: .5vw;
+}
+
+.agree-left {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+}
+
+.agree-space {
+    display: flex;
+    justify-content: space-between;
+}
+
+.center-div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.next-btn {
+    border-radius: 10px;
+    width: 33vw;
+    height: 5vw;
+    background-color: #FFD651;
+    font-size: 1.5rem;
+}
