@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/agree.css">
-    <script src="js/agree.js"></script>
+    <link rel="stylesheet" href="css/join.css">
+    <script src="js/join.js"></script>
 </head>
 <body>
-    <div class="max-div">
-        <header class="header">
+    <header class="header">
+        <div class="header-div">
             <div class="navbar-logo">
                 <a href="">
                     <img src="images/마음이음.svg" alt="마음이음">
@@ -29,35 +29,76 @@
                     </button>
                 </div>
             </nav>
-        </header>
-        <div class="cover-navbar-menu">
-            <ul class="navbar-menu"></ul>
-                <li class="defalut-li emergency-counseling">
-                    <a>긴급상담 기능</a>
-                </li>
-                <li class="defalut-li non-face-counseling">
-                    <a>비대면 심리 상담 기능</a>
-                </li>
-                <li class="defalut-li daily-self">
-                    <a>일일 자가 진단</a>
-                </li>
-                <li class="defalut-li daily-diary">
-                    <a>일일 일기 기록</a>
-                </li>
-                <li class="defalut-li manual">
-                    <a>정신건강 매뉴얼</a>
-                </li>
-            </ul>
-        </div>    
-        <main class="main">
-            <div class="back-btn-div">
-                <button class="back-btn" type="button">
-                    <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.8853 22.2648L10.7312 14.8432L17.8853 7.42161" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-        </main>
-    </div>
+        </div>
+    </header>
+    <div class="cover-navbar-menu">
+        <ul class="navbar-menu"></ul>
+            <li class="defalut-li emergency-counseling">
+                <a>긴급상담 기능</a>
+            </li>
+            <li class="defalut-li non-face-counseling">
+                <a>비대면 심리 상담 기능</a>
+            </li>
+            <li class="defalut-li daily-self">
+                <a>일일 자가 진단</a>
+            </li>
+            <li class="defalut-li daily-diary">
+                <a>일일 일기 기록</a>
+            </li>
+            <li class="defalut-li manual">
+                <a>정신건강 매뉴얼</a>
+            </li>
+        </ul>
+    </div>    
+    <main class="main">
+        <div class="back-btn-div">
+            <button class="back-btn" type="button" onclick="location.href='agree.html'">
+                <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.8853 22.2648L10.7312 14.8432L17.8853 7.42161" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="cover-text-guide">
+            <p class="text-guide">아이디</p>
+        </div>
+        <div class="default-div">
+            <input class="input-default" type="text" placeholder="아이디를 입력하세요">
+        </div>
+
+        <div class="cover-text-guide">
+            <p class="text-guide">비밀번호</p>
+        </div>
+        <div class="default-div">
+            <input class="input-default" type="password" placeholder="비밀번호를 입력하세요">
+        </div>
+
+        <div class="cover-text-guide">
+            <p class="text-guide">비밀번호 확인</p>
+        </div>
+        <div class="default-div">
+            <input class="input-default" type="password" placeholder="비밀번호를 다시 입력하세요">
+        </div>
+
+        <div class="cover-text-guide">
+            <p class="text-guide">이메일</p>
+        </div>
+        <div class="default-div">
+            <input class="input-default" type="email" placeholder="이메일주소를 입력하세요">
+        </div>
+
+        <div class="cover-text-guide">
+            <p class="text-guide">상담사 인증번호</p>
+        </div>
+        <div class="default-div">
+            <input class="input-default" type="password" placeholder="인증번호를 입력하세요">
+        </div>
+
+        <div class="default-div auth-div">
+            <button class="auth-btn btn-hover" type="button" onclick="location.href='join-success.html'">
+                <p class="bold">본인인증</p>
+            </button>
+        </div>
+    </main>
 </body>
 </html>

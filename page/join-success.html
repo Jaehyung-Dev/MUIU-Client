@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/agree.css">
-    <script src="js/agree.js"></script>
+    <link rel="stylesheet" href="css/join-success.css">
+    <script defer src="js/join-success.js"></script>
 </head>
 <body>
-    <div class="max-div">
-        <header class="header">
+    <header class="header">
+        <div class="header-div">
             <div class="navbar-logo">
                 <a href="">
                     <img src="images/마음이음.svg" alt="마음이음">
@@ -29,35 +29,48 @@
                     </button>
                 </div>
             </nav>
-        </header>
-        <div class="cover-navbar-menu">
-            <ul class="navbar-menu"></ul>
-                <li class="defalut-li emergency-counseling">
-                    <a>긴급상담 기능</a>
-                </li>
-                <li class="defalut-li non-face-counseling">
-                    <a>비대면 심리 상담 기능</a>
-                </li>
-                <li class="defalut-li daily-self">
-                    <a>일일 자가 진단</a>
-                </li>
-                <li class="defalut-li daily-diary">
-                    <a>일일 일기 기록</a>
-                </li>
-                <li class="defalut-li manual">
-                    <a>정신건강 매뉴얼</a>
-                </li>
-            </ul>
-        </div>    
-        <main class="main">
-            <div class="back-btn-div">
-                <button class="back-btn" type="button">
-                    <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.8853 22.2648L10.7312 14.8432L17.8853 7.42161" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-        </main>
-    </div>
+        </div>
+    </header>
+    <div class="cover-navbar-menu">
+        <ul class="navbar-menu"></ul>
+            <li class="defalut-li emergency-counseling">
+                <a>긴급상담 기능</a>
+            </li>
+            <li class="defalut-li non-face-counseling">
+                <a>비대면 심리 상담 기능</a>
+            </li>
+            <li class="defalut-li daily-self">
+                <a>일일 자가 진단</a>
+            </li>
+            <li class="defalut-li daily-diary">
+                <a>일일 일기 기록</a>
+            </li>
+            <li class="defalut-li manual">
+                <a>정신건강 매뉴얼</a>
+            </li>
+        </ul>
+    </div>    
+    <main class="main">
+        <div class="back-btn-div">
+            <button class="back-btn" type="button">
+                <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.8853 22.2648L10.7312 14.8432L17.8853 7.42161" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="join-complete">
+            <img class="join-complete-img" src="images/join-complete.svg" alt="join-complete">
+            <p class="join-complete-msg1">회원가입이 <b>완료</b> 되었습니다.</p>
+            <p class="join-complete-msg2">로그인하시면 더욱 다양한 서비스를 이용 가능합니다.</p>
+        </div>
+        <div class="default-div select-div">
+            <button class="select-btn btn-hover home-btn" type="button">
+                <p>홈으로</p>
+            </button>
+            <button class="select-btn btn-hover login-btn" type="button" onclick="location.href='login.html'">
+                <p>로그인</p>
+            </button>
+        </div>
+    </main>
 </body>
 </html>
