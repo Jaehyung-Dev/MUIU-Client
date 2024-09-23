@@ -1,11 +1,36 @@
-import { Link, Outlet } from 'react-router-dom';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
+import Header from '../components/Header';
+import BottomNav from '../components/BottomNav';
+import { Link } from 'react-router-dom';
+
+const Container = styled.div`
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px 180px;
+    box-sizing: border-box;
+
+    @media (max-width: 600px) {
+        padding: 0 15px 100px;
+    }
+
+    @media (max-width: 393px) {
+        padding: 5px 10px 100px;
+    }
+`;
 
 function Layout() {
   return (
-    <div>
-      <header>
-        <nav>
-          <ul>
+    <div className="container">
+      <Header />
+      <Outlet />
+
+      <ul>
             <li><Link to="/main">Main Screen</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/join">Join</Link></li>
@@ -20,11 +45,8 @@ function Layout() {
             <li><Link to="/disaster-safety-store">Disaster Safety Store</Link></li>
             <li><Link to="/hospital-shelter-info">Hospital-Shelter Info</Link></li>
           </ul>
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
+
+      <BottomNav />
     </div>
   );
 }
