@@ -1,8 +1,9 @@
 import React from 'react';
+import ConsultationType from '../components/ConsultationType';
 
-export const HumanCounseling = () => {
+const HumanCounseling = () => {
     return (
-        <div>HumanCounseling</div>
+        <ConsultationType />
     );
 };
 
