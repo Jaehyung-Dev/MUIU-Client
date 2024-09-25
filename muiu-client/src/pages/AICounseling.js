@@ -18,13 +18,17 @@ const ImageBanner = styled.div`
     }
 `;
 
-const Title = styled.h1`
-    margin-top: 5vh;
-    margin-bottom: 8vh;
+const Content = styled.div`
+    margin: 5vh 0;
 
-    @media (max-width: 393px) {
-        font-size: 20px;
+    // @media (max-width: 393px) {
+    //     font-size: 20px;
+    // }
+
+    p {
+        color: #232323C4;
     }
+
 `;
 
 const ShortHr = styled.hr`
@@ -43,10 +47,16 @@ export const AICounseling = () => {
             <ImageBanner>
                 <img src={`${process.env.PUBLIC_URL}/images/AI_header_img.png`} alt='긴급상담 헤더 이미지' />
             </ImageBanner>
-            <Title>긴급상담</Title>
+            <Content>
+                <h1>긴급상담</h1>
+                <p>급하게 대화가 필요하거나 도움이 필요할 때, <br></br>
+                부담없이 이용해주세요</p>
+            </Content>
             <ShortHr />
         </ConsultationSection>
     );
 };
 
 export default AICounseling;
+
+// 일단 보류
