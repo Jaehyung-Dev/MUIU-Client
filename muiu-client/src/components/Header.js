@@ -31,6 +31,31 @@ const HeaderContainer = styled.header`
         color: #fbbf24;
         font-size: 28px;
         transition: opacity 0.5s ease;
+        margin: 0;
+    }
+
+    .icon-container {
+        display: flex;
+        gap: 20px;
+        width: ${({ searchOpen }) => (searchOpen ? '100%' : 'auto')}; /* 검색 시 검색창이 넓어지도록 */
+        justify-content: ${({ searchOpen }) => (searchOpen ? 'flex-start' : 'flex-end')};
+
+        .icon {
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease;
+            width: 40px !important;
+            height: 40px !important;
+
+            &:hover {
+                color: #fbbf24;
+            }
+
+            @media (max-width: 393px) {
+                width: 28px !important;
+                height: 28px !important;
+            }
+        }
     }
 
     @media (max-width: 393px) {
