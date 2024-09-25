@@ -1,4 +1,3 @@
-// src/components/Button.js
 import React from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +12,7 @@ const StyledButton = styled.div`
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    height: 180px;
+    height: 130px;
     width: 100px;
     transition: background-color 0.3s ease;
 
@@ -22,12 +21,12 @@ const StyledButton = styled.div`
     }
 
     @media (max-width: 600px) {
-        height: 150px;
+        height: 100px;
         width: 80px;
     }
 
     @media (max-width: 383px) {
-        height: 120px;
+        height: 90px;
         width: 70px;
     }
 `;
@@ -58,9 +57,9 @@ const ButtonSubtext = styled.div`
     }
 `;
 
-const Button = ({ text, subtext }) => {
+const Button = ({ text, subtext, onClick }) => {
     return (
-        <StyledButton>
+        <StyledButton onClick={onClick}>
             <ButtonText>{text}</ButtonText>
             <ButtonSubtext>{subtext}</ButtonSubtext>
         </StyledButton>
