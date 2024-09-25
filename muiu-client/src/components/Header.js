@@ -23,21 +23,18 @@ const HeaderContainer = styled.header`
     padding: 15px 15px;
     background-color: white;
     z-index: 1000;
-    position: relative;
-
-    h1 {
-        font-family: 'TTLaundryGothicB', sans-serif;
-        font-weight: 700;
-        color: #fbbf24;
-        font-size: 28px;
-        transition: opacity 0.5s ease;
-        margin: 0;
-    }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    right: 0;
 
     .icon-container {
         display: flex;
         gap: 20px;
-        width: ${({ searchOpen }) => (searchOpen ? '100%' : 'auto')}; /* 검색 시 검색창이 넓어지도록 */
+        width: ${({ searchOpen }) => (searchOpen ? '100%' : 'auto')};
         justify-content: ${({ searchOpen }) => (searchOpen ? 'flex-start' : 'flex-end')};
 
         .icon {
@@ -68,12 +65,30 @@ const HeaderContainer = styled.header`
     }
 `;
 
+const Title = styled.h1`
+    font-family: 'TTLaundryGothicB', sans-serif;
+    font-weight: 700;
+    color: #fbbf24;
+    font-size: 28px;
+    margin: 0;
+    transition: opacity 0.5s ease;
+`;
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        text-decoration: none;
+    }
+`;
+
 const IconContainer = styled.div`
     display: flex;
     gap: 20px;
     align-items: center;
     position: absolute;
-    right: 15px;
+    right: 50px;
     z-index: 1001;
 `;
 
@@ -89,40 +104,69 @@ const MenuIconWrapper = styled.div`
 const SearchInputWrapper = styled.div`
     position: absolute;
     top: 45%;
-    transform: translateY(-50%); 
+    transform: translateY(-50%);
     left: calc(100% + 10px);
     width: ${({ searchOpen }) => (searchOpen ? '200px' : '0')};
     overflow: hidden;
     transition: width 0.5s ease;
     display: flex;
-    align-items: center;
+    flex-direction: column;
 `;
 
 const SearchInput = styled.input`
     width: 100%;
     border: none;
-    border-bottom: 1px solid black; /* 검정색 1px 언더바 */
+    border-bottom: 1px solid black;
     outline: none;
     font-size: 16px;
     background-color: transparent;
 `;
 
+const RecentSearchesContainer = styled.div`
+    background-color: white;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-top: 8px;
+    z-index: 1000;
+    max-height: 150px;
+    overflow-y: auto;
+    position: relative;
+    top: 100%;
+`;
+
+const RecentSearch = styled.div`
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
 const DropdownMenu = styled.div`
     position: fixed;
     top: 30px;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100vw;
+    max-width: 600px;
     height: calc(100vh - 60px);
     background-color: rgba(255, 255, 255, 0.95);
     z-index: 999;
     padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 
     ul {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 20px;
 
         li {
             display: flex;
@@ -153,7 +197,8 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false); 
     const [activeMenuItem, setActiveMenuItem] = useState('');
-    const [searchTerm, setSearchTerm] = useState(''); 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [recentSearches, setRecentSearches] = useState([]);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -166,7 +211,17 @@ const Header = () => {
     };
 
     const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value); 
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSearchSubmit = () => {
+        if (searchTerm.trim() !== "") {
+            setRecentSearches(prev => {
+                const updatedSearches = [searchTerm, ...prev.filter(term => term !== searchTerm)];
+                return updatedSearches.slice(0, 5);
+            });
+        }
+        setSearchTerm('');
     };
 
     const handleMenuClick = (menuItem) => {
@@ -174,10 +229,17 @@ const Header = () => {
         setMenuOpen(false);
     };
 
+    const handleRecentSearchClick = (search) => {
+        setSearchTerm(search);
+        handleSearchSubmit();
+    };
+
     return (
         <>
             <HeaderContainer searchOpen={searchOpen}>
-                <h1>마음이음</h1>
+                <Title>
+                    <StyledLink to="/main">마음이음</StyledLink>
+                </Title>
                 <IconContainer>
                     <SearchIconWrapper searchOpen={searchOpen}>
                         <SearchIcon className="icon" onClick={toggleSearch} />
@@ -188,7 +250,17 @@ const Header = () => {
                                     placeholder="검색어를 입력하세요"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
                                 />
+                                {recentSearches.length > 0 && (
+                                    <RecentSearchesContainer>
+                                        {recentSearches.map((search, index) => (
+                                            <RecentSearch key={index} onClick={() => handleRecentSearchClick(search)}>
+                                                {search}
+                                            </RecentSearch>
+                                        ))}
+                                    </RecentSearchesContainer>
+                                )}
                             </SearchInputWrapper>
                         )}
                     </SearchIconWrapper>
