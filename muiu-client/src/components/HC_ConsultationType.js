@@ -1,6 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import styled, { createGlobalStyle } from 'styled-components';
 import Button from './HS_Button';
+
+const GlobalStyle = createGlobalStyle`
+    body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100vh;
+    }
+`;
 
 const ConsultationSection = styled.section`
     text-align: center;
@@ -9,13 +19,22 @@ const ConsultationSection = styled.section`
 `;
 
 const ImageBanner = styled.div`
-    width: 100%;
-    margin: 0;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 
     img {
         width: 100%;
         height: auto;
         object-fit: cover;
+
+        @media (min-width: 600px) {
+            max-width: 600px;
+            margin: 0 auto;
+        }
     }
 `;
 
@@ -40,32 +59,45 @@ const ShortHr = styled.hr`
 
 const ButtonContainer = styled.div`
     display: flex;
-    gap: 10px;
+    gap: 20px;
     justify-content: space-between;
     padding: 0 20px;
 
     @media (max-width: 600px) {
-        gap: 15px;
+        gap: 20px;
     }
 
     @media (max-width: 393px) {
-        gap: 10px;
+        gap: 20px;
     }
 `;
 
 const ConsultationType = () => {
+    const navigate = useNavigate();
+
+    const handleNewConsultationClick = () => {
+        navigate('/new-consultation');
+    };
+
+    const handleExistingConsultationClick = () => {
+        navigate('/existing-consultation');
+    };
+
     return (
-        <ConsultationSection>
-            <ImageBanner>
-                <img src={`${process.env.PUBLIC_URL}/background.png`} alt="Room Image" />
-            </ImageBanner>
-            <Title>상담 유형 선택</Title>
-            <ShortHr />
-            <ButtonContainer>
-                <Button text="신규 상담" subtext="시작하기" />
-                <Button text="기존 상담" subtext="이어하기" />
-            </ButtonContainer>
-        </ConsultationSection>
+        <>
+            <GlobalStyle />
+            <ConsultationSection>
+                <ImageBanner>
+                    <img src={`${process.env.PUBLIC_URL}/background.png`} alt="Room Image" />
+                </ImageBanner>
+                <Title>상담 유형 선택</Title>
+                <ShortHr />
+                <ButtonContainer>
+                    <Button text="신규 상담" subtext="시작하기" onClick={handleNewConsultationClick} />
+                    <Button text="기존 상담" subtext="이어하기" onClick={handleExistingConsultationClick} />
+                </ButtonContainer>
+            </ConsultationSection>
+        </>
     );
 };
 
