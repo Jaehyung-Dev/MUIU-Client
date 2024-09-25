@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from './Button';
+import Button from './HS_Button';
 
 const ConsultationSection = styled.section`
     text-align: center;
