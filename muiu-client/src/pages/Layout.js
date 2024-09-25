@@ -26,7 +26,11 @@ const Container = styled.div`
 
 function Layout() {
   return (
+<<<<<<< HEAD
     <Container>
+=======
+    <div className="container">
+>>>>>>> origin/main
       <Header />
       <Outlet />
 
@@ -47,7 +51,11 @@ function Layout() {
           </ul>
 
       <BottomNav />
+<<<<<<< HEAD
     </Container>
+=======
+    </div>
+>>>>>>> origin/main
   );
 }
 

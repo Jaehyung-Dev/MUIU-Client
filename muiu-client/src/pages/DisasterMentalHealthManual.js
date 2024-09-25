@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import styled from 'styled-components';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
@@ -94,3 +95,13 @@ const DisasterMentalHealthManual = () => {
 };
 
 export default DisasterMentalHealthManual;
+=======
+
+export const DisasterMentalHealthManual = () => {
+    return (
+        <div>DisasterMentalHealthManual</div>
+    );
+};
+
+export default DisasterMentalHealthManual;
+>>>>>>> origin/main
