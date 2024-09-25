@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from './HS_Button';
+import Button from './HC_Button';
 
 const GlobalStyle = createGlobalStyle`
     body, html {
