@@ -14,6 +14,8 @@ import DisasterSafetyStore from './pages/DisasterSafetyStore';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
 import AICounseling from './pages/AICounseling';
+import NewConsultation from './pages/NewConsultation';
+import ExistingConsultation from './pages/ExistingConsultation';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
+          <Route path="new-consultation" element={<NewConsultation />} />
+          <Route path="existing-consultation" element={<ExistingConsultation />} />
         </Route>
       </Routes>
     </Router>

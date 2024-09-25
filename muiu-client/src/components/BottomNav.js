@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
@@ -8,7 +8,7 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 const Nav = styled.nav`
     position: fixed;
-    bottom: 0;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
@@ -27,11 +27,13 @@ const Nav = styled.nav`
     @media (max-width: 600px) {
         height: 100px;
         padding: 0 15px;
+        bottom: 15px;
     }
 
     @media (max-width: 393px) {
         height: 80px;
         padding: 0 10px;
+        bottom: 10px;
     }
 `;
 
@@ -42,7 +44,7 @@ const NavItem = styled(Link)`
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: #333;
+    color: ${({ active }) => (active ? '#fbbf24' : '#333')};
     font-size: 14px;
     flex: 1;
 
@@ -64,21 +66,21 @@ const NavItem = styled(Link)`
     }
 
     .icon {
-            cursor: pointer;
-            color: #A1A1A1;
-            transition: color 0.3s ease;
-            width: 30px;
-            height: 30px;
-            margin-top: 40px;
+        cursor: pointer;
+        color: ${({ active }) => (active ? '#fbbf24' : '#A1A1A1')};
+        transition: color 0.3s ease;
+        width: 30px;
+        height: 30px;
+        margin-top: 40px;
 
-            &:hover {
-                color: #fbbf24;
-            }
+        &:hover {
+            color: #fbbf24;
+        }
 
-            @media (max-width: 393px) {
-                width: 18px !important;
-                height: 18px !important;
-            }
+        @media (max-width: 393px) {
+            width: 18px !important;
+            height: 18px !important;
+        }
     }
 
     &.nav-center img {
@@ -93,25 +95,41 @@ const NavItem = styled(Link)`
     }
 `;
 
+const CenterNavItem = styled(NavItem)`
+    img {
+        transition: transform 0.3s ease;
+        ${({ isActive }) => isActive && `
+            transform: translateY(-40px);
+        `}
+    }
+`;
+
 const BottomNav = () => {
+    const location = useLocation();
+    const [isActive, setIsActive] = useState(false);
+
+    const handleCircleClick = () => {
+        setIsActive(!isActive);
+    };
+
     return (
         <Nav>
-            <NavItem to="/main">
+            <NavItem to="/main" active={location.pathname === '/main'}>
                 <HomeOutlinedIcon className="icon" />
                 <span>홈</span>
             </NavItem>
-            <NavItem to="/counsel">
+            <NavItem to="/human-counseling" active={location.pathname === '/human-counseling'}>
                 <QuestionAnswerOutlinedIcon className="icon" />
                 <span>비대면 상담</span>
             </NavItem>
-            <NavItem to="/human-counseling" className="nav-center">
+            <CenterNavItem to="/ai-counseling" className="nav-center" isActive={isActive} active={location.pathname === '/ai-counseling'} onClick={handleCircleClick}>
                 <img src={`${process.env.PUBLIC_URL}/svg/circle-chat.svg`} alt="중앙 아이콘" />
-            </NavItem>
-            <NavItem to="/diary">
+            </CenterNavItem>
+            <NavItem to="/my-diary" active={location.pathname === '/my-diary'}>
                 <AutoStoriesOutlinedIcon className="icon" />
                 <span>일기</span>
             </NavItem>
-            <NavItem to="/myinfo">
+            <NavItem to="/mypage" active={location.pathname === '/mypage'}>
                 <PersonOutlinedIcon className="icon" />
                 <span>내 정보</span>
             </NavItem>
