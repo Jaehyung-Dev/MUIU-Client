@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -25,72 +24,36 @@ const HeaderContainer = styled.header`
     background-color: white;
     z-index: 1000;
     position: relative;
-=======
-// src/components/Header.js
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search'; // 필요에 따라 임포트
-
-const HeaderContainer = styled.header`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-<<<<<<< HEAD
     padding: 15px 15px;
-=======
-    padding: 10px 10px;
->>>>>>> origin/main
->>>>>>> origin/mingyo
 
     h1 {
         font-family: 'TTLaundryGothicB', sans-serif;
         font-weight: 700;
         color: #fbbf24;
         font-size: 28px;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
         margin: 0;
-=======
->>>>>>> origin/main
->>>>>>> origin/mingyo
     }
 
     .icon-container {
         display: flex;
         gap: 20px;
-<<<<<<< HEAD
         width: ${({ searchOpen }) => (searchOpen ? '100%' : 'auto')}; /* 검색 시 검색창이 넓어지도록 */
         justify-content: ${({ searchOpen }) => (searchOpen ? 'flex-start' : 'flex-end')};
-=======
->>>>>>> origin/mingyo
 
         .icon {
             cursor: pointer;
             color: #333;
             transition: color 0.3s ease;
-<<<<<<< HEAD
             width: 40px !important;
             height: 40px !important;
-=======
-            width: 30px;
-            height: 30px;
->>>>>>> origin/mingyo
 
             &:hover {
                 color: #fbbf24;
             }
 
             @media (max-width: 393px) {
-<<<<<<< HEAD
                 width: 28px !important;
                 height: 28px !important;
-=======
-                width: 18px !important;
-                height: 18px !important;
->>>>>>> origin/mingyo
             }
         }
     }
@@ -104,7 +67,6 @@ const HeaderContainer = styled.header`
     }
 `;
 
-<<<<<<< HEAD
 const DropdownMenu = styled.div`
     position: fixed;
     top: 30px;
@@ -281,21 +243,6 @@ const Header = () => {
                 </DropdownMenu>
             )}
         </>
-=======
-const Header = () => {
-    return (
-        <HeaderContainer>
-            <h1>마음이음</h1>
-            <div className="icon-container">
-                <Link to="/search">
-                    <SearchIcon className="icon" />
-                </Link>
-                <Link to="/menu">
-                    <MenuIcon className="icon" />
-                </Link>
-            </div>
-        </HeaderContainer>
->>>>>>> origin/mingyo
     );
 };
 
