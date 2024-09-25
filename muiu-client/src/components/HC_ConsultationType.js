@@ -88,7 +88,7 @@ const ConsultationType = () => {
             <GlobalStyle />
             <ConsultationSection>
                 <ImageBanner>
-                    <img src={`${process.env.PUBLIC_URL}/background.png`} alt="Room Image" />
+                    <img src={`${process.env.PUBLIC_URL}/images/background.png`} alt="Room Image" />
                 </ImageBanner>
                 <Title>상담 유형 선택</Title>
                 <ShortHr />

@@ -59,7 +59,7 @@ const HeaderContainer = styled.header`
     }
 
     @media (max-width: 393px) {
-        padding: 5px 8px;
+        padding: 15px 15px;
 
         h1 {
             opacity: ${({ searchOpen }) => (searchOpen ? 0 : 1)};
