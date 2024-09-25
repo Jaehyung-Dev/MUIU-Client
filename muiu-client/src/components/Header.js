@@ -30,6 +30,7 @@ const HeaderContainer = styled.header`
         font-weight: 700;
         color: #fbbf24;
         font-size: 28px;
+        transition: opacity 0.5s ease;
         margin: 0;
     }
 
@@ -61,9 +62,49 @@ const HeaderContainer = styled.header`
         padding: 5px 8px;
 
         h1 {
+            opacity: ${({ searchOpen }) => (searchOpen ? 0 : 1)};
             font-size: 20px;
         }
     }
+`;
+
+const IconContainer = styled.div`
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+    z-index: 1001;
+`;
+
+const SearchIconWrapper = styled.div`
+    transition: transform 0.5s ease;
+    transform: ${({ searchOpen }) => (searchOpen ? 'translateX(-210px)' : 'translateX(0)')};
+    position: relative;
+`;
+
+const MenuIconWrapper = styled.div`
+`;
+
+const SearchInputWrapper = styled.div`
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%); 
+    left: calc(100% + 10px);
+    width: ${({ searchOpen }) => (searchOpen ? '200px' : '0')};
+    overflow: hidden;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+`;
+
+const SearchInput = styled.input`
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid black; /* 검정색 1px 언더바 */
+    outline: none;
+    font-size: 16px;
+    background-color: transparent;
 `;
 
 const DropdownMenu = styled.div`
@@ -108,65 +149,24 @@ const DropdownMenu = styled.div`
     }
 `;
 
-const SearchContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const SearchInput = styled.input`
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-bottom: 2px solid #fbbf24;
-    outline: none;
-    margin-bottom: 10px;
-`;
-
-const RecentKeywords = styled.ul`
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    margin-bottom: 10px;
-
-    li {
-        margin-bottom: 5px;
-        font-size: 14px;
-        color: #333;
-    }
-`;
-
-const SearchResult = styled.div`
-    padding: 10px 0;
-    font-size: 16px;
-    color: #666;
-`;
-
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [searchOpen, setSearchOpen] = useState(false); // 검색 창 상태 추가
+    const [searchOpen, setSearchOpen] = useState(false); 
     const [activeMenuItem, setActiveMenuItem] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [recentKeywords, setRecentKeywords] = useState([]);
-    const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
+    const [searchTerm, setSearchTerm] = useState(''); 
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
-        setSearchOpen(false); // 메뉴가 열리면 검색 창은 닫기
+        setSearchOpen(false);
     };
 
     const toggleSearch = () => {
         setSearchOpen(!searchOpen);
-        setMenuOpen(false); // 검색 창이 열리면 메뉴는 닫기
+        setMenuOpen(false);
     };
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-        // 검색 기능에 따라 검색 결과 업데이트
-        setSearchResults([`검색 결과 for "${e.target.value}"`]); // 예시 결과
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value); 
     };
 
     const handleMenuClick = (menuItem) => {
@@ -174,54 +174,30 @@ const Header = () => {
         setMenuOpen(false);
     };
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        if (searchTerm && !recentKeywords.includes(searchTerm)) {
-            setRecentKeywords([searchTerm, ...recentKeywords.slice(0, 9)]); // 최근 검색어 10개만 유지
-        }
-        setSearchResults([`검색 결과 for "${searchTerm}"`]); // 실제 검색 로직으로 교체
-    };
-
     return (
         <>
             <HeaderContainer searchOpen={searchOpen}>
                 <h1>마음이음</h1>
-                <div className="icon-container" searchOpen={searchOpen}>
-                    <div onClick={toggleSearch}>
-                        <SearchIcon className="icon" />
-                    </div>
-                    <div onClick={toggleMenu}>
-                        <MenuIcon className="icon" />
-                    </div>
-                </div>
+                <IconContainer>
+                    <SearchIconWrapper searchOpen={searchOpen}>
+                        <SearchIcon className="icon" onClick={toggleSearch} />
+                        {searchOpen && (
+                            <SearchInputWrapper searchOpen={searchOpen}>
+                                <SearchInput
+                                    type="text"
+                                    placeholder="검색어를 입력하세요"
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                />
+                            </SearchInputWrapper>
+                        )}
+                    </SearchIconWrapper>
+                    <MenuIconWrapper>
+                        <MenuIcon className="icon" onClick={toggleMenu} />
+                    </MenuIconWrapper>
+                </IconContainer>
             </HeaderContainer>
 
-            {searchOpen && (
-                <SearchContainer>
-                    <form onSubmit={handleSearchSubmit}>
-                        <SearchInput
-                            type="text"
-                            placeholder="검색어를 입력하세요"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
-                    </form>
-
-                    <RecentKeywords>
-                        {recentKeywords.map((keyword, index) => (
-                            <li key={index}>{keyword}</li>
-                        ))}
-                    </RecentKeywords>
-
-                    <SearchResult>
-                        {searchResults.map((result, index) => (
-                            <div key={index}>{result}</div>
-                        ))}
-                    </SearchResult>
-                </SearchContainer>
-            )}
-
-            {/* 드롭다운 메뉴 */}
             {menuOpen && (
                 <DropdownMenu>
                     <ul>
