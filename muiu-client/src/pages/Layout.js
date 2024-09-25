@@ -26,7 +26,7 @@ const Container = styled.div`
 
 function Layout() {
   return (
-    <div className="container">
+    <Container>
       <Header />
       <Outlet />
 
@@ -47,7 +47,7 @@ function Layout() {
           </ul>
 
       <BottomNav />
-    </div>
+    </Container>
   );
 }
 
