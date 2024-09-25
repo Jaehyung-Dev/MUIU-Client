@@ -9,13 +9,13 @@ import MindCheck from './pages/MindCheck';
 import MyDiary from './pages/MyDiary';
 import MindColumn from './pages/MindColumn';
 import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
+import DMHM_Definition from './pages/DMHM_Definition';
+import DMHM_Definition2 from './pages/DMHM_Definition2';
 import DisasterGuide from './pages/DisasterGuide';
 import DisasterSafetyStore from './pages/DisasterSafetyStore';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
 import AICounseling from './pages/AICounseling';
-import NewConsultation from './pages/NewConsultation';
-import ExistingConsultation from './pages/ExistingConsultation';
 
 function App() {
   return (
@@ -33,11 +33,11 @@ function App() {
           <Route path="my-diary" element={<MyDiary />} />
           <Route path="mind-column" element={<MindColumn />} />
           <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
+          <Route path="DMHM_Definition" element={<DMHM_Definition/>} />
+          <Route path="DMHM_Definition2" element={<DMHM_Definition2/>} />
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
-          <Route path="new-consultation" element={<NewConsultation />} />
-          <Route path="existing-consultation" element={<ExistingConsultation />} />
         </Route>
       </Routes>
     </Router>
