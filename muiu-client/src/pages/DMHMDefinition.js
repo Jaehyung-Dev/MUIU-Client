@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav'; // 공용 Footer 컴포넌트
-import realityImg from '../images/현실불안형.png';
-import confusionImg from '../images/혼란형.png';
-import dazedImg from '../images/망연자실형.png';
-import disasterExperienceImg from '../images/재난의 경험.png';
-import disasterDamageImg from '../images/재난에 의한 피해.png';
-import disasterWitnessImg from '../images/재난의 목격.png';
+import realityImg from '../DMHM-images/현실불안형.png';
+import confusionImg from '../DMHM-images/혼란형.png';
+import dazedImg from '../DMHM-images/망연자실형.png';
+import disasterExperienceImg from '../DMHM-images/재난의 경험.png';
+import disasterDamageImg from '../DMHM-images/재난에 의한 피해.png';
+import disasterWitnessImg from '../DMHM-images/재난의 목격.png';
 
 // Styled-components
 const Content = styled.div`
