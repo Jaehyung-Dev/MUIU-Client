@@ -24,7 +24,6 @@ const HeaderContainer = styled.header`
     background-color: white;
     z-index: 1000;
     position: relative;
-    padding: 15px 15px;
 
     h1 {
         font-family: 'TTLaundryGothicB', sans-serif;

@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav'; // 공용 Footer 컴포넌트
-import realityImg from '../images/현실불안형.png';
-import confusionImg from '../images/혼란형.png';
-import dazedImg from '../images/망연자실형.png';
-import disasterExperienceImg from '../images/재난의 경험.png';
-import disasterDamageImg from '../images/재난에 의한 피해.png';
-import disasterWitnessImg from '../images/재난의 목격.png';
-import { alignProperty } from '@mui/material/styles/cssUtils';
 
 // Styled-components
 const Content = styled.div`

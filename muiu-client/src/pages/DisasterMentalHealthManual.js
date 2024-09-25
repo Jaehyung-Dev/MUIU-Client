@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
-import manualImg from '../images/manual_img.jpg';
+import manualImg from '../DMHM-images/manual_img.jpg';
 
 const AppContainer = styled.div`
   width: 100%;
