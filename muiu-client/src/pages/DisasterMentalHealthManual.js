@@ -12,6 +12,7 @@ const AppContainer = styled.div`
   flex-direction: column;
   margin: 0 auto;
   position: relative;
+  margin-top: 70px;
 `;
 
 const MenuListContainer = styled.div`
