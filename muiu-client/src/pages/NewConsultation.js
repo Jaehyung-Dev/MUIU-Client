@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import CallIcon from '@mui/icons-material/Call';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -103,6 +104,8 @@ const OptionSubText = styled.div`
 `;
 
 const NewConsultation = () => {
+    const navigate = useNavigate();
+
     return (
         <Container>
             <ImageBanner>
@@ -113,8 +116,7 @@ const NewConsultation = () => {
             <ShortHr />
 
             <OptionsContainer>
-                <Option bgColor="#FFE5D8">
-                    <VideoCallIcon style={{ fontSize: '40px', color: '#FF3D3B' }} />
+                <Option bgColor="#FFE5D8" onClick={() => { navigate('/video-consultation');}} >                    <VideoCallIcon style={{ fontSize: '40px', color: '#FF3D3B' }} />
                     <OptionText style={{color: '#FF3D3B'}}>영상 상담</OptionText>
                     <OptionSubText style={{color: '#FF3D3B'}}>대기 혼잡</OptionSubText>
                 </Option>
