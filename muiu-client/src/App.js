@@ -20,7 +20,7 @@ import Agree from './pages/Agree';
 import JoinSuccess from './pages/JoinSuccess';
 import NewConsultation from './pages/NewConsultation';
 import ExistingConsultation from './pages/ExistingConsultation';
-
+import VideoConsultationScreen from './pages/VideoConsultationScreen';
 
 function App() {
   return (
@@ -47,6 +47,7 @@ function App() {
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
           <Route path="/new-consultation" element={<NewConsultation />} />
           <Route path="/existing-consultation" element={<ExistingConsultation />} />
+          <Route path="/video-consultation" element={<VideoConsultationScreen />} />
         </Route>
       </Routes>
     </Router>
