@@ -214,7 +214,7 @@ const ExistingConsultation = () => {
                                             <p>상담사: 김대휘</p>
                                         </CardContent>
                                         <ButtonGroup>
-                                            <ConnectButton>연결 대기</ConnectButton>
+                                            <ConnectButton onClick={() => { navigate('/video-consultation');}}>연결 대기</ConnectButton>
                                             <CancelButton>예약 취소</CancelButton>
                                         </ButtonGroup>
                                     </ConsultationCard>
