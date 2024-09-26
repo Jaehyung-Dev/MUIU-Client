@@ -32,7 +32,7 @@ const Underline = styled.div`
     left: 0;
     height: 2px;
     background-color: #fbbf24;
-    width: 33.33%; /* 각 탭의 너비 */
+    width: 33.33%;
     transform: translateX(${({ activeTab }) => (activeTab === 'video' ? '0%' : activeTab === 'call' ? '100%' : '200%')});
     transition: transform 0.3s ease;
 `;
@@ -43,16 +43,27 @@ const ConsultationListWrapper = styled.div`
     margin-left: calc(50% - 50vw);
     padding: 15px 0;
     flex: 1;
+
+    @media (min-width: 600px) {
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+    }
+`;
+
+const InnerContainer = styled.div`
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 `;
 
 const ConsultationList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 15px;
-    max-width: 600px;
     width: 90%;
 `;
 
@@ -85,31 +96,33 @@ const ExistingConsultation = () => {
             </Tabs>
 
             <ConsultationListWrapper>
-                <ConsultationList>
-                    {activeTab === 'video' && (
-                        <>
-                            <ConsultationCard>
-                                <strong>차수: 2회기</strong>
-                                <p>일시: 2024년 8월 13일 일요일</p>
-                                <p>시간: 21:32 ~ 22:02</p>
-                                <p>상담사: 김대휘</p>
-                            </ConsultationCard>
+                <InnerContainer>
+                    <ConsultationList>
+                        {activeTab === 'video' && (
+                            <>
+                                <ConsultationCard>
+                                    <strong>차수: 2회기</strong>
+                                    <p>일시: 2024년 8월 13일 일요일</p>
+                                    <p>시간: 21:32 ~ 22:02</p>
+                                    <p>상담사: 김대휘</p>
+                                </ConsultationCard>
 
-                            <ConsultationCard>
-                                <strong>차수: 1회기</strong>
-                                <p>일시: 2024년 8월 12일 일요일</p>
-                                <p>시간: 13:44 ~ 13:59</p>
-                                <p>내담자: 민수정</p>
-                            </ConsultationCard>
-                        </>
-                    )}
-                    {activeTab === 'call' && (
-                        <p>전화 상담 내역이 없습니다.</p>
-                    )}
-                    {activeTab === 'chat' && (
-                        <p>채팅 상담 내역이 없습니다.</p>
-                    )}
-                </ConsultationList>
+                                <ConsultationCard>
+                                    <strong>차수: 1회기</strong>
+                                    <p>일시: 2024년 8월 12일 일요일</p>
+                                    <p>시간: 13:44 ~ 13:59</p>
+                                    <p>내담자: 민수정</p>
+                                </ConsultationCard>
+                            </>
+                        )}
+                        {activeTab === 'call' && (
+                            <p>전화 상담 내역이 없습니다.</p>
+                        )}
+                        {activeTab === 'chat' && (
+                            <p>채팅 상담 내역이 없습니다.</p>
+                        )}
+                    </ConsultationList>
+                </InnerContainer>
             </ConsultationListWrapper>
         </Container>
     );
