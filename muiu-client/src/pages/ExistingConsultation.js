@@ -69,12 +69,52 @@ const ConsultationList = styled.div`
 
 const ConsultationCard = styled.div`
     background-color: #fff;
-    padding: 15px 0px 0px 15px;
+    padding: 15px;
     border-radius: 10px;
     text-align: left;
     width: 100%;
     box-sizing: border-box;
     line-height: 0.5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CardContent = styled.div`
+    flex: 1;
+`;
+
+const ButtonGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 버튼 사이의 간격 */
+`;
+
+const Button = styled.button`
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100px; /* 가로 길이를 지정 */
+`;
+
+const ConnectButton = styled(Button)`
+    background-color: #EEEEEE;
+    color: black;
+
+    &:hover {
+        background-color: #E4E4E4;
+    }
+`;
+
+const CancelButton = styled(Button)`
+    background-color: #EEEEEE;
+    color: #FF2B2B;
+
+    &:hover {
+        background-color: #E4E4E4;
+    }
 `;
 
 const ExistingConsultation = () => {
@@ -101,17 +141,29 @@ const ExistingConsultation = () => {
                         {activeTab === 'video' && (
                             <>
                                 <ConsultationCard>
-                                    <strong>차수: 2회기</strong>
-                                    <p>일시: 2024년 8월 13일 일요일</p>
-                                    <p>시간: 21:32 ~ 22:02</p>
-                                    <p>상담사: 김대휘</p>
+                                    <CardContent>
+                                        <strong>차수: 2회기</strong>
+                                        <p>일시: 2024년 8월 13일 일요일</p>
+                                        <p>시간: 21:32 ~ 22:02</p>
+                                        <p>상담사: 김대휘</p>
+                                    </CardContent>
+                                    <ButtonGroup>
+                                        <ConnectButton>연결</ConnectButton>
+                                        <CancelButton>취소</CancelButton>
+                                    </ButtonGroup>
                                 </ConsultationCard>
 
                                 <ConsultationCard>
-                                    <strong>차수: 1회기</strong>
-                                    <p>일시: 2024년 8월 12일 일요일</p>
-                                    <p>시간: 13:44 ~ 13:59</p>
-                                    <p>내담자: 민수정</p>
+                                    <CardContent>
+                                        <strong>차수: 1회기</strong>
+                                        <p>일시: 2024년 8월 12일 일요일</p>
+                                        <p>시간: 13:44 ~ 13:59</p>
+                                        <p>내담자: 민수정</p>
+                                    </CardContent>
+                                    <ButtonGroup>
+                                        <ConnectButton>연결</ConnectButton>
+                                        <CancelButton>취소</CancelButton>
+                                    </ButtonGroup>
                                 </ConsultationCard>
                             </>
                         )}
