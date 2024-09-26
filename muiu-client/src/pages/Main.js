@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const MindCheck = styled.div`
+const Content = styled.div`
+    margin-top: 62px;
+    margin-bttom: 100px;
+`;
+
+const Section = styled.div`
 
     padding: 20px;
 
@@ -54,10 +59,22 @@ const MindCheck = styled.div`
     }
 `;
 
+const Banner = styled.div`
+    padding: 20px;
+    width: 90%;
+    height: 100px;
+    background-image: url('/images/Main/test-img.svg');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    border-radius: 10px;
+    margin: 0 auto;
+`;
+
 export const Main = () => {
     return (
-        <>
-            <MindCheck>
+        <Content>
+            <Section>
                 <h2>상담 전 내 마음 알아보기</h2>
                 <div class="bookmark-group">
                     <div class="bookmark">
@@ -90,8 +107,11 @@ export const Main = () => {
                         </div>
                     </div>  
                 </div>
-            </MindCheck>
-        </>
+            </Section>
+            <Banner>
+                {/* <img src='/images/Main/test-img.svg' alt="광고"/> */}
+            </Banner>
+        </Content>
     );
 };
 
