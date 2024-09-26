@@ -29,7 +29,6 @@ function Layout() {
       <Header />
       <Outlet />
       <BottomNav />
-
     </Container>
   );
 }
