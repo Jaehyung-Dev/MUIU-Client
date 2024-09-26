@@ -52,7 +52,6 @@ const Container = styled.div`
     width: 100vw;
     max-width: 600px;
     flex-direction: column;
-    transform: translateX(-3.3%);
 
     @media (min-width: 393px) {
         padding: 20px 0;
@@ -116,7 +115,7 @@ const ConsultationCard = styled.div`
     text-align: left;
     width: 100%;
     box-sizing: border-box;
-    line-height: 0.5;
+    line-height: 1.5;
     display: flex;
     justify-content: space-between;
     align-items: center;
