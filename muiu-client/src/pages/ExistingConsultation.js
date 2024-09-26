@@ -1,17 +1,67 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import MenuDropdown from '../components/MenuDropdown';
+
+const HeaderContainer = styled.header`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    z-index: 1000;
+`;
+
+const BackButton = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+`;
+
+const Title = styled.h1`
+    font-weight: 700;
+    color: black;
+    font-size: 18px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+`;
+
+const IconContainer = styled.div`
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-right: 10px;
+`;
 
 const Container = styled.div`
     text-align: center;
     min-height: 100vh;
     display: flex;
+    width: 100vw;
+    max-width: 600px;
     flex-direction: column;
+    transform: translateX(-3.3%);
+
+    @media (min-width: 393px) {
+        padding: 20px 0;
+    }
 `;
 
 const Tabs = styled.div`
     display: flex;
     justify-content: center;
-    max-width: 600px;
     margin-top: 50px;
     position: relative;
 `;
@@ -38,21 +88,13 @@ const Underline = styled.div`
 `;
 
 const ConsultationListWrapper = styled.div`
-    background-color: #EBEBEB;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    background-color: #F3F3F3;
+    width: 100%;
     padding: 15px 0;
     flex: 1;
-
-    @media (min-width: 600px) {
-        max-width: 600px;
-        margin: 0 auto;
-        width: 100%;
-    }
 `;
 
 const InnerContainer = styled.div`
-    max-width: 600px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -87,7 +129,7 @@ const CardContent = styled.div`
 const ButtonGroup = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 10px; /* 버튼 사이의 간격 */
+    gap: 10px;
 `;
 
 const Button = styled.button`
@@ -96,11 +138,11 @@ const Button = styled.button`
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    width: 100px; /* 가로 길이를 지정 */
+    width: 100px;
 `;
 
 const ConnectButton = styled(Button)`
-    background-color: #EEEEEE;
+    background-color: #F3F3F3;
     color: black;
 
     &:hover {
@@ -109,7 +151,7 @@ const ConnectButton = styled(Button)`
 `;
 
 const CancelButton = styled(Button)`
-    background-color: #EEEEEE;
+    background-color: #F3F3F3;
     color: #FF2B2B;
 
     &:hover {
@@ -118,65 +160,87 @@ const CancelButton = styled(Button)`
 `;
 
 const ExistingConsultation = () => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('video');
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const handleBackClick = () => {
+        navigate(-1);
+    };
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
 
     return (
-        <Container>
-            <Tabs>
-                <Tab active={activeTab === 'video'} onClick={() => setActiveTab('video')}>
-                    화상 상담
-                </Tab>
-                <Tab active={activeTab === 'call'} onClick={() => setActiveTab('call')}>
-                    전화 상담
-                </Tab>
-                <Tab active={activeTab === 'chat'} onClick={() => setActiveTab('chat')}>
-                    채팅 상담
-                </Tab>
-                <Underline activeTab={activeTab} />
-            </Tabs>
+        <div>
+            <HeaderContainer>
+                <BackButton onClick={handleBackClick}>
+                    <ArrowBackIosIcon />
+                </BackButton>
+                <Title>기존 상담 이어하기</Title>
+                <IconContainer>
+                    <MenuIcon onClick={toggleMenu} />
+                </IconContainer>
+            </HeaderContainer>
 
-            <ConsultationListWrapper>
-                <InnerContainer>
-                    <ConsultationList>
-                        {activeTab === 'video' && (
-                            <>
-                                <ConsultationCard>
-                                    <CardContent>
-                                        <strong>차수: 2회기</strong>
-                                        <p>일시: 2024년 8월 13일 일요일</p>
-                                        <p>시간: 21:32 ~ 22:02</p>
-                                        <p>상담사: 김대휘</p>
-                                    </CardContent>
-                                    <ButtonGroup>
-                                        <ConnectButton>연결</ConnectButton>
-                                        <CancelButton>취소</CancelButton>
-                                    </ButtonGroup>
-                                </ConsultationCard>
+            {menuOpen && (
+                <MenuDropdown activeMenuItem="" handleMenuClick={() => setMenuOpen(false)} />
+            )}
 
-                                <ConsultationCard>
-                                    <CardContent>
-                                        <strong>차수: 1회기</strong>
-                                        <p>일시: 2024년 8월 12일 일요일</p>
-                                        <p>시간: 13:44 ~ 13:59</p>
-                                        <p>내담자: 민수정</p>
-                                    </CardContent>
-                                    <ButtonGroup>
-                                        <ConnectButton>연결</ConnectButton>
-                                        <CancelButton>취소</CancelButton>
-                                    </ButtonGroup>
-                                </ConsultationCard>
-                            </>
-                        )}
-                        {activeTab === 'call' && (
-                            <p>전화 상담 내역이 없습니다.</p>
-                        )}
-                        {activeTab === 'chat' && (
-                            <p>채팅 상담 내역이 없습니다.</p>
-                        )}
-                    </ConsultationList>
-                </InnerContainer>
-            </ConsultationListWrapper>
-        </Container>
+            <Container>
+                <Tabs>
+                    <Tab active={activeTab === 'video'} onClick={() => setActiveTab('video')}>
+                        화상 상담
+                    </Tab>
+                    <Tab active={activeTab === 'call'} onClick={() => setActiveTab('call')}>
+                        전화 상담
+                    </Tab>
+                    <Tab active={activeTab === 'chat'} onClick={() => setActiveTab('chat')}>
+                        채팅 상담
+                    </Tab>
+                    <Underline activeTab={activeTab} />
+                </Tabs>
+
+                <ConsultationListWrapper>
+                    <InnerContainer>
+                        <ConsultationList>
+                            {activeTab === 'video' && (
+                                <>
+                                    <ConsultationCard>
+                                        <CardContent>
+                                            <strong>차수: 2회기</strong>
+                                            <p>일시: 2024년 8월 13일 일요일</p>
+                                            <p>시간: 21:32 ~ 22:02</p>
+                                            <p>상담사: 김대휘</p>
+                                        </CardContent>
+                                        <ButtonGroup>
+                                            <ConnectButton>연결 대기</ConnectButton>
+                                            <CancelButton>예약 취소</CancelButton>
+                                        </ButtonGroup>
+                                    </ConsultationCard>
+
+                                    <ConsultationCard>
+                                        <CardContent>
+                                            <strong>차수: 1회기</strong>
+                                            <p>일시: 2024년 8월 12일 일요일</p>
+                                            <p>시간: 13:44 ~ 13:59</p>
+                                            <p>상담사: 김대휘</p>
+                                        </CardContent>
+                                    </ConsultationCard>
+                                </>
+                            )}
+                            {activeTab === 'call' && (
+                                <p>전화 상담 내역이 없습니다.</p>
+                            )}
+                            {activeTab === 'chat' && (
+                                <p>채팅 상담 내역이 없습니다.</p>
+                            )}
+                        </ConsultationList>
+                    </InnerContainer>
+                </ConsultationListWrapper>
+            </Container>
+        </div>
     );
 };
 
