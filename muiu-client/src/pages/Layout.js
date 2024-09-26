@@ -26,7 +26,7 @@ const Container = styled.div`
 
 function Layout() {
   return (
-    <div className="container">
+    <Container>
       <Header />
       <Outlet />
 
@@ -34,6 +34,8 @@ function Layout() {
             <li><Link to="/main">Main Screen</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/join">Join</Link></li>
+            <li><Link to="/agree">Agree</Link></li>
+            <li><Link to="/join-success">JoinSuccess</Link></li>
             <li><Link to="/mypage">My Page</Link></li>
             <li><Link to="/mind-check">Mind Check</Link></li>
             <li><Link to="/human-counseling">Human Counseling</Link></li>
@@ -47,7 +49,7 @@ function Layout() {
           </ul>
 
       <BottomNav />
-    </div>
+    </Container>
   );
 }
 

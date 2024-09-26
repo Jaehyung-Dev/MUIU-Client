@@ -9,13 +9,14 @@ const HeaderContainer = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 10px;
+    padding: 15px 15px;
 
     h1 {
         font-family: 'TTLaundryGothicB', sans-serif;
         font-weight: 700;
         color: #fbbf24;
         font-size: 28px;
+        margin: 0;
     }
 
     .icon-container {
