@@ -21,14 +21,14 @@ const ModalContent = styled.div`
     width: 90%;
     max-width: 600px;
     height: 85%;
-    overflow: hidden;
+    overflow: hidden;s
 `;
 
 const BackBtn = styled.button`
     width: 100%;
     height: 30px;
     text-align: left;
-    background: none;
+    background: white;
     border: none;
     font-size: 20px;
     font-weight: bold;
@@ -41,6 +41,7 @@ const SelectVehicle = styled.div`
     width: 100%;
     height: 8vh;
     display: flex;
+    background: white;
     align-items: center;
 `;
 
@@ -63,7 +64,7 @@ const TabImage = styled.img`
 const SearchingBox = styled.div`
     width: 100%;
     height: 17vh;
-    background-color: white;
+    background-color: #F3F3F3;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -75,6 +76,7 @@ const SearchingDepart = styled.div`
     height: 5vh;
     display: flex;
     align-items: center;
+    background-color: white;
     justify-content: center;
     border: 1px solid #888;
     border-top-left-radius: 10px;
@@ -88,6 +90,7 @@ const SearchingArrive = styled.div`
     align-items: center;
     justify-content: center;
     border: 1px solid #888;
+    background-color: white;
     border-top: none;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -136,7 +139,7 @@ const FindingResultItems = styled.div`
     width: 100%;
     overflow-y: auto;
     max-height: calc(80vh - (3vh + 8vh + 17vh));
-    background-color: white;
+    background-color: #F3F3F3;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -147,6 +150,7 @@ const FindingResultItem = styled.div`
     width: 90%;
     height: 15vh;
     border: 1px solid #888;
+    background-color: white;
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -214,7 +218,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent>
+            <ModalContent  style={{backgroundColor: '#F3F3F3'}}>
                 <BackBtn onClick={onClose}>&lt; </BackBtn>
                 
                 <SelectVehicle>
