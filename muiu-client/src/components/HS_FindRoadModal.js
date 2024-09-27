@@ -51,7 +51,7 @@ const VehicleTab = styled.div`
     cursor: pointer;
 
     &:hover .tab-image {
-        opacity: 0.8; // 호버 시 약간의 투명도 추가
+        opacity: 0.8;
     }
 `;
 
@@ -97,8 +97,8 @@ const SearchingArrive = styled.div`
 `;
 
 const SearchingImage = styled.img`
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     margin-right: 5px;
 `;
 
@@ -270,7 +270,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
 
                 <SearchingBox>
                     <SearchingDepart>
-                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/출발-hover.svg`} alt="출발" />
+                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/출발-icon.svg`} alt="출발" />
                         <SearchingInput
                             type="text"
                             id="depart-input"
@@ -281,7 +281,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                     </SearchingDepart>
                     <ChangeIcon src={`${process.env.PUBLIC_URL}/HS_images/변경.svg`} alt="변경" id="changeDeAr" />
                     <SearchingArrive>
-                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/도착-hover.svg`} alt="도착" />
+                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/도착-icon.svg`} alt="도착" />
                         <SearchingInput
                             type="text"
                             id="arrive-input"
@@ -291,7 +291,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         />
                     </SearchingArrive>
                     <Finding>
-                        <FindingImage src={`${process.env.PUBLIC_URL}/HS_images/길찾기.svg`} alt="길찾기" id="find-btn" />
+                        <FindingImage src={`${process.env.PUBLIC_URL}/HS_images/길찾기-hover.svg`} alt="길찾기" id="find-btn" />
                     </Finding>
                 </SearchingBox>
 
