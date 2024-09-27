@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from './HS_Button';
+import Button from './HC_Button';
 
 const GlobalStyle = createGlobalStyle`
     body, html {
@@ -88,7 +88,7 @@ const ConsultationType = () => {
             <GlobalStyle />
             <ConsultationSection>
                 <ImageBanner>
-                    <img src={`${process.env.PUBLIC_URL}/background.png`} alt="Room Image" />
+                    <img src={`${process.env.PUBLIC_URL}/images/background.png`} alt="Room Image" />
                 </ImageBanner>
                 <Title>상담 유형 선택</Title>
                 <ShortHr />

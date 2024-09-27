@@ -16,6 +16,11 @@ import DisasterSafetyStore from './pages/DisasterSafetyStore';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
 import AICounseling from './pages/AICounseling';
+import Agree from './pages/Agree';
+import JoinSuccess from './pages/JoinSuccess';
+import NewConsultation from './pages/NewConsultation';
+import ExistingConsultation from './pages/ExistingConsultation';
+import VideoConsultationScreen from './pages/VideoConsultationScreen';
 
 function App() {
   return (
@@ -26,6 +31,8 @@ function App() {
           <Route path="main" element={<Main />} />
           <Route path="login" element={<Login />} />
           <Route path="join" element={<Join />} />
+          <Route path="agree" element={<Agree/>} />
+          <Route path="join-success" element={<JoinSuccess/>} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="mind-check" element={<MindCheck />} />
           <Route path="human-counseling" element={<HumanCounseling />} />
@@ -38,6 +45,9 @@ function App() {
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
+          <Route path="/new-consultation" element={<NewConsultation />} />
+          <Route path="/existing-consultation" element={<ExistingConsultation />} />
+          <Route path="/video-consultation" element={<VideoConsultationScreen />} />
         </Route>
       </Routes>
     </Router>
