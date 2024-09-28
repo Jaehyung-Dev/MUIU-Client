@@ -7,7 +7,6 @@ const Main = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 7rem;
   width: 100%;
 
   input {
@@ -44,6 +43,28 @@ const DefaultDiv = styled.div`
     margin-top: 0;
     margin-bottom: 1rem;
     height: 3rem;
+  }
+`;
+
+const LogoDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 7rem;
+  margin-bottom: 4rem;
+
+  p {
+    margin-top: 1vw;
+    font-weight: bold;
+  }
+
+  img {
+    margin-left: 1rem;
+  }
+
+  @media screen and (max-width: 600px) {
+    margin-bottom: 2rem;
   }
 `;
 
@@ -139,7 +160,7 @@ const LoginButton = styled.button`
 `;
 
 const TextHover = styled.button`
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: black;
   background: none;
   border: none;
@@ -148,6 +169,10 @@ const TextHover = styled.button`
   &:hover {
     color: rgb(105, 104, 104);
   }
+  
+  @media screen and (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const SnsBar = styled(DefaultDiv)`
@@ -155,23 +180,32 @@ const SnsBar = styled(DefaultDiv)`
   align-items: center;
 `;
 
-const LineImg1 = styled.img`
-  padding: 0 0.5rem;
-  height: 0.5rem;
-  width: 0.1rem;
-`;
-
-const LineImg2 = styled.img`
+const SnsLine = styled.hr`
   width: 8rem;
+  background-color: #757575;
+  border: none;
+  height: 1px;
 
   @media screen and (max-width: 600px) {
     width: 6rem;
   }
-`;
+`
+const DivLine = styled.hr`
+  padding: 0 0.5rem;
+  height: 0.1rem;
+  background-color: #D3D3D3;
+  border: none;
+  transform: rotate(90deg);
+  margin: 0.2rem;
+`
 
 const SnsBarText = styled.span`
   margin: 0.5rem;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
+
+  @media screen and (max-width: 600px) {
+    font-size: 0.6rem;
+  }
 `;
 
 const NaverButton = styled.button`
@@ -191,17 +225,9 @@ const NaverButton = styled.button`
 export const Login = () => {
   return (
     <Main>
-      <DefaultDiv>
-        <p className="bold">회원 유형을 선택하세요</p>
-      </DefaultDiv>
-      <SelectDiv>
-        <GeneralButton>
-          <p>일반회원</p>
-        </GeneralButton>
-        <CounselorButton>
-          <p>상담사</p>
-        </CounselorButton>
-      </SelectDiv>
+      <LogoDiv>
+        <img src='../svg/logo.svg' alt='logo'/>
+      </LogoDiv>
       <InputDiv>
         <InputDefault type="text" placeholder="아이디를 입력하세요" />
       </InputDiv>
@@ -215,15 +241,15 @@ export const Login = () => {
       </LoginDiv>
       <DefaultDiv>
         <TextHover>아이디 찾기</TextHover>
-        <LineImg1 src="../svg/Line 3.svg" alt="line3" />
+        <DivLine></DivLine>
         <TextHover>비밀번호 찾기</TextHover>
-        <LineImg1 src="../svg/Line 3.svg" alt="line3" />
+        <DivLine></DivLine>
         <TextHover onClick={() => window.location.href = 'agree'}>회원가입</TextHover>
       </DefaultDiv>
       <SnsBar>
-        <LineImg2 src="../svg/Line 1.svg" alt="line1" />
+        <SnsLine></SnsLine>
         <SnsBarText>sns 계정으로 로그인</SnsBarText>
-        <LineImg2 src="../svg/Line 1.svg" alt="line1" />
+        <SnsLine></SnsLine>
       </SnsBar>
       <NaverButton>
         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">

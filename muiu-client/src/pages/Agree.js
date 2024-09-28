@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-// Styled components for Agree page
 const Main = styled.main`
   width: 100%;
   display: flex;
@@ -26,9 +28,10 @@ const WelcomeDiv = styled.div`
   align-items: center;
   margin-top: 7rem;
   margin-bottom: 4rem;
+  font-size: 1.3rem;
 
   p {
-    margin-top: 1vw;
+    margin-top: 1rem;
     font-weight: bold;
   }
 
@@ -42,6 +45,7 @@ const StartDiv = styled.div`
   text-align: left;
   padding-left: 1.5rem;
   font-weight: bold;
+  font-size: 1.2rem;
 `;
 
 const CoverAgreeDiv = styled.div`
@@ -103,8 +107,10 @@ const NextButton = styled.button`
   color: black;
 `;
 
-const RotateImage = styled.img`
-  padding: 0.5rem;
+const RotateImageDiv = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
   transition: transform 0.2s ease;
   transform: ${({ rotated }) => (rotated ? 'rotate(90deg)' : 'none')};
 `;
@@ -156,7 +162,7 @@ const Agree = () => {
   return (
     <Main>
       <WelcomeDiv>
-        <img src="../svg/logo.svg" alt="Logo" />
+        <img src="../svg/logo.svg" alt="logo" />
         <p>환영합니다!</p>
       </WelcomeDiv>
 
@@ -167,12 +173,12 @@ const Agree = () => {
       <CoverAgreeDiv>
         <AgreeDiv border>
           <InnerAgreeDiv>
-            <AgreeSpace>
-                <img
-                src={allCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={allCheckClicked}
-                alt="check-btn"
-                />
+            <AgreeSpace onClick={allCheckClicked}>
+                {allCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
                 <SpanLeftMargin>
                 아래의 약관 및 동의사항에 모두 동의
                 </SpanLeftMargin>
@@ -183,22 +189,20 @@ const Agree = () => {
         {/* 이용약관 동의 */}
         <AgreeDiv>
           <InnerAgreeDiv>
-            <AgreeSpace>
-              <img
-                src={termsOfUseCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={termsOfUseCheckClicked}
-                alt="check-btn"
-              />
+            <AgreeSpace onClick={termsOfUseCheckClicked}>
+                {termsOfUseCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
               <SpanLeftMargin>
                 이용약관 동의(필수)
               </SpanLeftMargin>
             </AgreeSpace>
-            <RotateImage
-              src="../svg/detail-btn.svg"
-              alt="detail-btn"
-              rotated={termsRotated}
-              onClick={termsDetailClick}
-            />
+            <RotateImageDiv rotated={termsRotated}
+                onClick={termsDetailClick}>
+              <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+            </RotateImageDiv>
           </InnerAgreeDiv>
         </AgreeDiv>
         <DetailDiv isVisible={termsRotated}>
@@ -229,22 +233,20 @@ const Agree = () => {
         {/* 개인정보 수집 및 이용동의 */}
         <AgreeDiv>
           <InnerAgreeDiv>
-            <AgreeSpace>
-              <img
-                src={personalCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={personalCheckClicked}
-                alt="check-btn"
-              />
+            <AgreeSpace onClick={personalCheckClicked}>
+                {personalCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
               <SpanLeftMargin>
                 개인정보 수집 및 이용동의(필수)
               </SpanLeftMargin>
             </AgreeSpace>
-            <RotateImage
-              src="../svg/detail-btn.svg"
-              alt="detail-btn"
-              rotated={personalRotated}
-              onClick={personalDetailClick}
-            />
+            <RotateImageDiv rotated={personalRotated}
+                onClick={personalDetailClick}>
+              <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+            </RotateImageDiv>
           </InnerAgreeDiv>
         </AgreeDiv>
         <DetailDiv isVisible={personalRotated}>
@@ -275,22 +277,20 @@ const Agree = () => {
         {/* 채점 프로그램 동의 */}
         <AgreeDiv>
           <InnerAgreeDiv>
-            <AgreeSpace>
-              <img
-                src={gradingCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={gradingCheckClicked}
-                alt="check-btn"
-              />
+            <AgreeSpace onClick={gradingCheckClicked}>
+                {gradingCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
               <SpanLeftMargin>
                 채점 프로그램 동의(필수)
               </SpanLeftMargin>
             </AgreeSpace>
-            <RotateImage
-              src="../svg/detail-btn.svg"
-              alt="detail-btn"
-              rotated={gradingRotated}
-              onClick={gradingDetailClick}
-            />
+            <RotateImageDiv rotated={gradingRotated}
+                onClick={gradingDetailClick}>
+              <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+            </RotateImageDiv>
           </InnerAgreeDiv>
         </AgreeDiv>
         <DetailDiv isVisible={gradingRotated}>
@@ -321,22 +321,20 @@ const Agree = () => {
         {/* 수검자의 개인정보 수집 및 처리 동의 */}
         <AgreeDiv>
           <InnerAgreeDiv>
-            <AgreeSpace>
-              <img
-                src={examineeCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={examineeCheckClicked}
-                alt="check-btn"
-              />
+            <AgreeSpace onClick={examineeCheckClicked}>
+                {examineeCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
               <SpanLeftMargin>
                 수검자의 개인정보 수집 및 처리에 관한 정책 동의(필수)
               </SpanLeftMargin>
             </AgreeSpace>
-            <RotateImage
-              src="../svg/detail-btn.svg"
-              alt="detail-btn"
-              rotated={examineeRotated}
-              onClick={examineeDetailClick}
-            />
+            <RotateImageDiv rotated={examineeRotated}
+                onClick={examineeDetailClick}>
+              <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+            </RotateImageDiv>
           </InnerAgreeDiv>
         </AgreeDiv>
         <DetailDiv isVisible={examineeRotated}>
@@ -367,22 +365,20 @@ const Agree = () => {
         {/* 위치기반 서비스 동의 */}
         <AgreeDiv>
           <InnerAgreeDiv>
-            <AgreeSpace>
-              <img
-                src={locationCheck ? '../svg/check-btn-on.svg' : '../svg/check-btn.svg'}
-                onClick={locationCheckClicked}
-                alt="check-btn"
-              />
+            <AgreeSpace onClick={locationCheckClicked}>
+                {locationCheck ? (
+                  <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                ) : (
+                  <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                )}
               <SpanLeftMargin>
                 위치기반 서비스 동의(선택)
               </SpanLeftMargin>
             </AgreeSpace>
-            <RotateImage
-              src="../svg/detail-btn.svg"
-              alt="detail-btn"
-              rotated={locRotated}
-              onClick={locationDetailClick}
-            />
+            <RotateImageDiv rotated={locRotated}
+                onClick={locationDetailClick}>
+              <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+            </RotateImageDiv>
           </InnerAgreeDiv>
         </AgreeDiv>
         <DetailDiv isVisible={locRotated}>

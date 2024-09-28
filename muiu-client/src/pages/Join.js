@@ -6,6 +6,7 @@ const Main = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 2rem;
 
   button {
     border: none;
@@ -45,16 +46,15 @@ const CoverSelectDiv = styled.div`
 `;
 
 const SelectDiv = styled.div`
-  margin: 1rem 0;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 4rem;
+  font-weight: bold;
 
   @media screen and (max-width: 600px) {
     margin-top: 0;
-    margin-bottom: 1rem;
     height: 3rem;
   }
 `;
@@ -144,20 +144,25 @@ const AuthDiv = styled(DefaultDiv)`
 
 const HiddenDiv = styled.div`
   width: 80%;
-  height: 3rem;
+  height: 4rem;
   display: ${(props) => (props.visible ? 'block' : 'none')};
   margin-bottom: 3rem;
 `;
 
 const CounselorDiv = styled.div`
     width: 100%;
-    height: 100%;
+    height: 4rem;
     background-color: #f0f0f0;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
+
+    @media screen and (max-width: 600px) {
+    height: 3rem;
+    margin-bottom: 2rem;
+  }
 `
 export const Join = () => {
   const [isGeneral, setIsGeneral] = useState(true);

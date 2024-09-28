@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import DoneIcon from '@mui/icons-material/Done';
 
 const Main = styled.main`
   display: flex;
@@ -26,12 +27,12 @@ const JoinComplete = styled.div`
   }
 `;
 
-const JoinCompleteImage = styled.img`
-  width: 7rem;
+const CompleteImgCoverDiv = styled.div`
+  width: 10rem;
   margin: 1rem;
 
   @media screen and (max-width: 600px) {
-    width: 5rem;
+    width: 8rem;
   }
 `;
 
@@ -105,10 +106,9 @@ const JoinSuccess = () => {
   return (
     <Main>
       <JoinComplete>
-        <JoinCompleteImage
-          src="../svg/join-complete.svg"
-          alt="join-complete"
-        />
+        <CompleteImgCoverDiv>
+          <DoneIcon style={{width: '100%', height: '100%', color: '#FFD651'}}/>
+        </CompleteImgCoverDiv>
         <JoinCompleteMsg1>
           회원가입이 <b>완료</b> 되었습니다.
         </JoinCompleteMsg1>
@@ -116,9 +116,8 @@ const JoinSuccess = () => {
           로그인하시면 더욱 다양한 서비스를 이용 가능합니다.
         </JoinCompleteMsg2>
       </JoinComplete>
-
       <SelectDiv>
-        <SelectButton className="home-btn">
+        <SelectButton className="home-btn" onClick={() => (window.location.href='main')}>
           <p>홈으로</p>
         </SelectButton>
         <SelectButton className="login-btn" onClick={() => (window.location.href = 'login')}>
