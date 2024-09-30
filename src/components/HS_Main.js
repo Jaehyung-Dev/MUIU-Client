@@ -35,11 +35,10 @@ const HS_Main = () => {
     return (
         <Main>
             <HS_SearchBar/>
-            <HS_MapDisplay 
+            <HS_MapDisplay
                 openInfoPopUp={openInfoPopUp} 
                 openPhotoPopUp={openPhotoPopUp} 
-                openFindRoadPopUp={openFindRoadPopUp} 
-            />
+                openFindRoadPopUp={openFindRoadPopUp} /> 
             <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} />
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
             <HS_FindRoadModal isOpen={isFindRoadOpen} onClose={closeFindRoadPopUp} />
