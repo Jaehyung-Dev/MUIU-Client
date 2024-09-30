@@ -30,7 +30,7 @@ const VideoBox = styled.div`
     margin-top: 80px;
     margin-right: -65vw;
     @media (min-width: 393px) {
-        margin-right: -53vw;
+        margin-right: -40vw;
     }
 `;
 

@@ -115,7 +115,7 @@ const ConsultationCard = styled.div`
     text-align: left;
     width: 100%;
     box-sizing: border-box;
-    line-height: 1.5;
+    line-height: 0.5;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -210,7 +210,7 @@ const ExistingConsultation = () => {
                                         <CardContent>
                                             <strong>차수: 2회기</strong>
                                             <p>일시: 2024년 8월 13일 일요일</p>
-                                            <p>시간: 21:32 ~ 22:02</p>
+                                            <p>시간: 21:30 ~ 22:00</p>
                                             <p>상담사: 김대휘</p>
                                         </CardContent>
                                         <ButtonGroup>
