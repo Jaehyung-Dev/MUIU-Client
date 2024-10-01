@@ -45,7 +45,6 @@ const StyledLink = styled(Link)`
 const IconContainer = styled.div`
     display: flex;
     gap: 20px;
-    align-items: center;
     position: absolute;
     right: 20px;
     z-index: 1001;

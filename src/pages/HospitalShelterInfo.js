@@ -1,8 +1,11 @@
 import React from 'react';
+import HS_Main from '../components/HS_Main';
 
 export const HospitalShelterInfo = () => {
     return (
-        <div>HospitalShelterInfo</div>
+        <>
+            <HS_Main/>
+        </>
     );
 };
 
