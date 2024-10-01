@@ -4,7 +4,6 @@ import { MdGpsFixed } from "react-icons/md";
 
 const Content = styled.div`
     margin-top: 62px;
-    margin-bttom: 100px;
 `;
 
 const Section = styled.div`
