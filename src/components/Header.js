@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuDropdown from './MenuDropdown';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ShareIcon from '@mui/icons-material/Share';
+import StarIcon from '@mui/icons-material/Star';
 
 const HeaderContainer = styled.header`
     display: flex;
-    justify-content: ${({ searchOpen }) => (searchOpen ? 'flex-start' : 'space-between')};
+    justify-content: space-between;
     align-items: center;
     padding: 15px;
     background-color: white;
@@ -19,6 +23,24 @@ const HeaderContainer = styled.header`
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
+`;
+
+const BackButton = styled.button`
+    font-size: 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+`;
+
+const DateText = styled.h1`
+    font-size: 20px;
+    margin: 0;
+`;
+
+const IconGroup = styled.div`
+    display: flex;
+    gap: 10px;
+    margin-right: 30px;
 `;
 
 const Title = styled.h1`
@@ -114,30 +136,50 @@ const Header = () => {
         setMenuOpen(false);
     };
 
+    const navigate = useNavigate();
+
+    const goBack = () => {
+        navigate(-1);
+    }
+
+
     return (
         <>
             {location.pathname !== '/existing-consultation' && (
                 <HeaderContainer searchOpen={searchOpen}>
-                    <Title searchOpen={searchOpen}>
-                        <StyledLink to="/main">마음이음</StyledLink>
-                    </Title>
-                    <IconContainer>
-                        <SearchIconWrapper searchOpen={searchOpen}>
-                            <SearchIcon className="icon" onClick={toggleSearch} />
-                            {searchOpen && (
-                                <SearchInputWrapper searchOpen={searchOpen}>
-                                    <SearchInput
-                                        type="text"
-                                        placeholder="검색어를 입력하세요"
-                                        value={searchTerm}
-                                        onChange={handleSearchChange}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                                    />
-                                </SearchInputWrapper>
-                            )}
-                        </SearchIconWrapper>
-                        <MenuIcon className="icon" onClick={toggleMenu} />
-                    </IconContainer>
+                    {location.pathname === '/my-diary-check' ? (
+                        <HeaderContainer style={{background:'#F3F3F3'}}>
+                            <ArrowBackIcon onClick={goBack} style={{marginLeft: '30px'}}/>
+                            <DateText>2024년 8월 17일</DateText>
+                            <IconGroup>
+                                <ShareIcon/>
+                                <StarIcon/>
+                            </IconGroup>
+                        </HeaderContainer>
+                    ) : (
+                        <>
+                            <Title searchOpen={searchOpen}>
+                                <StyledLink to="/main">마음이음</StyledLink>
+                            </Title>
+                            <IconContainer>
+                                <SearchIconWrapper searchOpen={searchOpen}>
+                                    <SearchIcon className="icon" onClick={toggleSearch} />
+                                    {searchOpen && (
+                                        <SearchInputWrapper searchOpen={searchOpen}>
+                                            <SearchInput
+                                                type="text"
+                                                placeholder="검색어를 입력하세요"
+                                                value={searchTerm}
+                                                onChange={handleSearchChange}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+                                            />
+                                        </SearchInputWrapper>
+                                    )}
+                                </SearchIconWrapper>
+                                <MenuIcon className="icon" onClick={toggleMenu} />
+                            </IconContainer>
+                        </>
+                    )}
                 </HeaderContainer>
             )}
             {menuOpen && <MenuDropdown activeMenuItem={activeMenuItem} handleMenuClick={handleMenuClick} />}
