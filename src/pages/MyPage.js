@@ -50,7 +50,7 @@ const Profile = styled.div`
         align-items: center;
         justify-content: center;
         background-color: #f0f0f0;
-        margin-left: 150px;
+        margin-left: auto;
     }
 `;
 
@@ -75,18 +75,34 @@ const Menu = styled.div`
 `;
 
 const MenuList = styled.div`
+    .section {
+        padding: 15px;
+   
+        .menu-item-arrow {
+            color: #888;
+            text-align: center;
+            margin: auto 0;
+            margin-right: 1.3rem;
+        }
+    }
+
+    .flex-box {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .section-title {
         font-size: 23px;
         font-weight: bold;
-        margin-top: 20px;
+        margin: 15px 0;
         padding-left: 15px;
-        margin-bottom: 10px;
     }
 
     .menu-item-counsel {
         display: flex;
         align-items: center;
-        padding: 0 20px 10px;
+        margin-top: 5px;
+        padding-left: 20px;
         justify-content: space-between;
 
         .menu-item-text-counsel {
@@ -94,9 +110,6 @@ const MenuList = styled.div`
             font-size: 13px;
         }
             
-        .menu-item-arrow {
-            color: #888;
-        }
     }
 
     .menu-item {
@@ -124,70 +137,80 @@ export const MyPage = () => {
     return (
         <Content>
             <Profile>
-                <div class="profile-image">
+                <div className="profile-image">
                     <img src="images/MyPage/user-de-profile.svg" alt=""/>
                 </div>
-                <div class="profile-user">
-                    <div class="profile-type">내담자</div>
-                    <div class="profile-name">김서연 님</div>
+                <div className="profile-user">
+                    <div className="profile-type">내담자</div>
+                    <div className="profile-name">김서연 님</div>
                 </div>
-                <div class="change-profile-btn">프로필 변경</div>
+                <div className="change-profile-btn">프로필 변경</div>
             </Profile>
             <Menu>
-                <div class="menu-button">
-                    <div class="menu-button-icon">
+                <div className="menu-button">
+                    <div className="menu-button-icon">
                         <img src="images/MyPage/coupon.svg" alt="coupon"/>
                     </div>
-                    <div class="menu-button-text">내 쿠폰</div>
+                    <div className="menu-button-text">내 쿠폰</div>
                 </div>
-                <div class="menu-button">
-                    <div class="menu-button-icon">
+                <div className="menu-button">
+                    <div className="menu-button-icon">
                         <img src="images/MyPage/counsel-history.svg" alt="counsel-history"/>
                     </div>
-                    <div class="menu-button-text">상담 내역</div>
+                    <div className="menu-button-text">상담 내역</div>
                 </div>
-                <div class="menu-button">
-                    <div class="menu-button-icon">
+                <div className="menu-button">
+                    <div className="menu-button-icon">
                         <img src="images/MyPage/order-history.svg" alt="order-history"/>
                     </div>
-                    <div class="menu-button-text">주문 내역</div>
+                    <div className="menu-button-text">주문 내역</div>
                 </div>
             </Menu>
             <MenuList>
-                <div class="section-title">상담 예약 관리</div>
-                <div class="menu-item-counsel">
-                    <span class="menu-item-text-counsel">화상, 전화, 채팅 상담</span>
-                    <span class="menu-item-arrow">{'>'}</span>
+                <div className='section flex-box'>
+                    <div>
+                        <div className="section-title">상담 예약 관리</div>
+                        <div className="menu-item-counsel">
+                            <span className="menu-item-text-counsel">화상, 전화, 채팅 상담</span>
+                        </div>
+                    </div>
+                    <div className="menu-item-arrow">{'>'}</div>
                 </div>
                 
                 <hr></hr>
-                <div class="section-title">나의 관리</div>
-                <div class="menu-item">
-                    <span class="menu-item-icon">
-                        <img src="images/MyPage/self-check.svg" alt="self-check"/>
-                    </span>
-                    <span class="menu-item-text">자가진단 기록</span>
+
+                <div className='section'>
+                    <div className="section-title">나의 관리</div>
+                    <div className="menu-item">
+                        <span className="menu-item-icon">
+                            <img src="images/MyPage/self-check.svg" alt="self-check"/>
+                        </span>
+                        <span className="menu-item-text">자가진단 기록</span>
+                    </div>
+                    <div className="menu-item">
+                        <span className="menu-item-icon">
+                            <img src="images/MyPage/counsel-check.svg" alt="counsel-check"/>
+                        </span>
+                        <span className="menu-item-text">심리검사 기록지</span>
+                    </div>
+                    <div className="menu-item">
+                        <span className="menu-item-icon">
+                            <img src="images/MyPage/emotion-check.svg" alt="emotion-check"/>
+                        </span>
+                        <span className="menu-item-text">감정 기록</span>
+                    </div>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-item-icon">
-                        <img src="images/MyPage/counsel-check.svg" alt="counsel-check"/>
-                    </span>
-                    <span class="menu-item-text">심리검사 기록지</span>
-                </div>
-                <div class="menu-item">
-                    <span class="menu-item-icon">
-                        <img src="images/MyPage/emotion-check.svg" alt="emotion-check"/>
-                    </span>
-                    <span class="menu-item-text">감정 기록</span>
-                </div>
+
                 <hr></hr>
 
-                <div class="section-title">고객센터</div>
-                <div class="menu-item">
-                    <span class="menu-item-text">공지사항</span>
-                </div>
-                <div class="menu-item">
-                    <span class="menu-item-text">문의하기</span>
+                <div className='section'>
+                    <div className="section-title">고객센터</div>
+                    <div className="menu-item">
+                        <span className="menu-item-text">공지사항</span>
+                    </div>
+                    <div className="menu-item">
+                        <span className="menu-item-text">문의하기</span>
+                    </div>
                 </div>
             </MenuList>
         </Content>
