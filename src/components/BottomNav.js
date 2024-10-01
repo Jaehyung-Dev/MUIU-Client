@@ -8,7 +8,7 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 const Nav = styled.nav`
     position: fixed;
-    bottom: 20px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
