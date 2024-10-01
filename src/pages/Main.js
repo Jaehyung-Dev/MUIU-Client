@@ -218,17 +218,17 @@ const Banner = styled.div`
 `;
 
 const Blocks = styled.div`
-    padding: 20px;
+    padding: 1.2rem;
     background-color: #F4F4F4;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
 `;
 
 const Block = styled.div`
     border-radius: 10px;
     background-color: white;
     // margin: 5px
-    padding: 10px;
+    padding: 0.8rem;
     width: 43%;
     
     .block-text-bold {
