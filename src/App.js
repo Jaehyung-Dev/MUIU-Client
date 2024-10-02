@@ -22,6 +22,8 @@ import NewConsultation from './pages/NewConsultation';
 import ExistingConsultation from './pages/ExistingConsultation';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryCheck from './pages/MyDiaryCheck';
+import C_HumanCounseling from './pages/C_HumanCounseling';
+import C_NewConsultation from './pages/C_NewConsultation';
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
           <Route path="/existing-consultation" element={<ExistingConsultation />} />
           <Route path="/video-consultation" element={<VideoConsultationScreen />} />
           <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+          <Route path="c-human-counseling" element={<C_HumanCounseling />} />
+          <Route path="/c-new-consultation" element={<C_NewConsultation />} />
         </Route>
       </Routes>
     </Router>
