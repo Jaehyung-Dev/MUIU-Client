@@ -1,12 +1,12 @@
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
-import styled from 'styled-components';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ScheduleIcon from '@mui/icons-material/Schedule';
+import styled from 'styled-components';
 
 const DiaryBackground = styled.div`
     width: 100%;
@@ -43,7 +43,7 @@ const CoverFeelDiv = styled.div`
     align-items: center;
 
     @media screen and (max-width: 600px) {
-       height: 15vh;
+        height: 15vh;
     }
 `
 
