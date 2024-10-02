@@ -5,6 +5,7 @@ import HS_MapDisplay from './HS_MapDisplay';
 import HS_InfoModal from './HS_InfoModal';
 import HS_PhotoModal from './HS_PhotoModal';
 import HS_FindRoadModal from './HS_FindRoadModal';
+import HS_test from './HS_test';
 
 const Main = styled.div`
     margin-top: 77px;
@@ -42,6 +43,7 @@ const HS_Main = () => {
             <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} />
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
             <HS_FindRoadModal isOpen={isFindRoadOpen} onClose={closeFindRoadPopUp} />
+            <HS_test />
         </Main>
     );
 };
