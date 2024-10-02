@@ -16,7 +16,7 @@ const Container = styled.div`
     padding-bottom: 100px;
     box-sizing: border-box;
     box-sizing: content-box;
-    background-color: ${(bgColor) => bgColor || 'white'};
+    background-color: ${(props) => props.bgColor};
 
     // @media (max-width: 600px) {
     //     padding: 0 15px 100px;
@@ -32,7 +32,7 @@ function Layout() {
 
   const getBackgroundColor = () => {
     switch(currentLocation.pathname) {
-      case 'my-diary': case 'my-diary-check': case 'my-diary-write':
+      case '/my-diary': case '/my-diary-check': case '/my-diary-write':
         return '#efefef';
       default:
         return 'white';
