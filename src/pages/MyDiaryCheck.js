@@ -10,7 +10,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const Container = styled.div`
-    margin-top: 50px;
+    margin-top: -10px;
     height: 100vh;
     width: 100vw;
     max-width: 600px;
@@ -20,7 +20,6 @@ const Container = styled.div`
     align-items: center;
 
     @media (min-width: 393px) {
-        transform: translateX(-3.33%);
         height: 92vh;
     }
 `;
