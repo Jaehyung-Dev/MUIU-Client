@@ -53,10 +53,13 @@ const EntryHeader = styled.div`
 `;
 
 const TimeBlock = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     margin-bottom: 10px;
     gap: 5px;
+    background-color: #34C759;
+    padding: 5px 10px;
+    border-radius: 5px;
 `;
 
 const EntryDateText = styled.span`
@@ -105,6 +108,44 @@ const CommentContent = styled.p`
     color: #333;
 `;
 
+const CommentInputSection = styled.div`
+    width: 100%;
+    display: flex;
+    background-color: #EEEEEE;
+    padding: 0;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+`;
+
+const CommentInput = styled.input`
+    flex: 1;
+    border: none;
+    outline: none;
+    background-color: #EEEEEE;
+    padding: 15px;
+    font-size: 14px;
+`;
+
+const SubmitButton = styled.button`
+    width: 80px;
+    background-color: #D9D9D9;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: #a0a0a0;
+    }
+`;
+
+
+
 const MyDiaryCheck = () => {
     return (
         <Container>
@@ -141,7 +182,15 @@ const MyDiaryCheck = () => {
                 <CommentWriter>상담사 한서준</CommentWriter>
                 <CommentContent>참 대~단 하시네요ㅋㅋ</CommentContent>
                 <hr />
+
+                <CommentInputSection>
+                    <CommentInput type="text"/>
+                    <SubmitButton>작성</SubmitButton>
+                </CommentInputSection>
             </CommentSection>
+
+            
+
         </Container>
     );
 };

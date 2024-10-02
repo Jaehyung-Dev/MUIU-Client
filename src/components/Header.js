@@ -41,6 +41,10 @@ const IconGroup = styled.div`
     display: flex;
     gap: 10px;
     margin-right: 30px;
+
+    @media (max-width: 393px) {
+        margin-right: 10px;
+    }
 `;
 
 const Title = styled.h1`
@@ -99,6 +103,14 @@ const SearchInput = styled.input`
     background-color: transparent;
 `;
 
+const BackIcon = styled(ArrowBackIcon)`
+    margin-left: 30px;
+
+    @media (max-width: 393px) {
+        margin-left: 10px;
+    }
+`;
+
 const Header = () => {
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -149,7 +161,7 @@ const Header = () => {
                 <HeaderContainer searchOpen={searchOpen}>
                     {location.pathname === '/my-diary-check' ? (
                         <HeaderContainer style={{background:'#F3F3F3'}}>
-                            <ArrowBackIcon onClick={goBack} style={{marginLeft: '30px'}}/>
+                            <BackIcon onClick={goBack} />
                             <DateText>2024년 8월 17일</DateText>
                             <IconGroup>
                                 <ShareIcon/>
