@@ -72,7 +72,7 @@ const MenuDropdown = ({ activeMenuItem, handleMenuClick }) => (
             <li><Link to="/mind-column" isActive={activeMenuItem === 'mind-column'} onClick={() => handleMenuClick('mind-column')}><ArticleOutlinedIcon />마음칼럼</Link></li>
             <li><Link to="/disaster-mental-health-manual" isActive={activeMenuItem === 'disaster-mental-health-manual'} onClick={() => handleMenuClick('disaster-mental-health-manual')}><ManualOutlinedIcon />재난 정신건강 매뉴얼</Link></li>
             <li><Link to="/disaster-guide" isActive={activeMenuItem === 'disaster-guide'} onClick={() => handleMenuClick('disaster-guide')}><ArticleOutlinedIcon />재난 안내</Link></li>
-            <li><Link to="/disaster-safety-store" isActive={activeMenuItem === 'disaster-safety-store'} onClick={() => handleMenuClick('disaster-safety-store')}><StoreOutlinedIcon />마음 나누기</Link></li>
+            <li><Link to="/fund" isActive={activeMenuItem === 'fund'} onClick={() => handleMenuClick('fund')}><StoreOutlinedIcon />마음 나누기</Link></li>
             <li><Link to="/hospital-shelter-info" isActive={activeMenuItem === 'hospital-shelter-info'} onClick={() => handleMenuClick('hospital-shelter-info')}><LocalHospitalOutlinedIcon />병의원·대피소 정보</Link></li>
         </ul>
     </DropdownMenu>

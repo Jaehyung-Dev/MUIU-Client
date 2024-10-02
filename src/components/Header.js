@@ -156,7 +156,7 @@ const Header = () => {
         { path: "/mind-column", text: "마음칼럼" },
         { path: "/disaster-mental-health-manual", text: "재난 정신건강 매뉴얼" },
         { path: "/disaster-guide", text: "재난 안내" },
-        { path: "/disaster-safety-store", text: "마음 나누기" },
+        { path: "/fund", text: "마음 나누기" },
         { path: "/hospital-shelter-info", text: "병의원·대피소 정보" },
     ];
 
