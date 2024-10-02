@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
+import React, { useState } from 'react';
+
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
+import styled from 'styled-components';
 
 const Nav = styled.nav`
     position: fixed;
@@ -121,7 +122,7 @@ const BottomNav = () => {
                 <span>비대면 상담</span>
             </NavItem>
             <CenterNavItem to="/ai-counseling" className="nav-center" isActive={isActive} active={location.pathname === '/ai-counseling'} onClick={handleCircleClick}>
-                <img src={`${process.env.PUBLIC_URL}/svg/circle-chat.svg`} alt="중앙 아이콘" />
+                <img src={`${process.env.PUBLIC_URL}/svg/red-call.svg`} alt="중앙 아이콘" />
             </CenterNavItem>
             <NavItem to="/my-diary" active={location.pathname === '/my-diary'}>
                 <AutoStoriesOutlinedIcon className="icon" />

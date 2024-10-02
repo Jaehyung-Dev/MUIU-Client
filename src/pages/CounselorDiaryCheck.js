@@ -1,4 +1,3 @@
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
@@ -14,44 +13,11 @@ const DiaryBackground = styled.div`
     padding-top: 3rem;
     `;
 
-    const DiarySection = styled.div`
-    width: 90%;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
-    padding: 1rem;
-    `;
-
-    const DiaryHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    `;
-
-    const DiaryTitle = styled.h2`
-    font-size: 1.2rem;
-    color: #333;
-    `;
-
     const DiaryDate = styled.div`
     display: flex;
     align-items: center;
     color: #666;
-    `;
-
-    const IconButton = styled.button`
-    background: none;
-    border: none;
-    cursor: pointer;
-    `;
-
-    const DiaryContent = styled.p`
-    font-size: 1rem;
-    color: #333;
-    margin-top: 1rem;
-    line-height: 1.5;
+    margin-left: 20px;
     `;
 
     const FeelIcon = styled.div`
@@ -78,12 +44,15 @@ const DiaryBackground = styled.div`
     border-radius: 10px;
     padding: 0.5rem 1rem;
     margin: 0.5rem 0;
+    margin-bottom: 20px;
     `;
 
     const FeelStatusContainer = styled.div`
-    width: 90%;
+    width: 100%;
     max-width: 500px;
     margin-bottom: 2rem;
+    margin-right: 40px;
+    margin-top: 20px;
     `;
 
     const FeelTitle = styled.h2`
@@ -100,12 +69,20 @@ const DiaryBackground = styled.div`
             <SentimentVeryDissatisfiedIcon style={{ color: "#fff" }} />
         </FeelIcon>
         <FeelText>반재형 - 나는 방구</FeelText>
+        <DiaryDate>
+                <ScheduleIcon style={{ marginRight: '0.5rem' }} />
+                2024-10-08
+            </DiaryDate>
         </FeelItem>
         <FeelItem background="#fff3cd">
         <FeelIcon color="#ffc107">
             <SentimentVeryDissatisfiedIcon style={{ color: "#fff" }} />
         </FeelIcon>
         <FeelText>반재형 - 나는 방구</FeelText>
+        <DiaryDate>
+                <ScheduleIcon style={{ marginRight: '0.5rem' }} />
+                2024-10-08
+            </DiaryDate>
         </FeelItem>
     </FeelStatusContainer>
     );
@@ -114,19 +91,6 @@ const DiaryBackground = styled.div`
     return (
         <DiaryBackground>
         <FeelStatus />
-        <DiarySection>
-            <DiaryHeader>
-            <DiaryDate>
-                <ScheduleIcon style={{ marginRight: '0.5rem' }} />
-                2022-01-08
-            </DiaryDate>
-            <IconButton>
-                <MoreVertIcon />
-            </IconButton>
-            </DiaryHeader>
-            <DiaryTitle>반재형</DiaryTitle>
-            <DiaryContent>나는 방구</DiaryContent>
-        </DiarySection>
         </DiaryBackground>
     );
     };
