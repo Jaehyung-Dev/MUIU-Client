@@ -22,6 +22,7 @@ import NewConsultation from './pages/NewConsultation';
 import ExistingConsultation from './pages/ExistingConsultation';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryCheck from './pages/MyDiaryCheck';
+import MyDiaryCollection from './pages/MyDiaryCollection';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
           <Route path="/existing-consultation" element={<ExistingConsultation />} />
           <Route path="/video-consultation" element={<VideoConsultationScreen />} />
           <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+          <Route path='my-diary-collection' element={<MyDiaryCollection/>}/>
         </Route>
       </Routes>
     </Router>

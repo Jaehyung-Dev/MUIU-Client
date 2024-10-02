@@ -1,10 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 
@@ -72,7 +67,7 @@ const DiaryToday = styled.p`
     }
 `
 
-const FeelDiv = styled.div`
+const FeelDivCover = styled.div`
     width: 100%;
     height: 15vh;
     display: flex;
@@ -81,80 +76,41 @@ const FeelDiv = styled.div`
     margin-bottom: 2rem;
 `
 
-const FeelDissati = styled.div`
+const FeelDiv = styled.div`
     margin: 0.2rem;
     width: 25%;
     height: 15vh;
-    background-color: #FF3B30;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: ${({ mood }) => {
+    switch(mood) {
+      case 'dissatisfied':
+        return '#FF3B30';
+      case 'bad':
+        return '#FF9500';
+      case 'soso':
+        return '#FFCC00';
+      case 'good':
+        return '#34C759';
+      case 'happy':
+        return '#00C7BE';
+      default:
+        return 'gray';
+    }
+  }};
     @media screen and (max-width: 600px) {
         width: 40%;
         height: 10vh;
+    }
+
+    img {
+        width: 100%;
+        height: 8vh;
+        margin-top: 0.5rem;
     }
 `
-
-const FeelBad = styled.div`
-    margin: 0.2rem;
-    width: 25%;
-    height: 15vh;
-    background-color: #FF9500;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media screen and (max-width: 600px) {
-        width: 40%;
-        height: 10vh;
-    }
-`
-
-const FeelSoso = styled.div`
-    margin: 0.2rem;
-    width: 25%;
-    height: 15vh;
-    background-color: #FFCC00;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media screen and (max-width: 600px) {
-        width: 40%;
-        height: 10vh;
-    }
-`
-
-const FeelGood = styled.div`
-    margin: 0.2rem;
-    width: 25%;
-    height: 15vh;
-    background-color: #34C759;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media screen and (max-width: 600px) {
-        width: 40%;
-        height: 10vh;
-    }
-`
-
-const FeelHappy = styled.div`
-    margin: 0.2rem;
-    width: 25%;
-    height: 15vh;
-    background-color: #00C7BE;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media screen and (max-width: 600px) {
-        width: 40%;
-        height: 10vh;
-    }
-` 
 const DiaryTextCover = styled.div`
     width: 85%;
     height: 5vh;
@@ -225,6 +181,8 @@ const DiaryCalendar = styled.div`
 const DiaryTitle = styled.p`
     font-size: 1.5rem;
     font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     @media screen and (max-width: 600px) {
         font-size: 1.3rem;
     }
@@ -232,6 +190,7 @@ const DiaryTitle = styled.p`
 const DiaryContent = styled.p`
     font-size: 1.1rem;
     font-weight: 600;
+    margin-top: 1rem;
     @media screen and (max-width: 600px) {
         font-size: 1rem;
     }
@@ -248,45 +207,36 @@ export const MyDiary = () => {
                     <DiaryToday>
                         오늘의 하루는<br/> 어떠셨나요?
                     </DiaryToday>
-                    <FeelDiv>
-                        <FeelDissati>
-                            <SentimentVeryDissatisfiedIcon style={{
-                                width: '100%', height: '50%', marginTop: '0.5rem'
-                            }}/>
-                        </FeelDissati>
-                        <FeelBad>
-                            <SentimentDissatisfiedIcon style={{
-                                width: '100%', height: '50%', marginTop: '0.5rem'
-                            }}/>
-                        </FeelBad>
-                        <FeelSoso>
-                            <SentimentNeutralIcon style={{
-                                width: '100%', height: '50%', marginTop: '0.5rem'
-                            }}/>
-                        </FeelSoso>
-                        <FeelGood>
-                            <SentimentSatisfiedIcon style={{
-                                width: '100%', height: '50%', marginTop: '0.5rem'
-                            }}/>
-                        </FeelGood>
-                        <FeelHappy>
-                            <SentimentVerySatisfiedIcon style={{
-                                width: '100%', height: '50%', marginTop: '0.5rem'
-                            }}/>
-                        </FeelHappy>
-                    </FeelDiv>
+                    <FeelDivCover>
+                        <FeelDiv mood='dissatisfied'>
+                            <img src='../svg/angry.svg'/>
+                        </FeelDiv>
+                        <FeelDiv mood='bad'>
+                            <img src='../svg/depress.svg'/>
+                        </FeelDiv>
+                        <FeelDiv mood='soso'>
+                            <img src='../svg/normal.svg'/>
+                        </FeelDiv>
+                        <FeelDiv mood='good'>
+                            <img src='../svg/good.svg'/>
+                        </FeelDiv>
+                        <FeelDiv mood='happy'>
+                            <img src='../svg/happy.svg'/>
+                        </FeelDiv>
+                    </FeelDivCover>
                 </CoverFeelDiv>
             </FeelContainer>
             <DiaryTextCover>
                 <p style={{fontSize: '1.4rem', color: 'gray', fontWeight: 'bold'}}>최근 일기</p>
-                <DiaryViewAll href=''>모두 보기</DiaryViewAll>
+                <DiaryViewAll href='my-diary-collection'>모두 보기</DiaryViewAll>
             </DiaryTextCover>
             <DiaryContainer>
                 <DiaryDiv>
                     <DiarySpaceBetween>
-                        <SentimentVeryDissatisfiedIcon style={{
-                            width: '3rem', height: '3rem'
-                        }}/>
+                    <img src='../svg/angry.svg' style={{
+                        width: '3rem',
+                        height: '3rem'
+                    }}/>
                         <DiaryButton>
                             <MoreVertIcon style={{
                                 height: '2rem', width: '2rem'
