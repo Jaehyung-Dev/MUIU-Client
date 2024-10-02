@@ -140,7 +140,7 @@ const DiaryContainer = styled.div`
     justify-content: center;
     align-items: center;
     @media screen and (max-width: 600px) {
-        min-height: 40vh;
+        min-height: 35vh;
     }
 `
 
@@ -149,6 +149,7 @@ const DiaryDiv = styled.div`
     height: 35vh;
     display: flex;
     flex-direction: column;
+    margin-top: 1rem;
 `
 
 const DiarySpaceBetween = styled.div`
