@@ -26,7 +26,6 @@ import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
 import React from 'react';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
-import MyDiaryCheck from './pages/MyDiaryCheck';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
