@@ -30,6 +30,7 @@ import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
+import EmotionGraph from './pages/EmotionGraph';
 
 function App() {
   return (
@@ -66,9 +67,10 @@ function App() {
           <Route path="existing-consultation" element={<ExistingConsultation />} />
           <Route path="video-consultation" element={<VideoConsultationScreen />} />
           <Route path="my-diary-check" element={<MyDiaryCheck />}/>
-          <Route path="my-diary-write" element={<MyDiaryWrite/>}/>
+          <Route path="my-diary-write" element={<MyDiaryWrite />}/>
           <Route path="c-human-counseling" element={<C_HumanCounseling />} />
           <Route path="c-new-consultation" element={<C_NewConsultation />} />
+          <Route path="emotion-graph" element={<EmotionGraph />} />
         </Route>
       </Routes>
     </Router>
