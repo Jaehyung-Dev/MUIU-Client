@@ -27,6 +27,8 @@ const SearchDiv = styled.div`
         padding: 0;
         font-size: 1.1rem;
         width: 80%;
+        border: none;
+        outline: none;
     }
 
     ::placeholder {
@@ -149,6 +151,7 @@ const MyDiaryCollection = () => {
                 </DiaryDiv>
             </DiaryContainer>
         </CoverDiv>
+        <button onClick={() => window.location.href = 'emotion-graph'}>임시</button>
     </>
   );
 };
