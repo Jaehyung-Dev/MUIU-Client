@@ -98,8 +98,8 @@ const FeelDiv = styled.div`
         return '#00C7BE';
       default:
         return 'gray';
-    }
-  }};
+        }
+    }};
     @media screen and (max-width: 600px) {
         width: 40%;
         height: 10vh;
