@@ -32,7 +32,8 @@ function Layout() {
 
   const getBackgroundColor = () => {
     switch(currentLocation.pathname) {
-      case '/my-diary': case '/my-diary-check': case '/my-diary-write':
+      case '/my-diary': case '/my-diary-check': 
+      case '/my-diary-write': case '/my-diary-collection':
         return '#efefef';
       default:
         return 'white';

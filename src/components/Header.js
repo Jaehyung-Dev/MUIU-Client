@@ -201,16 +201,20 @@ const Header = () => {
         <>
             {location.pathname !== '/existing-consultation' && (
                 <HeaderContainer searchOpen={searchOpen}>
-                    {location.pathname === '/my-diary-check' ? (
+                    {(location.pathname === '/my-diary-check' || location.pathname === '/my-diary-write') ? (
                         <HeaderContainer style={{background:'#F3F3F3'}}>
                             <BackIcon onClick={goBack} />
-                            <DateText>2024년 8월 17일</DateText>
+                            <DateText>
+                                { location.pathname === '/my-diary-check' && "2024년 8월 17일" }
+                                { location.pathname === '/my-diary-write' && "일기를 추가해봐요" }
+                            </DateText>
                             <IconGroup>
                                 <ShareIcon/>
                                 <StarIcon/>
                             </IconGroup>
                         </HeaderContainer>
-                    ) : (
+                    ) : 
+                    (
                         <>
                             <Title searchOpen={searchOpen}>
                                 <StyledLink to="/main">마음이음</StyledLink>
