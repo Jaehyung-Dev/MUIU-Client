@@ -44,6 +44,7 @@ const Main = styled.main`
     display: flex;
     align-items: center; 
     padding-bottom: 0.3rem;
+    border: none;
 
     .won {
       color: #333;
