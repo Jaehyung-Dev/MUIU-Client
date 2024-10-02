@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -111,13 +110,59 @@ const BackIcon = styled(ArrowBackIcon)`
     }
 `;
 
+const SearchResultsContainer = styled.ul`
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const SearchResultItem = styled.li`
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
 const Header = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false); 
     const [activeMenuItem, setActiveMenuItem] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [recentSearches, setRecentSearches] = useState([]);
+
+    const menuItems = [
+        { path: "/main", text: "홈" },
+        { path: "/login", text: "로그인" },
+        { path: "/join", text: "회원가입" },
+        { path: "/mypage", text: "내 정보" },
+        { path: "/mind-check", text: "내 마음 알아보기" },
+        { path: "/human-counseling", text: "상담하기" },
+        { path: "/ai-counseling", text: "긴급 AI 상담" },
+        { path: "/my-diary", text: "나의 일기장" },
+        { path: "/mind-column", text: "마음칼럼" },
+        { path: "/disaster-mental-health-manual", text: "재난 정신건강 매뉴얼" },
+        { path: "/disaster-guide", text: "재난 안내" },
+        { path: "/disaster-safety-store", text: "마음 나누기" },
+        { path: "/hospital-shelter-info", text: "병의원·대피소 정보" },
+    ];
+
+    const filteredMenuItems = menuItems.filter((item) =>
+        item.text.replace(/\s+/g, '').toLowerCase().includes(searchTerm.replace(/\s+/g, '').toLowerCase())
+    );
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -148,12 +193,9 @@ const Header = () => {
         setMenuOpen(false);
     };
 
-    const navigate = useNavigate();
-
     const goBack = () => {
         navigate(-1);
     }
-
 
     return (
         <>
@@ -195,6 +237,16 @@ const Header = () => {
                 </HeaderContainer>
             )}
             {menuOpen && <MenuDropdown activeMenuItem={activeMenuItem} handleMenuClick={handleMenuClick} />}
+
+            {searchOpen && searchTerm && (
+                <SearchResultsContainer>
+                    {filteredMenuItems.map((item) => (
+                        <SearchResultItem key={item.path}>
+                            <Link to={item.path}>{item.text}</Link>
+                        </SearchResultItem>
+                    ))}
+                </SearchResultsContainer>
+            )}
         </>
     );
 };
