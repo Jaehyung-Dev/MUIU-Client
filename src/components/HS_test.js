@@ -11,6 +11,7 @@ const HS_test = () => {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setUserLocation({ latitude, longitude });
+                    alert('클릭은 됐음! 작동도 되나요?');
                 },
                 (error) => {
                     console.error('Error getting user location:', error);
@@ -24,9 +25,7 @@ const HS_test = () => {
     return (
         <div>
             <h1>Geolocation App</h1>
-            {/* create a button that is mapped to the function which retrieves the users location */}
-            <button onClick={getUserLocation}>Get User Location</button>
-            {/* if the user location variable has a value, print the users location */}
+            <button onClick={getUserLocation} style={{width : "400px", height: "50px", backgroundColor: "black", color: "white"}}>Get User Location</button>
             {userLocation && (
                 <div>
                     <h2>User Location</h2>
