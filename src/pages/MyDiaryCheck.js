@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import EditIcon from '@mui/icons-material/Edit';
+import ShareIcon from '@mui/icons-material/Share';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Container = styled.div`
     margin-top: 50px;
@@ -26,15 +29,15 @@ const DatePicker = styled.div`
     margin-top: 20px;
     width: 80%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
     margin-bottom: 20px;
     padding: 20px;
     border-radius: 8px;
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
 `;
+
 
 const DiaryEntry = styled.div`
     width: 80%;
@@ -43,6 +46,7 @@ const DiaryEntry = styled.div`
     border-radius: 8px;
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
 `;
 
 const EntryHeader = styled.div`
@@ -50,6 +54,7 @@ const EntryHeader = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    position: relative;
 `;
 
 const TimeBlock = styled.div`
@@ -144,22 +149,70 @@ const SubmitButton = styled.button`
     }
 `;
 
+const MenuContainer = styled.div`
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 120px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 10px;
+`;
 
+const MenuItem = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
 
 const MyDiaryCheck = () => {
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
+
     return (
         <Container>
             <DatePicker>
-                <KeyboardArrowLeftIcon/>
-                <CalendarTodayIcon style={{ width: '18px' }} />
-                <span>Today</span>
-                <KeyboardArrowRightIcon />
+                <KeyboardArrowLeftIcon style={{ cursor: 'pointer' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CalendarTodayIcon style={{ width: '18px' }} />
+                    <span>Today</span>
+                </div>
+                <KeyboardArrowRightIcon style={{ cursor: 'pointer' }} />
             </DatePicker>
+
 
             <DiaryEntry>
                 <EntryHeader>
                     <img src={`${process.env.PUBLIC_URL}/svg/good.svg`} alt="좋음" />
-                    <MoreVertIcon />
+                    <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+                    {menuVisible && (
+                        <MenuContainer>
+                            <MenuItem>
+                                <EditIcon />
+                                <span>Edit</span>
+                            </MenuItem>
+                            <MenuItem>
+                                <ShareIcon />
+                                <span>Share</span>
+                            </MenuItem>
+                            <MenuItem>
+                                <DeleteIcon />
+                                <span>Delete</span>
+                            </MenuItem>
+                        </MenuContainer>
+                    )}
                 </EntryHeader>
                 <TimeBlock>
                     <AccessTimeFilledIcon style={{ width: '15px' }} />
@@ -188,9 +241,6 @@ const MyDiaryCheck = () => {
                     <SubmitButton>작성</SubmitButton>
                 </CommentInputSection>
             </CommentSection>
-
-            
-
         </Container>
     );
 };
