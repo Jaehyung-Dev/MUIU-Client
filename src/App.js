@@ -1,25 +1,30 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './pages/Layout';
-import Main from './pages/Main';
-import Login from './pages/Login';
-import Join from './pages/Join';
-import MyPage from './pages/MyPage';
-import MindCheck from './pages/MindCheck';
-import MyDiary from './pages/MyDiary';
-import MindColumn from './pages/MindColumn';
-import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
+import AICounseling from './pages/AICounseling';
+import Agree from './pages/Agree';
+import CounselorChart from './pages/CounselorChart';
+import CounselorDiary from './pages/CounselorDiary';
+import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
 import DMHMDefinition from './pages/DMHMDefinition';
 import DMHMDefinition2 from './pages/DMHMDefinition2';
 import DisasterGuide from './pages/DisasterGuide';
+import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
 import DisasterSafetyStore from './pages/DisasterSafetyStore';
+import ExistingConsultation from './pages/ExistingConsultation';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
-import AICounseling from './pages/AICounseling';
-import Agree from './pages/Agree';
+import Join from './pages/Join';
 import JoinSuccess from './pages/JoinSuccess';
+import Layout from './pages/Layout';
+import Login from './pages/Login';
+import Main from './pages/Main';
+import MindCheck from './pages/MindCheck';
+import MindColumn from './pages/MindColumn';
+import MyDiary from './pages/MyDiary';
+import MyDiaryCheck from './pages/MyDiaryCheck';
+import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
-import ExistingConsultation from './pages/ExistingConsultation';
+import React from 'react';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryCheck from './pages/MyDiaryCheck';
 import MyDiaryWrite from './pages/MyDiaryWrite';
@@ -49,6 +54,13 @@ function App() {
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
+          <Route path="/new-consultation" element={<NewConsultation />} />
+          <Route path="/existing-consultation" element={<ExistingConsultation />} />
+          <Route path="/video-consultation" element={<VideoConsultationScreen />} />
+          <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+          <Route path="/counselor-diary-check" element={<CounselorDiaryCheck />} />
+          <Route path="/counselor-diary" element={<CounselorDiary />} />
+          <Route path="/counselor-chart" element={<CounselorChart />} />
           <Route path="new-consultation" element={<NewConsultation />} />
           <Route path="existing-consultation" element={<ExistingConsultation />} />
           <Route path="video-consultation" element={<VideoConsultationScreen />} />
