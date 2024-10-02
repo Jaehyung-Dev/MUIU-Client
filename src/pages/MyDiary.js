@@ -38,7 +38,7 @@ const CoverFeelDiv = styled.div`
     align-items: center;
 
     @media screen and (max-width: 600px) {
-       height: 15vh;
+        height: 15vh;
     }
 `
 

@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const Container = styled.div`
     margin-top: 50px;
-    height: 80vh;
+    height: 100vh;
     width: 100vw;
     max-width: 600px;
     background-color: #f3f3f3;
