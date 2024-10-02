@@ -15,6 +15,7 @@ const Container = styled.div`
     padding-top: 63px;
     padding-bottom: 100px;
     box-sizing: border-box;
+    box-sizing: content-box;
     background-color: ${(bgColor) => bgColor || 'white'};
 
     // @media (max-width: 600px) {
