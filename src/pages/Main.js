@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { MdGpsFixed } from "react-icons/md";
 
 const Content = styled.div`
-    margin-top: 62px;
+    // margin-top: 62px;
 `;
 
 const Section = styled.div`

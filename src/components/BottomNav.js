@@ -11,8 +11,8 @@ const Nav = styled.nav`
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
     max-width: 600px;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,13 +27,11 @@ const Nav = styled.nav`
     @media (max-width: 600px) {
         height: 100px;
         padding: 0 15px;
-        bottom: 15px;
     }
 
     @media (max-width: 393px) {
         height: 80px;
         padding: 0 10px;
-        bottom: 10px;
     }
 `;
 
