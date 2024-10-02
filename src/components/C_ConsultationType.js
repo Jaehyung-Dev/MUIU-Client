@@ -61,6 +61,7 @@ const ButtonContainer = styled.div`
     display: flex;
     gap: 20px;
     justify-content: space-between;
+    margin-top: 50px;
     padding: 0 20px;
 
     @media (max-width: 600px) {
@@ -72,11 +73,11 @@ const ButtonContainer = styled.div`
     }
 `;
 
-const ConsultationType = () => {
+const C_ConsultationType = () => {
     const navigate = useNavigate();
 
     const handleNewConsultationClick = () => {
-        navigate('/new-consultation');
+        navigate('/c-new-consultation');
     };
 
     const handleExistingConsultationClick = () => {
@@ -92,6 +93,7 @@ const ConsultationType = () => {
                 </ImageBanner>
                 <Title>상담 유형 선택</Title>
                 <ShortHr />
+                <span>반재형님의 최근 상담 이력이 없습니다. 신규 상담을 시작하세요.</span>
                 <ButtonContainer>
                     <Button text="신규 상담" subtext="시작하기" onClick={handleNewConsultationClick} />
                     <Button text="기존 상담" subtext="이어하기" onClick={handleExistingConsultationClick} />
@@ -101,4 +103,4 @@ const ConsultationType = () => {
     );
 };
 
-export default ConsultationType;
+export default C_ConsultationType;
