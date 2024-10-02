@@ -22,6 +22,7 @@ import MindCheck from './pages/MindCheck';
 import MindColumn from './pages/MindColumn';
 import MyDiary from './pages/MyDiary';
 import MyDiaryCheck from './pages/MyDiaryCheck';
+import MyDiaryCollection from './pages/MyDiaryCollection';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
 import React from 'react';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/existing-consultation" element={<ExistingConsultation />} />
           <Route path="/video-consultation" element={<VideoConsultationScreen />} />
           <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+          <Route path='my-diary-collection' element={<MyDiaryCollection/>}/>
           <Route path="/counselor-diary-check" element={<CounselorDiaryCheck />} />
           <Route path="/counselor-diary" element={<CounselorDiary />} />
           <Route path="/counselor-chart" element={<CounselorChart />} />
