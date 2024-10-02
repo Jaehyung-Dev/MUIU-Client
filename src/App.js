@@ -22,6 +22,7 @@ import NewConsultation from './pages/NewConsultation';
 import ExistingConsultation from './pages/ExistingConsultation';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryCheck from './pages/MyDiaryCheck';
+import MyDiaryWrite from './pages/MyDiaryWrite';
 
 function App() {
   return (
@@ -46,10 +47,11 @@ function App() {
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
-          <Route path="/new-consultation" element={<NewConsultation />} />
-          <Route path="/existing-consultation" element={<ExistingConsultation />} />
-          <Route path="/video-consultation" element={<VideoConsultationScreen />} />
-          <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+          <Route path="new-consultation" element={<NewConsultation />} />
+          <Route path="existing-consultation" element={<ExistingConsultation />} />
+          <Route path="video-consultation" element={<VideoConsultationScreen />} />
+          <Route path="my-diary-check" element={<MyDiaryCheck />}/>
+          <Route path="my-diary-write" element={<MyDiaryWrite/>}/>
         </Route>
       </Routes>
     </Router>

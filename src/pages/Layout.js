@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
@@ -11,8 +11,9 @@ const Container = styled.div`
     justify-content: space-between;
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 20px 180px;
+    // padding: 0 20px 180px;
     box-sizing: border-box;
+    background-color: ${(bgColor) => bgColor || 'white'};
 
     @media (max-width: 600px) {
         padding: 0 15px 100px;
@@ -24,8 +25,21 @@ const Container = styled.div`
 `;
 
 function Layout() {
+  const currentLocation = useLocation();
+
+  const getBackgroundColor = () => {
+    switch(currentLocation.pathname) {
+      case 'my-diary': case 'my-diary-check': case 'my-diary-write':
+        return '#efefef';
+      default:
+        return 'white';
+    }
+  };
+
+  const bgColor = getBackgroundColor();
+
   return (
-    <Container>
+    <Container bgColor={bgColor}>
       <Header />
       <Outlet />
       <BottomNav />
