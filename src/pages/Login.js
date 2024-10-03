@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// 공통 스타일
 const Main = styled.main`
   display: flex;
   flex-direction: column;
@@ -51,7 +50,7 @@ const LogoDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 7rem;
+  margin-top: 3rem;
   margin-bottom: 4rem;
 
   p {
@@ -148,6 +147,7 @@ const LoginButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background-color 0.5s ease;
 
   &:hover {
     background-color: #f8cb37;
@@ -165,7 +165,7 @@ const TextHover = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-
+  transition: color 0.5s ease;
   &:hover {
     color: rgb(105, 104, 104);
   }
@@ -212,13 +212,13 @@ const NaverButton = styled.button`
   cursor: pointer;
   background: none;
   border: none;
-
   svg rect {
     filter: brightness(1);
+    transition: filter 0.5s ease; 
   }
 
   &:hover svg rect {
-    filter: brightness(0.8);
+    filter: brightness(0.9);
   }
 `;
 
@@ -244,7 +244,7 @@ export const Login = () => {
         <DivLine></DivLine>
         <TextHover>비밀번호 찾기</TextHover>
         <DivLine></DivLine>
-        <TextHover onClick={() => window.location.href = 'agree'}>회원가입</TextHover>
+        <TextHover onClick={() => window.location.href = 'join-agree'}>회원가입</TextHover>
       </DefaultDiv>
       <SnsBar>
         <SnsLine></SnsLine>
