@@ -40,8 +40,8 @@ function App() {
           <Route path="my-diary" element={<MyDiary />} />
           <Route path="mind-column" element={<MindColumn />} />
           <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
-          <Route path="DMHMDefinition" element={<DMHMDefinition/>} />
-          <Route path="DMHMDefinition2" element={<DMHMDefinition2/>} />
+          <Route path="/DMHMDefinition" element={<DMHMDefinition/>} />
+          <Route path="/DMHMDefinition2" element={<DMHMDefinition2/>} />
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="disaster-safety-store" element={<DisasterSafetyStore />} />
           <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
