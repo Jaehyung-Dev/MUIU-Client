@@ -40,12 +40,54 @@ const DatePicker = styled.div`
 
 const DiaryEntry = styled.div`
     width: 80%;
+    min-height: 230px;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     position: relative;
+`;
+
+const DiartTitle = styled.div`
+  width: 100%;
+  height: 15%;
+  padding-bottom: 5px;
+
+  input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    font-size: 1.3rem;
+    padding: 0 8px;
+    font-family: inherit; /* 추가 */
+    box-sizing: border-box; /* 추가 */
+  }
+
+  input:focus {
+    outline: none;
+  }
+`;
+
+const DiartContent = styled.div`
+  width: 100%;
+  height: 80%;
+  padding-top: 8px;
+
+  textarea {
+    width: 100%;
+    height: 90%;
+    border: 0;
+    font-size: 1rem;
+    padding: 0 8px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: none;
+  }
+
+  textarea:focus {
+    outline: none;
+  }
 `;
 
 const EntryHeader = styled.div`
@@ -86,7 +128,7 @@ const EntryContent = styled.p`
     line-height: 1.5;
 `;
 
-const CommentSection = styled.div`
+const EmotionSection = styled.div`
     width: 80%; 
     padding: 20px;
     border-radius: 8px;
@@ -175,6 +217,8 @@ const MenuItem = styled.div`
     }
 `;
 
+const SaveBtn = styled.button``;
+
 const MyDiaryWrite = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -193,52 +237,20 @@ const MyDiaryWrite = () => {
         <KeyboardArrowRightIcon style={{ cursor: 'pointer' }} />
       </DatePicker>
       <DiaryEntry>
-        <EntryHeader>
-            <img src={`${process.env.PUBLIC_URL}/svg/good.svg`} alt="좋음" />
-            <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
-            {menuVisible && (
-              <MenuContainer>
-                <MenuItem>
-                  <EditIcon />
-                  <span>Edit</span>
-                </MenuItem>
-                <MenuItem>
-                  <ShareIcon />
-                  <span>Share</span>
-                </MenuItem>
-                <MenuItem>
-                  <DeleteIcon />
-                  <span>Delete</span>
-                </MenuItem>
-              </MenuContainer>
-            )}
-        </EntryHeader>
-        <TimeBlock>
-          <AccessTimeFilledIcon style={{ width: '15px' }} />
-          <EntryDateText>28 May 21</EntryDateText>
-        </TimeBlock>
-        <EntryTitle>비트캠프에서의 첫 날</EntryTitle>
-        <EntryContent>
-            오늘은 비트캠프에 처음 왔다.
-            <br />
-            처음에는 많이 긴장했지만, 새로운 분들이 친절하게 맞아주셔서 금방 긴장이 풀렸다.
-            <br /><br />
-            오늘은 HTML, CSS, JavaScript에 대해 간단하게 배웠다.
-            앞으로도 열심히 해야지.
-        </EntryContent>
+        <form method='' action='' name='diary'>
+          <DiartTitle>
+            <input type='text' name='title' placeholder='제목'></input>
+          </DiartTitle>
+          <hr></hr>
+          <DiartContent>
+            <textarea name='content' placeholder='내용'></textarea>
+          </DiartContent>
+        </form>
       </DiaryEntry>
-      <CommentSection>
-        <CommentTitle>댓글</CommentTitle>
-        <hr />
-        <CommentWriter>상담사 한서준</CommentWriter>
-        <CommentContent>참 대~단 하시네요ㅋㅋ</CommentContent>
-        <hr />
+      <EmotionSection>
 
-        <CommentInputSection>
-          <CommentInput type="text"/>
-          <SubmitButton>작성</SubmitButton>
-        </CommentInputSection>
-      </CommentSection>
+      </EmotionSection>
+      <SaveBtn></SaveBtn>
     </Container>
   );
 };
