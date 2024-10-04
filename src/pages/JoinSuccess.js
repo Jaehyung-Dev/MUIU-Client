@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import DoneIcon from '@mui/icons-material/Done';
+import styled, { keyframes } from 'styled-components';
 
 const Main = styled.main`
   display: flex;
@@ -20,29 +19,30 @@ const JoinComplete = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20rem;
+  margin-top: 10rem;
 
   @media screen and (max-width: 600px) {
-    margin-top: 15rem;
+    margin-top: 9rem;
   }
 `;
 
 const CompleteImgCoverDiv = styled.div`
-  width: 10rem;
-  margin: 1rem;
+  width: 15rem;
 
   @media screen and (max-width: 600px) {
-    width: 8rem;
+    width: 15rem;
+  }
+
+  &:before {
+
   }
 `;
 
 const JoinCompleteMsg1 = styled.p`
   font-size: 2rem;
-  margin: 2rem;
 
   @media screen and (max-width: 600px) {
     font-size: 1.4rem;
-    margin: 2rem 0 1.2rem 0;
   }
 `;
 
@@ -83,6 +83,7 @@ const SelectButton = styled.button`
   justify-content: center;
   cursor: pointer;
   font-size: 1rem;
+  transition: background-color 0.5s ease;
 
   &:hover {
     background-color: #f8cb37;
@@ -102,13 +103,36 @@ const SelectButton = styled.button`
   }
 `;
 
+const drawCheckmark = keyframes`
+  0% {
+    stroke-dashoffset: 34;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+`;
+
+const CheckmarkSVG = styled.svg`
+  width: 100%;
+  height: 100%;
+  stroke: #f8cb37;
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: butt;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: ${drawCheckmark} 1s ease forwards;
+`;
+
 const JoinSuccess = () => {
   return (
     <Main>
       <JoinComplete>
-        <CompleteImgCoverDiv>
-          <DoneIcon style={{width: '100%', height: '100%', color: '#FFD651'}}/>
-        </CompleteImgCoverDiv>
+      <CompleteImgCoverDiv>
+        <CheckmarkSVG viewBox="0 0 50 50" preserveAspectRatio="none">
+          <path d="M10 30 L20 40 L40 15" />
+        </CheckmarkSVG>
+      </CompleteImgCoverDiv>
         <JoinCompleteMsg1>
           회원가입이 <b>완료</b> 되었습니다.
         </JoinCompleteMsg1>
@@ -120,7 +144,7 @@ const JoinSuccess = () => {
         <SelectButton className="home-btn" onClick={() => (window.location.href='main')}>
           <p>홈으로</p>
         </SelectButton>
-        <SelectButton className="login-btn" onClick={() => (window.location.href = 'login')}>
+        <SelectButton className="login-btn" onClick={() => (window.location.href='login')}>
           <p>로그인</p>
         </SelectButton>
       </SelectDiv>
