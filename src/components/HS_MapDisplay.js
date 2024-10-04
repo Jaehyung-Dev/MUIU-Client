@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const MapContainer = styled.div`
@@ -14,16 +14,36 @@ const MapDisplay = styled.div`
 
 const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => {
     const mapRef = useRef(null);
-    const lat = 37.284795;
-    const lng = 127.064359;
+    const [userLocation, setUserLocation] = useState(null);
+
+    const getUserLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setUserLocation({ latitude, longitude });
+                },
+                (error) => {
+                    console.error('Error getting user location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser');
+        }
+    };
 
     useEffect(() => {
+        getUserLocation(); // 사용자 위치 가져오기
+
         const { naver } = window;
-        
+
         if (mapRef.current && naver) {
-            const location = new naver.maps.LatLng(lat, lng);
+            const initialLocation = userLocation
+                ? new naver.maps.LatLng(userLocation.latitude, userLocation.longitude)
+                : new naver.maps.LatLng(37.284795, 127.064359); // 기본 위치
+
             const mapOptions = {
-                center: location,
+                center: initialLocation,
                 zoom: 18,
                 zoomControl: true,
                 zoomControlOptions: {
@@ -34,12 +54,14 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
 
             const map = new naver.maps.Map(mapRef.current, mapOptions);
 
-            new naver.maps.Marker({
-                position: location,
-                map,
-            });
+            if (userLocation) {
+                new naver.maps.Marker({
+                    position: initialLocation,
+                    map,
+                });
+            }
         }
-    }, []);
+    }, [userLocation]); // userLocation이 변경될 때마다 재렌더링
 
     return (
         <MapContainer>
