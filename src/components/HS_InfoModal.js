@@ -135,7 +135,7 @@ const TabsInfoPicture = styled.div`
         color: #FFD700;
     }
 `;
-const HS_InfoModal = ({ isOpen, onClose }) => {
+const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -155,11 +155,11 @@ const HS_InfoModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
 
                 <ImagesContainer>
                     <MainImage>
-                        <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" />
+                        <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" onClick={openPhotoPopUp}/>
                     </MainImage>
                     <SmallImages>
                         <SmallImagesEle>
