@@ -11,7 +11,7 @@
 
 
 ## 배포 주소
-> [http://www.마음이음.site](http://www.마음이음.site)
+> [https://www.마음이음.site](https://www.마음이음.site)
 
 ## 팀 소개
 
