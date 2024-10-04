@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
-import manualImg from '../DMHM-images/manual_img.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -59,19 +58,20 @@ const ListButton = styled.button`
 
 // MenuList 컴포넌트
 const MenuList = () => {
+  const navigate = useNavigate(); // useNavigate를 사용해 navigate 함수 가져오기
+
   const navigateTo = (page) => {
     if (page === 'ch1') {
-      window.location.href = 'file:///C:/Users/pc/Desktop/Dev12-Final/MentalHealthManual_ch1.html';
-    }
-    if (page === 'ch2') {
-      window.location.href = 'file:///C:/Users/pc/Desktop/Dev12-Final/MentalHealthManual_ch2.html';
+      navigate('/DMHMDefinition'); // 페이지 이동
+    } else if (page === 'ch2') {
+      navigate('/DMHMDefinition2'); // 페이지 이동
     }
   };
 
   return (
     <MenuListContainer>
       <ManualImage>
-        <img src={manualImg} alt="Manual" />
+        <img src="/DMHM-images/manual_img.jpg" alt="Manual" />
       </ManualImage>
       <MenuButtons>
         <ListButton onClick={() => navigateTo('ch1')}>정의</ListButton>
