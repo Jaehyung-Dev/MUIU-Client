@@ -7,7 +7,6 @@ import ChatIcon from '@mui/icons-material/Chat';
 import EditIcon from '@mui/icons-material/Edit';
 
 const Container = styled.div`
-    padding-top: 50px;
     text-align: center;
 `;
 

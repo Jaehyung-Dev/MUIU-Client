@@ -76,10 +76,16 @@ const Underline = styled.div`
     left: 0;
     height: 2px;
     background-color: #fbbf24;
-    width: 33.33%;
-    transform: translateX(${({ activeTab }) => (activeTab === 'video' ? '0%' : activeTab === 'call' ? '100%' : '200%')});
+    width: 25%;
+    transform: translateX(${({ activeTab }) => (
+        activeTab === 'video' ? '0%' :
+        activeTab === 'call' ? '100%' :
+        activeTab === 'chat' ? '200%' :
+        '300%'
+    )});
     transition: transform 0.3s ease;
 `;
+
 
 const ConsultationListWrapper = styled.div`
     background-color: #F3F3F3;
@@ -153,7 +159,7 @@ const CancelButton = styled(Button)`
     }
 `;
 
-const ExistingConsultation = () => {
+const ConsultationRecord = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('video');
     const [menuOpen, setMenuOpen] = useState(false);
@@ -172,7 +178,7 @@ const ExistingConsultation = () => {
                 <BackButton onClick={handleBackClick}>
                     <ArrowBackIosIcon />
                 </BackButton>
-                <Title>기존 상담 이어하기</Title>
+                <Title>상담 내역</Title>
                 <IconContainer>
                     <MenuIcon onClick={toggleMenu} />
                 </IconContainer>
@@ -192,6 +198,9 @@ const ExistingConsultation = () => {
                     </Tab>
                     <Tab active={activeTab === 'chat'} onClick={() => setActiveTab('chat')}>
                         채팅 상담
+                    </Tab>
+                    <Tab active={activeTab === 'emergency'} onClick={() => setActiveTab('emergency')}>
+                        긴급 상담
                     </Tab>
                     <Underline activeTab={activeTab} />
                 </Tabs>
@@ -230,6 +239,9 @@ const ExistingConsultation = () => {
                             {activeTab === 'chat' && (
                                 <p>채팅 상담 내역이 없습니다.</p>
                             )}
+                            {activeTab === 'emergency' && (
+                                <p>긴급 상담 내역이 없습니다.</p>
+                            )}
                         </ConsultationList>
                     </InnerContainer>
                 </ConsultationListWrapper>
@@ -238,4 +250,4 @@ const ExistingConsultation = () => {
     );
 };
 
-export default ExistingConsultation;
+export default ConsultationRecord;

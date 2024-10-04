@@ -218,7 +218,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent  style={{backgroundColor: '#F3F3F3'}}>
+            <ModalContent  style={{backgroundColor: '#F3F3F3'}} onClick={(e) => {e.stopPropagation();}}>
                 <BackBtn onClick={onClose}>&lt; </BackBtn>
                 
                 <SelectVehicle>

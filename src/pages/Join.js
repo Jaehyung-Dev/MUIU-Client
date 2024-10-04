@@ -6,7 +6,6 @@ const Main = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
 
   button {
     border: none;
@@ -68,6 +67,7 @@ const SelectButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 
   &:hover {
     background-color: #f8cb37;
@@ -131,6 +131,7 @@ const DefaultDiv = styled.div`
 const AuthDiv = styled(DefaultDiv)`
   margin-top: 2rem;
   background-color: #ffd651;
+  transition: background-color 0.5s ease;
 
   &:hover {
     background-color: #f8cb37;

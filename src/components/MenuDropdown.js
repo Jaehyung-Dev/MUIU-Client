@@ -1,27 +1,28 @@
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { Link } from 'react-router-dom';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import ManualOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 // components/MenuDropdown.js
 import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import ManualOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import StoreOutlinedIcon from '@mui/icons-material/StoreOutlined';
-import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
+import styled from 'styled-components';
 
 const DropdownMenu = styled.div`
     position: fixed;
-    top: 30px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
     width: 100vw;
-    max-width: 600px;
+
+    max-width: 560px;
     height: calc(100vh - 60px);
     background-color: rgba(255, 255, 255, 1);
     z-index: 999;
@@ -63,7 +64,7 @@ const MenuDropdown = ({ activeMenuItem, handleMenuClick }) => (
         <ul>
             <li><Link to="/main" isActive={activeMenuItem === 'main'} onClick={() => handleMenuClick('main')}><HomeOutlinedIcon />홈</Link></li>
             <li><Link to="/login" isActive={activeMenuItem === 'login'} onClick={() => handleMenuClick('login')}><LoginOutlinedIcon />로그인</Link></li>
-            <li><Link to="/join" isActive={activeMenuItem === 'join'} onClick={() => handleMenuClick('join')}><PersonAddOutlinedIcon />회원가입</Link></li>
+            <li><Link to="/join-agree" isActive={activeMenuItem === 'join'} onClick={() => handleMenuClick('join')}><PersonAddOutlinedIcon />회원가입</Link></li>
             <li><Link to="/mypage" isActive={activeMenuItem === 'mypage'} onClick={() => handleMenuClick('mypage')}><AccountCircleOutlinedIcon />내 정보</Link></li>
             <li><Link to="/mind-check" isActive={activeMenuItem === 'mind-check'} onClick={() => handleMenuClick('mind-check')}><CheckCircleOutlinedIcon />내 마음 알아보기</Link></li>
             <li><Link to="/human-counseling" isActive={activeMenuItem === 'human-counseling'} onClick={() => handleMenuClick('human-counseling')}><PeopleOutlinedIcon />상담하기</Link></li>

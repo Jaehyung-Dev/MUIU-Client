@@ -147,7 +147,7 @@ const Header = () => {
     const menuItems = [
         { path: "/main", text: "홈" },
         { path: "/login", text: "로그인" },
-        { path: "/join", text: "회원가입" },
+        { path: "/join-agree", text: "회원가입" },
         { path: "/mypage", text: "내 정보" },
         { path: "/mind-check", text: "내 마음 알아보기" },
         { path: "/human-counseling", text: "상담하기" },
@@ -199,7 +199,7 @@ const Header = () => {
 
     return (
         <>
-            {location.pathname !== '/existing-consultation' && (
+            {location.pathname !== ('/existing-consultation' && '/consultation-record') && (
                 <HeaderContainer searchOpen={searchOpen}>
                     {(location.pathname === '/my-diary-check' || location.pathname === '/my-diary-write') ? (
                         <HeaderContainer style={{background:'#F3F3F3'}}>

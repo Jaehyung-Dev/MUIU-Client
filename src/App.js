@@ -1,7 +1,6 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import AICounseling from './pages/AICounseling';
-import Agree from './pages/Agree';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
@@ -34,6 +33,8 @@ import MyDiaryWrite from './pages/MyDiaryWrite';
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
 import EmotionGraph from './pages/EmotionGraph';
+import JoinAgree from './pages/JoinAgree';
+import ConsultationRecord from './pages/ConsultationRecord';
 
 function App() {
   return (
@@ -44,7 +45,7 @@ function App() {
           <Route path="main" element={<Main />} />
           <Route path="login" element={<Login />} />
           <Route path="join" element={<Join />} />
-          <Route path="agree" element={<Agree/>} />
+          <Route path="join-agree" element={<JoinAgree/>} />
           <Route path="join-success" element={<JoinSuccess/>} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="mind-check" element={<MindCheck />} />
@@ -77,6 +78,7 @@ function App() {
           <Route path="c-human-counseling" element={<C_HumanCounseling />} />
           <Route path="c-new-consultation" element={<C_NewConsultation />} />
           <Route path="emotion-graph" element={<EmotionGraph />} />
+          <Route path="consultation-record" element={<ConsultationRecord />} />
         </Route>
       </Routes>
     </Router>
