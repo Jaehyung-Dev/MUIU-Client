@@ -1,4 +1,4 @@
-FROM node:20 as build
+FROM node:20 AS build
 
 WORKDIR /app
 
@@ -12,6 +12,7 @@ RUN npm run build
 
 FROM nginx:alpine
 
+# Nginx 설정 파일을 복사 (커스터마이징된 설정)
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # 빌드된 React 앱을 Nginx의 기본 웹 디렉토리로 복사
