@@ -17,11 +17,11 @@ import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined
 
 const DropdownMenu = styled.div`
     position: fixed;
-    top: 30px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100vw;
-    max-width: 600px;
+    width: 100%;
+    max-width: 560px;
     height: calc(100vh - 60px);
     background-color: rgba(255, 255, 255, 1);
     z-index: 999;

@@ -199,7 +199,7 @@ const Header = () => {
 
     return (
         <>
-            {location.pathname !== '/existing-consultation' && (
+            {location.pathname !== ('/existing-consultation' && '/consultation-record') && (
                 <HeaderContainer searchOpen={searchOpen}>
                     {(location.pathname === '/my-diary-check' || location.pathname === '/my-diary-write') ? (
                         <HeaderContainer style={{background:'#F3F3F3'}}>

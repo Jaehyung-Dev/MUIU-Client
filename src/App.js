@@ -34,6 +34,7 @@ import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
 import EmotionGraph from './pages/EmotionGraph';
 import JoinAgree from './pages/JoinAgree';
+import ConsultationRecord from './pages/ConsultationRecord';
 
 function App() {
   return (
@@ -77,6 +78,7 @@ function App() {
           <Route path="c-human-counseling" element={<C_HumanCounseling />} />
           <Route path="c-new-consultation" element={<C_NewConsultation />} />
           <Route path="emotion-graph" element={<EmotionGraph />} />
+          <Route path="consultation-record" element={<ConsultationRecord />} />
         </Route>
       </Routes>
     </Router>

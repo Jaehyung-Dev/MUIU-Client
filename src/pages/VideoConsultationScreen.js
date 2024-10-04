@@ -16,13 +16,12 @@ const ScreenContainer = styled.div`
     justify-content: center;
 
     @media (min-width: 393px) {
-        transform: translateX(-3.33%);
-        height: 92vh;
+        height: 100vh;
     }
 `;
 
 const VideoBox = styled.div`
-    width: 100px;
+    width: 130px;
     height: 200px;
     background-color: white;
     border-radius: 15px;
@@ -30,7 +29,8 @@ const VideoBox = styled.div`
     margin-top: 80px;
     margin-right: -65vw;
     @media (min-width: 393px) {
-        margin-right: -40vw;
+        margin-right: -28vw;
+        margin-top: 30px;
     }
 `;
 
@@ -39,6 +39,9 @@ const ButtonGroup = styled.div`
     gap: 20px;
     margin-top: auto;
     margin-bottom: 50px;
+    @media (min-width: 393px) {
+        margin-bottom: 200px;
+    }
 `;
 
 const Button = styled.div`
