@@ -7,15 +7,14 @@ import HS_PhotoModal from './HS_PhotoModal';
 import HS_FindRoadModal from './HS_FindRoadModal';
 
 const Main = styled.div`
-    margin-top: 77px;
     width: 100%;
     max-width: calc(600px - 30px);
-    height: calc(100vh - 77px - 60px);
+    height: 60vh;
     min-height: calc(100vh - 77px - 80px);
     display: flex;
     flex-direction: column;
     padding: 0;
-    overflow-y: auto;
+    overflow-y: hidden;
 `;
 
 const HS_Main = () => {
