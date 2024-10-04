@@ -106,7 +106,7 @@ const MenuContainer = styled.div`
     scale: 0.4;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.1);
-    display: flex;
+    display: ${({ show }) => (show ? 'flex' : 'none')};
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;

@@ -20,7 +20,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
     // 지도 변수 설정
     const [map, setMap] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(18);
-    // 아이콘 변수 설정
 
     // 사용자 위치 실시간 로딩 기능
     const getUserLocation = () => {
