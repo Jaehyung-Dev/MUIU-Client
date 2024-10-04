@@ -153,7 +153,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/Main/backgroundImg1.svg');
+                    background-image: url('/images/background.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -164,7 +164,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/Main/backgroundImg2.svg');
+                    background-image: url('/images/background.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
