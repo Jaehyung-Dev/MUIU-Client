@@ -135,7 +135,7 @@ const TabsInfoPicture = styled.div`
         color: #FFD700;
     }
 `;
-const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
+const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -155,11 +155,11 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalContent onClick={(e) => {e.stopPropagation();}}>
 
-                <ImagesContainer>
+                <ImagesContainer onClick={(e) => {e.stopPropagation(); openPhotoPopUp();}}>
                     <MainImage>
-                        <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" onClick={openPhotoPopUp}/>
+                        <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" />
                     </MainImage>
                     <SmallImages>
                         <SmallImagesEle>
@@ -176,6 +176,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
                         id="depart-icon" 
                         onMouseEnter={() => setHoveredTab('depart')} 
                         onMouseLeave={() => setHoveredTab(null)}
+                        onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
                     >
                         <TabImage 
                             src={hoveredTab === 'depart' ? hoverImages.depart : defaultImages.depart} 
@@ -187,6 +188,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
                         id="arrive-icon" 
                         onMouseEnter={() => setHoveredTab('arrive')} 
                         onMouseLeave={() => setHoveredTab(null)}
+                        onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
                     >
                         <TabImage 
                             src={hoveredTab === 'arrive' ? hoverImages.arrive : defaultImages.arrive} 
@@ -209,7 +211,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp}) => {
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab style={{borderBottom: '2px solid #A1A1A1'}}>사진</Tab>
+                    <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={(e) => {e.stopPropagation(); openPhotoPopUp();}}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>

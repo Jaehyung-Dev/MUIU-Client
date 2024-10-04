@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const MapContainer = styled.div`
-    flex: 1;
+    width: 100%;
+    height: 100%;
     padding-top: 10px;
     overflow: hidden;
 `;
@@ -106,9 +107,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
     return (
         <MapContainer>
             <MapDisplay>
-                <button onClick={openPhotoPopUp}>사진 보기</button>
-                <button onClick={openFindRoadPopUp}>길찾기 보기</button>
-
                 <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
             </MapDisplay>
         </MapContainer>
