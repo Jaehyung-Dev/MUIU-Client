@@ -139,7 +139,7 @@ const InnerGraphDiv = styled.div`
 
 const CoverProgress = styled.div`
     width: 100%;
-    height: 55vh;
+    height: 50vh;
     display: flex;
     @media screen and (max-width: 600px) {
         height: 45vh;
