@@ -37,8 +37,8 @@ const HS_Main = () => {
             <HS_MapDisplay
                 openInfoPopUp={openInfoPopUp} 
                 openPhotoPopUp={openPhotoPopUp} 
-                openFindRoadPopUp={openFindRoadPopUp} /> 
-            <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} />
+                openFindRoadPopUp={openFindRoadPopUp} />
+            <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} openPhotoPopUp={openPhotoPopUp} openFindRoadPopUp={openFindRoadPopUp}/>
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
             <HS_FindRoadModal isOpen={isFindRoadOpen} onClose={closeFindRoadPopUp} />
         </Main>

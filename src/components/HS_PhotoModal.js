@@ -90,11 +90,11 @@ const HS_PhotoModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent>
-                <BackBtn onClick={onClose}>&lt; </BackBtn>
+            <ModalContent onClick={(e) => {e.stopPropagation();}}>
+                <BackBtn onClick={onClose} >&lt; </BackBtn>
 
                 <TabsInfoPicture>
-                    <Tab style={{borderBottom: '2px solid #A1A1A1'}}>정보</Tab>
+                    <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={onClose}>정보</Tab>
                     <Tab className="active">사진</Tab>
                 </TabsInfoPicture>
 

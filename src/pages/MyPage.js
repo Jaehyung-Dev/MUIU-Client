@@ -1,9 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const Content = styled.div`
-    // margin-top: 62px;
-`;
+const Content = styled.div``;
 
 const Profile = styled.div`
     display: flex;
@@ -67,6 +66,7 @@ const Menu = styled.div`
         color: #FF9900;
         border-radius: 5px;
         margin: 0 5px;
+        cursor: pointer; /* Added cursor style */
 
         .menu-button-text {
             font-size: 12px;
@@ -77,7 +77,7 @@ const Menu = styled.div`
 const MenuList = styled.div`
     .section {
         padding: 15px;
-   
+
         .menu-item-arrow {
             color: #888;
             text-align: center;
@@ -109,7 +109,6 @@ const MenuList = styled.div`
             color: #888;
             font-size: 13px;
         }
-            
     }
 
     .menu-item {
@@ -134,6 +133,12 @@ const MenuList = styled.div`
 `;
 
 export const MyPage = () => {
+    const navigate = useNavigate();
+
+    const handleConsultationHistoryClick = () => {
+        navigate('/consultation-record');
+    };
+
     return (
         <Content>
             <Profile>
@@ -153,7 +158,7 @@ export const MyPage = () => {
                     </div>
                     <div className="menu-button-text">내 쿠폰</div>
                 </div>
-                <div className="menu-button">
+                <div className="menu-button" onClick={handleConsultationHistoryClick}>
                     <div className="menu-button-icon">
                         <img src="images/MyPage/counsel-history.svg" alt="counsel-history"/>
                     </div>
