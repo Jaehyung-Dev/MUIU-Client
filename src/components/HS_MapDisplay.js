@@ -22,10 +22,17 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
         
         if (mapRef.current && naver) {
             const location = new naver.maps.LatLng(lat, lng);
-            const map = new naver.maps.Map(mapRef.current, {
+            const mapOptions = {
                 center: location,
                 zoom: 18,
-            });
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: naver.maps.ZoomControlStyle.SMALL,
+                    position: naver.maps.Position.TOP_RIGHT,
+                },
+            };
+
+            const map = new naver.maps.Map(mapRef.current, mapOptions);
 
             new naver.maps.Marker({
                 position: location,
@@ -33,7 +40,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
             });
         }
     }, []);
-    
 
     return (
         <MapContainer>
@@ -43,7 +49,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                 <button onClick={openFindRoadPopUp}>길찾기 보기</button>
 
                 <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
-
             </MapDisplay>
         </MapContainer>
     );

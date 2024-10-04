@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const HS_test = () => {
+const HS_getUserLocation = () => {
 
     const [userLocation, setUserLocation] = useState(null);
 
@@ -11,7 +11,7 @@ const HS_test = () => {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setUserLocation({ latitude, longitude });
-                    alert('클릭은 됐음! 작동도 되나요?');
+                    alert('testCodeMsg: 실시간 위치 추적 실행 완료');
                 },
                 (error) => {
                     console.error('Error getting user location:', error);
@@ -37,4 +37,4 @@ const HS_test = () => {
     );
 };
 
-export default HS_test;
+export default HS_getUserLocation;
