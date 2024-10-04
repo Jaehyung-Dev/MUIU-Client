@@ -150,8 +150,8 @@ const MyDiaryCollection = () => {
                     <DiaryContent>인터넷이 끊켰다<br/>나는 너무 슬프다.</DiaryContent>
                 </DiaryDiv>
             </DiaryContainer>
-        </CoverDiv>
         <button onClick={() => window.location.href = 'emotion-graph'}>임시</button>
+        </CoverDiv>
     </>
   );
 };

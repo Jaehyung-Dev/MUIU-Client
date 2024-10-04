@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+
+// 동적으로 애니메이션 설정하기
+const animateHeight = (height) => keyframes`
+  0% {
+    height: 0;
+  }
+  100% {
+    height: ${height};
+  }
+`;
 
 const EmotionDivCover = styled.div`
     width: 100%;
@@ -57,7 +67,7 @@ const GraphDiv = styled.div`
     align-items: center;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
     @media screen and (max-width: 600px) {
-        height: 82vh;
+        height: 78vh;
     }
 `;
 
@@ -132,7 +142,7 @@ const CoverProgress = styled.div`
     height: 55vh;
     display: flex;
     @media screen and (max-width: 600px) {
-        height: 50vh;
+        height: 45vh;
     }
 `;
 
@@ -147,7 +157,10 @@ const GraphRowDiv = styled.div`
         margin: 0.1rem 0 0.1rem 1rem;
     }
     @media screen and (max-width: 600px) {
-        height: 50vh;
+        height: auto;
+        p {
+            font-size: 0.8rem;
+        }
     }
 `;
 
@@ -174,16 +187,15 @@ const GraphColumnDiv = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    @media screen and (max-width: 600px) {
-        width: 80%;
-    }
+    margin-left: 1rem;
+    color: gray;
 `;
 
 const GraphOutline = styled.div`
     width: 8%;
     height: 93%;
     border-radius: 20px;
-    background-color: rgba(255, 192, 203, 0.3); 
+    background-color: rgba(128, 128, 128, 0.1);
     display: flex;
     align-items: end;
     margin: 0 1rem;
@@ -198,24 +210,32 @@ const GraphInner = styled.div`
     border-radius: 20px;
     height: ${(props) => props.height || '1%'};
     background-color: ${(props) => props.color || 'none'};
+    animation: ${animateHeight} 1s ease-in-out forwards; /* 1초 애니메이션 */
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.3);
 `;
 
 const EmotionGraph = () => {
-    const [clickedIndex, setClickedIndex] = useState(null);
+    const [clickedIndex, setClickedIndex] = useState(0);
     const handleClick = (index) => setClickedIndex(index);
+    const [isLoaded, setIsLoaded] = useState(false); // 그래프가 로드되었는지 확인
 
     const periodText = ['주간', '월간', '연간'];
     const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
     const graphData = [
-        { height: 50, color: '#FF3B30' },
-        { height: 70, color: '#00C7BE' },
-        { height: 30, color: '#FFCC00' },
-        { height: 90, color: '#34C759' },
-        { height: 60, color: '#34C759' },
-        { height: 40, color: '#00C7BE' },
-        { height: 80, color: '#FF3B30' }
+        { height: '50%', color: '#FF3B30' },
+        { height: '70%', color: '#00C7BE' },
+        { height: '30%', color: '#FFCC00' },
+        { height: '90%', color: '#34C759' },
+        { height: '60%', color: '#34C759' },
+        { height: '40%', color: '#00C7BE' },
+        { height: '80%', color: '#FF3B30' }
     ];
+
+    // 컴포넌트가 마운트된 후 애니메이션 트리거
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
 
     return (
         <EmotionDivCover>
@@ -271,7 +291,8 @@ const EmotionGraph = () => {
                         <GraphMainDiv>
                             {graphData.map((data, index) => (
                                 <GraphOutline key={index}>
-                                    <GraphInner height={`${data.height}%`} color={data.color} />
+                                    {/* isLoaded가 true일 때만 애니메이션 적용 */}
+                                    <GraphInner height={isLoaded ? data.height : '0%'} color={data.color} />
                                 </GraphOutline>
                             ))}
                         </GraphMainDiv>

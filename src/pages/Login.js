@@ -51,11 +51,14 @@ const LogoDiv = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 3rem;
-  margin-bottom: 4rem;
-
+  margin-bottom: 2rem;
+  
   p {
-    margin-top: 1vw;
+    margin-top: 1rem;
     font-weight: bold;
+    color: #fbbf24;
+    font-size: 1.3rem;
+    text-align: center;
   }
 
   img {
@@ -65,42 +68,6 @@ const LogoDiv = styled.div`
   @media screen and (max-width: 600px) {
     margin-bottom: 2rem;
   }
-`;
-
-const SelectDiv = styled(DefaultDiv)`
-  margin-bottom: 3rem;
-
-  @media screen and (max-width: 600px) {
-    margin-bottom: 2rem;
-  }
-`;
-
-const SelectButton = styled.button`
-  background-color: #f0f0f0;
-  border-radius: 10px;
-  width: 50%;
-  height: 4rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f8cb37;
-  }
-
-  @media screen and (max-width: 600px) {
-    width: 40vw;
-    height: 12vw;
-  }
-`;
-
-const GeneralButton = styled(SelectButton)`
-  margin-right: 0.5rem;
-`;
-
-const CounselorButton = styled(SelectButton)`
-  margin-left: 0.5rem;
 `;
 
 const InputDiv = styled(DefaultDiv)`
@@ -227,6 +194,7 @@ export const Login = () => {
     <Main>
       <LogoDiv>
         <img src='../svg/logo.svg' alt='logo'/>
+        <p>안녕하세요<br/>마음이음입니다.</p>
       </LogoDiv>
       <InputDiv>
         <InputDefault type="text" placeholder="아이디를 입력하세요" />

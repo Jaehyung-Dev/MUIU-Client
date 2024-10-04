@@ -28,12 +28,12 @@ const WelcomeDiv = styled.div`
   align-items: center;
   margin-top: 3rem;
   margin-bottom: 4rem;
-  font-size: 1.3rem;
 
   p {
     margin-top: 1rem;
     font-weight: bold;
-    color: #2f4858;
+    color: #fbbf24;
+    font-size: 1.3rem;
   }
 
   img {
