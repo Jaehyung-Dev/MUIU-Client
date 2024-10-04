@@ -256,7 +256,7 @@ export const Main = () => {
                     <div className="bookmark-group">
                         <div className="bookmark">
                             <div className="bookmark-img">
-                                <img src="/images/Main/bookmark.svg" alt="bookmark"/>
+                                <img src="/images/background.png" alt="bookmark"/>
                             </div>
                             <div className="bookmark-title">상담접수지</div>
                             <div className="bookmark-content">
