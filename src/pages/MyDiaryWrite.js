@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import angry from '../svg/angry.svg'
+import depress from '../svg/depress.svg'
+import normal from '../svg/normal.svg'
+import good from '../svg/good.svg'
+import happy from '../svg/happy.svg'
 
 const Container = styled.div`
     margin-top: -10px;
@@ -63,7 +68,7 @@ const DiartTitle = styled.div`
   }
 `;
 
-const DiartContent = styled.div`
+const DiaryContent = styled.div`
   width: 100%;
   height: 80%;
   padding-top: 8px;
@@ -131,12 +136,17 @@ const EmotionDiv = styled.div`
 `;
 
 const SaveBtn = styled.button`
-    width: 80%; 
+    margin-top: 20px;
+    width: 85%; 
+    height: 5rem;
     padding: 20px;
     border-radius: 8px;
     background-color: black;
     color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    border: 0;
+    font-weight: bold;
+    font-size: large;
 `;
 
 const MyDiaryWrite = () => {
@@ -157,29 +167,29 @@ const MyDiaryWrite = () => {
             <input type='text' name='title' placeholder='제목'></input>
           </DiartTitle>
           <hr></hr>
-          <DiartContent>
+          <DiaryContent>
             <textarea name='content' placeholder='내용'></textarea>
-          </DiartContent>
+          </DiaryContent>
         </form>
       </DiaryEntry>
       <EmotionSection>
         <EmotionDiv mood='dissatisfied'>
-          <img src='../svg/angry.svg'/>
+          <img src={angry}/>
         </EmotionDiv>
         <EmotionDiv mood='bad'>
-          <img src='../svg/depress.svg'/>
+          <img src={depress}/>
         </EmotionDiv>
         <EmotionDiv mood='soso'>
-          <img src='../svg/normal.svg'/>
+          <img src={normal}/>
         </EmotionDiv>
         <EmotionDiv mood='good'>
-          <img src='../svg/good.svg'/>
+          <img src={good}/>
         </EmotionDiv>
         <EmotionDiv mood='happy'>
-          <img src='../svg/happy.svg'/>
+          <img src={happy}/>
         </EmotionDiv>
       </EmotionSection>
-      <SaveBtn></SaveBtn>
+      <SaveBtn>일기 저장</SaveBtn>
     </Container>
   );
 };
