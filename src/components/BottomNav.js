@@ -115,6 +115,11 @@ const MenuContainer = styled.div`
     opacity: ${(props) => (props.show ? 1 : 0)};
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
+
+    @media (max-width: 393px) {
+        bottom: 190px;
+        scale: 0.3;
+    }
 `;
 
 const BottomNav = () => {
