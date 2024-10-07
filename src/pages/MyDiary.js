@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import angry from '../svg/angry.svg'
+import depress from '../svg/depress.svg'
+import normal from '../svg/normal.svg'
+import good from '../svg/good.svg'
+import happy from '../svg/happy.svg'
 
 const DiaryBackground = styled.div`
     width: 100%;
@@ -85,19 +90,19 @@ const FeelDiv = styled.div`
     justify-content: center;
     align-items: center;
     background-color: ${({ mood }) => {
-    switch(mood) {
-      case 'dissatisfied':
-        return '#FF3B30';
-      case 'bad':
-        return '#FF9500';
-      case 'soso':
-        return '#FFCC00';
-      case 'good':
-        return '#34C759';
-      case 'happy':
-        return '#00C7BE';
-      default:
-        return 'gray';
+        switch (mood) {
+            case 'dissatisfied':
+                return '#FF3B30';
+            case 'bad':
+                return '#FF9500';
+            case 'soso':
+                return '#FFCC00';
+            case 'good':
+                return '#34C759';
+            case 'happy':
+                return '#00C7BE';
+            default:
+                return 'gray';
         }
     }};
     @media screen and (max-width: 600px) {
@@ -206,50 +211,50 @@ export const MyDiary = () => {
                         안녕하세요 서준님,
                     </DiaryName>
                     <DiaryToday>
-                        오늘의 하루는<br/> 어떠셨나요?
+                        오늘의 하루는<br /> 어떠셨나요?
                     </DiaryToday>
                     <FeelDivCover>
                         <FeelDiv mood='dissatisfied'>
-                            <img src='../svg/angry.svg'/>
+                            <img src={angry} />
                         </FeelDiv>
                         <FeelDiv mood='bad'>
-                            <img src='../svg/depress.svg'/>
+                            <img src={depress} />
                         </FeelDiv>
                         <FeelDiv mood='soso'>
-                            <img src='../svg/normal.svg'/>
+                            <img src={normal} />
                         </FeelDiv>
                         <FeelDiv mood='good'>
-                            <img src='../svg/good.svg'/>
+                            <img src={good} />
                         </FeelDiv>
                         <FeelDiv mood='happy'>
-                            <img src='../svg/happy.svg'/>
+                            <img src={happy} />
                         </FeelDiv>
                     </FeelDivCover>
                 </CoverFeelDiv>
             </FeelContainer>
             <DiaryTextCover>
-                <p style={{fontSize: '1.4rem', color: 'gray', fontWeight: 'bold'}}>최근 일기</p>
+                <p style={{ fontSize: '1.4rem', color: 'gray', fontWeight: 'bold' }}>최근 일기</p>
                 <DiaryViewAll href='my-diary-collection'>모두 보기</DiaryViewAll>
             </DiaryTextCover>
             <DiaryContainer>
                 <DiaryDiv>
                     <DiarySpaceBetween>
-                    <img src='../svg/angry.svg' style={{
-                        width: '3rem',
-                        height: '3rem'
-                    }}/>
+                        <img src={angry} style={{
+                            width: '3rem',
+                            height: '3rem'
+                        }} />
                         <DiaryButton>
                             <MoreVertIcon style={{
                                 height: '2rem', width: '2rem'
-                            }}/>
+                            }} />
                         </DiaryButton>
                     </DiarySpaceBetween>
                     <DiaryCalendar>
-                        <ScheduleIcon style={{marginRight: '0.1rem'}}/>
+                        <ScheduleIcon style={{ marginRight: '0.1rem' }} />
                         <span>28 May 21</span>
                     </DiaryCalendar>
                     <DiaryTitle>비트캠프 데브옵스 첫 날</DiaryTitle>
-                    <DiaryContent>인터넷이 끊켰다<br/>나는 너무 슬프다.</DiaryContent>
+                    <DiaryContent>인터넷이 끊켰다<br />나는 너무 슬프다.</DiaryContent>
                 </DiaryDiv>
             </DiaryContainer>
         </DiaryBackground>

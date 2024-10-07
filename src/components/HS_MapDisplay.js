@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import userMarker from '../svg/userMarker.svg';
+import hospitalMarker from '../svg/hospitalMarker.svg';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -69,7 +71,7 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                     position: initialLocation,
                     map: newMap,
                     icon: {
-                        url: `${process.env.PUBLIC_URL}/HS_images/userMarker.svg`,
+                        url: `${userMarker}`,
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
@@ -80,7 +82,7 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                     position: new naver.maps.LatLng(37.4997779, 127.0324107),
                     map: newMap,
                     icon: {
-                        url: `${process.env.PUBLIC_URL}/HS_images/hospitalMarker.svg`,
+                        url: `${hospitalMarker}`,
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },

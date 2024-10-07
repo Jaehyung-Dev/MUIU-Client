@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import JH_NaverLogin from '../components/JH_NaverLogin';
+import logo from '../svg/logo.svg';
 
 const Main = styled.main`
   display: flex;
@@ -180,7 +181,7 @@ export const Login = () => {
   return (
     <Main>
       <LogoDiv>
-        <img src='../svg/logo.svg' alt='logo'/>
+        <img src={logo} alt='logo'/>
         <p>안녕하세요<br/>마음이음입니다.</p>
       </LogoDiv>
       <InputDiv>

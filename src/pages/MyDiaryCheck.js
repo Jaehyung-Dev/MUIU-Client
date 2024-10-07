@@ -8,6 +8,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
+import good from '../svg/good.svg';
 
 const Container = styled.div`
     margin-top: -10px;
@@ -196,7 +197,7 @@ const MyDiaryCheck = () => {
 
             <DiaryEntry>
                 <EntryHeader>
-                    <img src={`${process.env.PUBLIC_URL}/svg/good.svg`} alt="좋음" />
+                    <img src={good} alt="좋음" />
                     <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
                     {menuVisible && (
                         <MenuContainer>

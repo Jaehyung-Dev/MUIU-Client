@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import depart from '../svg/출발.svg';
+import arrive from '../svg/도착.svg';
+import share from '../svg/공유.svg';
+import departHover from '../svg/출발-hover.svg';
+import arriveHover from '../svg/도착-hover.svg';
+import shareHover from '../svg/공유-hover.svg';
+import locationIcon from '../svg/장소위치.svg';
+import distanceIcon from '../svg/인근역.svg';
+import phoneIcon from '../svg/전화번호.svg';
+import websiteIcon from '../svg/웹사이트.svg';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -140,15 +150,15 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
     const [hoveredTab, setHoveredTab] = useState(null);
 
     const defaultImages = {
-        depart: `${process.env.PUBLIC_URL}/HS_images/출발.svg`,
-        arrive: `${process.env.PUBLIC_URL}/HS_images/도착.svg`,
-        share: `${process.env.PUBLIC_URL}/HS_images/공유.svg`,
+        depart: `${depart}`,
+        arrive: `${arrive}`,
+        share: `${share}`,
     };
 
     const hoverImages = {
-        depart: `${process.env.PUBLIC_URL}/HS_images/출발-hover.svg`,
-        arrive: `${process.env.PUBLIC_URL}/HS_images/도착-hover.svg`,
-        share: `${process.env.PUBLIC_URL}/HS_images/공유-hover.svg`,
+        depart: `${departHover}`,
+        arrive: `${arriveHover}`,
+        share: `${shareHover}`,
     };
 
     if (!isOpen) return null;
@@ -220,19 +230,19 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                 </HospitalName>
                 <Info>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/장소위치.svg`} alt="Location icon" />
+                        <InfoItemImg src={`${locationIcon}`} alt="Location icon" />
                         <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/인근역.svg`} alt="Distance icon" />
+                        <InfoItemImg src={`${distanceIcon}`} alt="Distance icon" />
                         <span>광교중앙역 5번 출구에서 311m</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/전화번호.svg`} alt="Phone icon" />
+                        <InfoItemImg src={`${phoneIcon}`} alt="Phone icon" />
                         <span>0000-1234-1234</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/웹사이트.svg`} alt="Website icon" />
+                        <InfoItemImg src={`${websiteIcon}`} alt="Website icon" />
                         <span>www.naver.com</span>
                     </InfoItem>
                 </Info>
