@@ -1,29 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import depart from '../svg/출발.svg';
-import arrive from '../svg/도착.svg';
-import share from '../svg/공유.svg';
-import departHover from '../svg/출발-hover.svg';
-import arriveHover from '../svg/도착-hover.svg';
-import shareHover from '../svg/공유-hover.svg';
+
+import departIcon from '../svg/출발.svg';
+import arriveIcon from '../svg/도착.svg';
+import shareIcon from '../svg/공유.svg';
+import departHoverIcon from '../svg/출발-hover.svg';
+import arriveHoverIcon from '../svg/도착-hover.svg';
+import shareHoverIcon from '../svg/공유-hover.svg';
+import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
+import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
+import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
 import locationIcon from '../svg/장소위치.svg';
 import distanceIcon from '../svg/인근역.svg';
 import phoneIcon from '../svg/전화번호.svg';
 import websiteIcon from '../svg/웹사이트.svg';
-
-import departIcon from '../HS_images/출발.svg';
-import arriveIcon from '../HS_images/도착.svg';
-import shareIcon from '../HS_images/공유.svg';
-import departHoverIcon from '../HS_images/출발-hover.svg';
-import arriveHoverIcon from '../HS_images/도착-hover.svg';
-import shareHoverIcon from '../HS_images/공유-hover.svg';
-import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
-import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
-import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
-import locationIcon from '../HS_images/장소위치.svg';
-import distanceIcon from '../HS_images/인근역.svg';
-import phoneIcon from '../HS_images/전화번호.svg';
-import websiteIcon from '../HS_images/웹사이트.svg';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -164,21 +154,6 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
-<<<<<<< HEAD
-=======
-    const defaultImages = {
-        depart: `${depart}`,
-        arrive: `${arrive}`,
-        share: `${share}`,
-    };
-
-    const hoverImages = {
-        depart: `${departHover}`,
-        arrive: `${arriveHover}`,
-        share: `${shareHover}`,
-    };
-
->>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
     if (!isOpen) return null;
 
     return (
@@ -248,21 +223,6 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                 </HospitalName>
                 <Info>
                     <InfoItem>
-<<<<<<< HEAD
-                        <InfoItemImg src={locationIcon} alt="Location icon" />
-                        <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
-                    </InfoItem>
-                    <InfoItem>
-                        <InfoItemImg src={distanceIcon} alt="Distance icon" />
-                        <span>광교중앙역 5번 출구에서 311m</span>
-                    </InfoItem>
-                    <InfoItem>
-                        <InfoItemImg src={phoneIcon} alt="Phone icon" />
-                        <span>0000-1234-1234</span>
-                    </InfoItem>
-                    <InfoItem>
-                        <InfoItemImg src={websiteIcon} alt="Website icon" />
-=======
                         <InfoItemImg src={`${locationIcon}`} alt="Location icon" />
                         <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
                     </InfoItem>
@@ -276,7 +236,6 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={`${websiteIcon}`} alt="Website icon" />
->>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         <span>www.naver.com</span>
                     </InfoItem>
                 </Info>
