@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import CreateIcon from '@mui/icons-material/Create';
 import angry from '../svg/angry.svg'
+import { useNavigate } from 'react-router-dom';
 
 const CoverDiv = styled.div`
     width: 100%;
@@ -118,6 +120,12 @@ const DiaryContent = styled.p`
 `
 
 const MyDiaryCollection = () => {
+    const navi = useNavigate();
+
+    const handleWriteClick = () => {
+        navi('/my-diary-write');
+    };
+
     return (
         <>
             <CoverDiv>
@@ -126,6 +134,7 @@ const MyDiaryCollection = () => {
                         margin: '0 1rem',
                     }} />
                     <input type='text' placeholder='Search'></input>
+                    <CreateIcon onClick={handleWriteClick}/>
                 </SearchDiv>
                 <CalendarDiv>
 
@@ -134,8 +143,7 @@ const MyDiaryCollection = () => {
                     <DiaryDiv>
                         <DiarySpaceBetween>
                             <img src={angry} style={{
-                                width: '3rem',
-                                height: '3rem'
+                                width: '3rem', height: '3rem'
                             }} />
                             <DiaryButton>
                                 <MoreVertIcon style={{

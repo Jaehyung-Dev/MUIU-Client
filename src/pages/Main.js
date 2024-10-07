@@ -5,6 +5,8 @@ import { MdGpsFixed } from "react-icons/md";
 import testImg from '../svg/test-img.svg';
 import bookmark from '../svg/bookmark.svg';
 import graphImg from '../svg/graphImg.svg';
+import counselEx from '../svg/counsel-ex.svg';
+
 
 const Content = styled.div`
 
@@ -166,7 +168,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/store-card1.png');
+                    background-image: url('/images/background.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -177,7 +179,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/store-card2.png');
+                    background-image: url('/images/background.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -339,7 +341,7 @@ export const Main = () => {
                 <Block>
                     <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
                     <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex"/>
+                    <img src={counselEx} alt="counsel-ex"/>
                 </Block>
             </Blocks>
             <Content>
