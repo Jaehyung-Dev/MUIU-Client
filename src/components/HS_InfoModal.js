@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import departIcon from '../svg/출발.svg';
+import arriveIcon from '../svg/도착.svg';
+import shareIcon from '../svg/공유.svg';
+import departHoverIcon from '../svg/출발-hover.svg';
+import arriveHoverIcon from '../svg/도착-hover.svg';
+import shareHoverIcon from '../svg/공유-hover.svg';
+import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
+import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
+import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
+import locationIcon from '../svg/장소위치.svg';
+import distanceIcon from '../svg/인근역.svg';
+import phoneIcon from '../svg/전화번호.svg';
+import websiteIcon from '../svg/웹사이트.svg';
+
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
     position: fixed;
@@ -135,20 +149,21 @@ const TabsInfoPicture = styled.div`
         color: #FFD700;
     }
 `;
+
 const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
     const defaultImages = {
-        depart: `${process.env.PUBLIC_URL}/HS_images/출발.svg`,
-        arrive: `${process.env.PUBLIC_URL}/HS_images/도착.svg`,
-        share: `${process.env.PUBLIC_URL}/HS_images/공유.svg`,
+        depart: departIcon,
+        arrive: arriveIcon,
+        share: shareIcon,
     };
 
     const hoverImages = {
-        depart: `${process.env.PUBLIC_URL}/HS_images/출발-hover.svg`,
-        arrive: `${process.env.PUBLIC_URL}/HS_images/도착-hover.svg`,
-        share: `${process.env.PUBLIC_URL}/HS_images/공유-hover.svg`,
+        depart: departHoverIcon,
+        arrive: arriveHoverIcon,
+        share: shareHoverIcon,
     };
 
     if (!isOpen) return null;
@@ -159,14 +174,14 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
 
                 <ImagesContainer onClick={(e) => {e.stopPropagation(); openPhotoPopUp();}}>
                     <MainImage>
-                        <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" />
+                        <img src={mainImage1} alt="병원 예시 이미지 1" />
                     </MainImage>
                     <SmallImages>
                         <SmallImagesEle>
-                            <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 2.jpg`} alt="병원 예시 이미지 2" />
+                            <img src={mainImage2} alt="병원 예시 이미지 2" />
                         </SmallImagesEle>
                         <SmallImagesEle isSecond>
-                            <img src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 3.jpg`} alt="병원 예시 이미지 3" />
+                            <img src={mainImage3} alt="병원 예시 이미지 3" />
                         </SmallImagesEle>
                     </SmallImages>
                 </ImagesContainer>
@@ -179,7 +194,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
                     >
                         <TabImage 
-                            src={hoveredTab === 'depart' ? hoverImages.depart : defaultImages.depart} 
+                            src={hoveredTab === 'depart' ? departHoverIcon : departIcon} 
                             alt="출발" 
                             className="tab-image" 
                         />
@@ -191,7 +206,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
                     >
                         <TabImage 
-                            src={hoveredTab === 'arrive' ? hoverImages.arrive : defaultImages.arrive} 
+                            src={hoveredTab === 'arrive' ? arriveHoverIcon : arriveIcon} 
                             alt="도착" 
                             className="tab-image" 
                         />
@@ -202,7 +217,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'share' ? hoverImages.share : defaultImages.share} 
+                            src={hoveredTab === 'share' ? shareHoverIcon : shareIcon} 
                             alt="공유" 
                             className="tab-image" 
                         />
@@ -220,19 +235,19 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                 </HospitalName>
                 <Info>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/장소위치.svg`} alt="Location icon" />
+                        <InfoItemImg src={locationIcon} alt="Location icon" />
                         <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/인근역.svg`} alt="Distance icon" />
+                        <InfoItemImg src={distanceIcon} alt="Distance icon" />
                         <span>광교중앙역 5번 출구에서 311m</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/전화번호.svg`} alt="Phone icon" />
+                        <InfoItemImg src={phoneIcon} alt="Phone icon" />
                         <span>0000-1234-1234</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${process.env.PUBLIC_URL}/HS_images/웹사이트.svg`} alt="Website icon" />
+                        <InfoItemImg src={websiteIcon} alt="Website icon" />
                         <span>www.naver.com</span>
                     </InfoItem>
                 </Info>

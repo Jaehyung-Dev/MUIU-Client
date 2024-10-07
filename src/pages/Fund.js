@@ -80,21 +80,21 @@ const Fund = () => {
   return (
     <Main>
       <FundCard
-        imageSrc="../svg/store-card1.svg"
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card1.png`}
         altText="호우피해 긴급모금 카드 이미지"
         title="호우피해 긴급모금"
         date="2024.6.16 ~ 2024.7.31"
         link="/fund-detail"
       />
       <FundCard
-        imageSrc="../svg/store-card2.svg"
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card2.png`}
         altText="산불피해 긴급모금 카드 이미지"
         title="산불피해 긴급모금"
         date="2024.7.01 ~ 2024.8.01"
         link="/fund-detail"
       />
       <FundCard
-        imageSrc="../svg/store-card3.svg"
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card3.png`}
         altText="산불피해 긴급모금 카드 이미지"
         title="전북 호우피해 구호키트 지원 캠페인"
         date="2024.7.16 ~ 2024.8.16"
