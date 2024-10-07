@@ -166,7 +166,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/background.png');
+                    background-image: url('/images/store-card1.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -177,7 +177,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/background.png');
+                    background-image: url('/images/store-card2.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
