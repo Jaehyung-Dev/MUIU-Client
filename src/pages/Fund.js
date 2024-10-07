@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import storecard1 from '../svg/store-card1.svg';
+import storecard2 from '../svg/store-card2.svg';
+import storecard3 from '../svg/store-card3.svg';
 
 // Styled components
 const Main = styled.main`
@@ -80,21 +83,21 @@ const Fund = () => {
   return (
     <Main>
       <FundCard
-        imageSrc="../svg/store-card1.svg"
+        imageSrc={storecard1}
         altText="호우피해 긴급모금 카드 이미지"
         title="호우피해 긴급모금"
         date="2024.6.16 ~ 2024.7.31"
         link="/fund-detail"
       />
       <FundCard
-        imageSrc="../svg/store-card2.svg"
+        imageSrc={storecard2}
         altText="산불피해 긴급모금 카드 이미지"
         title="산불피해 긴급모금"
         date="2024.7.01 ~ 2024.8.01"
         link="/fund-detail"
       />
       <FundCard
-        imageSrc="../svg/store-card3.svg"
+        imageSrc={storecard3}
         altText="산불피해 긴급모금 카드 이미지"
         title="전북 호우피해 구호키트 지원 캠페인"
         date="2024.7.16 ~ 2024.8.16"

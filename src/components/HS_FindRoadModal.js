@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import transportation from '../svg/대중교통.svg'
+import transportationHover from '../svg/대중교통-hover.svg'
+import car from '../svg/자동차.svg'
+import carHover from '../svg/자동차-hover.svg'
+import walk from '../svg/도보.svg'
+import walkHover from '../svg/도보-hover.svg'
+import bicycle from '../svg/자전거.svg'
+import bicycleHover from '../svg/자전거-hover.svg'
+import departIcon from '../svg/출발-icon.svg'
+import change from '../svg/변경.svg'
+import arrivalIcon from '../svg/도착-icon.svg'
+import findWayHover from '../svg/길찾기-hover.svg'
+import shortCut from '../svg/최적.svg'
 
 import trafficIcon from '../HS_images/대중교통.svg';
 import trafficHoverIcon from '../HS_images/대중교통-hover.svg';
@@ -207,6 +220,28 @@ const TimeText = styled.p`
 const HS_FindRoadModal = ({ isOpen, onClose }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
 
+<<<<<<< HEAD
+=======
+    const images = {
+        traffic: {
+            default: `${transportation}`,
+            hover: `${transportationHover}`
+        },
+        car: {
+            default: `${car}`,
+            hover: `${carHover}`
+        },
+        walk: {
+            default: `${walk}`,
+            hover: `${walkHover}`
+        },
+        bike: {
+            default: `${bicycle}`,
+            hover: `${bicycleHover}`
+        }
+    };
+
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
     if (!isOpen) return null;
 
     return (
@@ -263,7 +298,11 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
 
                 <SearchingBox>
                     <SearchingDepart>
+<<<<<<< HEAD
                         <SearchingImage src={departIcon} alt="출발" />
+=======
+                        <SearchingImage src={`${departIcon}`} alt="출발" />
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         <SearchingInput
                             type="text"
                             id="depart-input"
@@ -272,9 +311,15 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                             spellCheck="false"
                         />
                     </SearchingDepart>
+<<<<<<< HEAD
                     <ChangeIcon src={changeIcon} alt="변경" id="changeDeAr" />
                     <SearchingArrive>
                         <SearchingImage src={arriveIcon} alt="도착" />
+=======
+                    <ChangeIcon src={`${change}`} alt="변경" id="changeDeAr" />
+                    <SearchingArrive>
+                        <SearchingImage src={`${arrivalIcon}`} alt="도착" />
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         <SearchingInput
                             type="text"
                             id="arrive-input"
@@ -284,13 +329,21 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         />
                     </SearchingArrive>
                     <Finding>
+<<<<<<< HEAD
                         <FindingImage src={findIcon} alt="길찾기" id="find-btn" />
+=======
+                        <FindingImage src={`${findWayHover}`} alt="길찾기" id="find-btn" />
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                     </Finding>
                 </SearchingBox>
 
                 <FindingResultItems>
                     <FindingResultItem id="finding-result-item1">
+<<<<<<< HEAD
                         <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
+=======
+                        <FindingResultImage id="shortCut" src={`${shortCut}`} alt="최적" />
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         <TakingTime>
                             <GoH>
                                 11<TimeText>시간</TimeText>

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import SearchIcon from '@mui/icons-material/Search';
 
 // 이미지 임포트
 import searchIcon from '../HS_images/search-icon.svg'; // 상대 경로로 이미지 임포트
@@ -14,12 +15,6 @@ const SearchBarContainer = styled.div`
     border: 1px solid #666;
     border-radius: 20px;
     margin: 0 auto;
-`;
-
-const SearchIcon = styled.img`
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
 `;
 
 const SearchInput = styled.input`
@@ -38,7 +33,11 @@ const SearchInput = styled.input`
 const HS_SearchBar = () => {
     return (
         <SearchBarContainer>
+<<<<<<< HEAD
             <SearchIcon src={searchIcon} alt="search-icon" /> {/* 임포트한 이미지 사용 */}
+=======
+            <SearchIcon/>
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
             <SearchInput name="search-location" id="search-location" placeholder="인근 역 검색" />
         </SearchBarContainer>
     );

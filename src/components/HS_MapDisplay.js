@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import userMarker from '../svg/userMarker.svg';
+import hospitalMarker from '../svg/hospitalMarker.svg';
 
 import userMarkerIcon from '../HS_images/userMarker.svg';
 import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
@@ -72,7 +74,11 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                     position: initialLocation,
                     map: newMap,
                     icon: {
+<<<<<<< HEAD
                         url: userMarkerIcon, // 임포트한 이미지 사용
+=======
+                        url: `${userMarker}`,
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
@@ -82,7 +88,11 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                     position: new naver.maps.LatLng(37.4997779, 127.0324107),
                     map: newMap,
                     icon: {
+<<<<<<< HEAD
                         url: hospitalMarkerIcon, // 임포트한 이미지 사용
+=======
+                        url: `${hospitalMarker}`,
+>>>>>>> 9f39b60a2d6cf8c5f255b41ba32dc95b38e6c823
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
