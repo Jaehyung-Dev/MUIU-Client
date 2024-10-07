@@ -2,8 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 
-import searchIcon from '../HS_images/search-icon.svg'; 
-
 const SearchBarContainer = styled.div`
     width: 80%;
     max-width: calc(600px - 30px);
@@ -32,7 +30,8 @@ const SearchInput = styled.input`
 const HS_SearchBar = () => {
     return (
         <SearchBarContainer>
-            <SearchIcon src={searchIcon} alt="search-icon" />
+            <SearchIcon/>
+            <SearchInput name="search-location" id="search-location" placeholder="인근 역 검색" />
         </SearchBarContainer>
     );
 };

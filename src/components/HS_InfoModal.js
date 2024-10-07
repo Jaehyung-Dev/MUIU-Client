@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import departIcon from '../HS_images/출발.svg';
-import arriveIcon from '../HS_images/도착.svg';
-import shareIcon from '../HS_images/공유.svg';
-import departHoverIcon from '../HS_images/출발-hover.svg';
-import arriveHoverIcon from '../HS_images/도착-hover.svg';
-import shareHoverIcon from '../HS_images/공유-hover.svg';
+import departIcon from '../svg/출발.svg';
+import arriveIcon from '../svg/도착.svg';
+import shareIcon from '../svg/공유.svg';
+import departHoverIcon from '../svg/출발-hover.svg';
+import arriveHoverIcon from '../svg/도착-hover.svg';
+import shareHoverIcon from '../svg/공유-hover.svg';
 import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
 import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
 import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
-import locationIcon from '../HS_images/장소위치.svg';
-import distanceIcon from '../HS_images/인근역.svg';
-import phoneIcon from '../HS_images/전화번호.svg';
-import websiteIcon from '../HS_images/웹사이트.svg';
+import locationIcon from '../svg/장소위치.svg';
+import distanceIcon from '../svg/인근역.svg';
+import phoneIcon from '../svg/전화번호.svg';
+import websiteIcon from '../svg/웹사이트.svg';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};

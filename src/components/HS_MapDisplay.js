@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
-import userMarkerIcon from '../HS_images/userMarker.svg';
-import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
+import userMarkerIcon from '../svg/userMarker.svg';
+import hospitalMarkerIcon from '../svg/hospitalMarker.svg';
 
 const MapContainer = styled.div`
     width: 100%;

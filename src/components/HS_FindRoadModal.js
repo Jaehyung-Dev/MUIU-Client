@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import transportation from '../svg/대중교통.svg';
-import transportationHover from '../svg/대중교통-hover.svg';
-import bicycle from '../svg/자전거.svg';
-import bicycleHover from '../svg/자전거-hover.svg';
+import trafficIcon from '../svg/대중교통.svg';
+import trafficHoverIcon from '../svg/대중교통-hover.svg';
+import carIcon from '../svg/자동차.svg';
+import carHoverIcon from '../svg/자동차-hover.svg';
+import walkIcon from '../svg/도보.svg';
+import walkHoverIcon from '../svg/도보-hover.svg';
+import bikeIcon from '../svg/자전거.svg';
+import bikeHoverIcon from '../svg/자전거-hover.svg';
 import departIcon from '../svg/출발-icon.svg';
+import arriveIcon from '../svg/도착-icon.svg';
 import changeIcon from '../svg/변경.svg';
-import arrivalIcon from '../svg/도착-icon.svg';
-import findWayHover from '../svg/길찾기-hover.svg';
-import shortCut from '../svg/최적.svg';
-import carIcon from '../HS_images/자동차.svg';
-import carHoverIcon from '../HS_images/자동차-hover.svg';
-import walkIcon from '../HS_images/도보.svg';
-import walkHoverIcon from '../HS_images/도보-hover.svg';
+import findIcon from '../svg/길찾기-hover.svg';
+import optimalIcon from '../svg/최적.svg';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -274,7 +274,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                     </SearchingDepart>
                     <ChangeIcon src={changeIcon} alt="변경" id="changeDeAr" />
                     <SearchingArrive>
-                        <SearchingImage src={arrivalIcon} alt="도착" />
+                        <SearchingImage src={arriveIcon} alt="도착" />
                         <SearchingInput
                             type="text"
                             id="arrive-input"
@@ -284,13 +284,13 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         />
                     </SearchingArrive>
                     <Finding>
-                        <FindingImage src={findWayHover} alt="길찾기" id="find-btn" />
+                        <FindingImage src={findIcon} alt="길찾기" id="find-btn" />
                     </Finding>
                 </SearchingBox>
 
                 <FindingResultItems>
                     <FindingResultItem id="finding-result-item1">
-                        <FindingResultImage id="shortCut" src={shortCut} alt="최적" />
+                        <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
                         <TakingTime>
                             <GoH>
                                 11<TimeText>시간</TimeText>
