@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// 이미지 임포트
 import image1 from '../HS_images/병원 예시 이미지 1.jpg';
 import image2 from '../HS_images/병원 예시 이미지 2.jpg';
 import image3 from '../HS_images/병원 예시 이미지 3.jpg';

@@ -154,6 +154,18 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
+    const defaultImages = {
+        depart: departIcon,
+        arrive: arriveIcon,
+        share: shareIcon,
+    };
+
+    const hoverImages = {
+        depart: departHoverIcon,
+        arrive: arriveHoverIcon,
+        share: shareHoverIcon,
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -223,19 +235,19 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                 </HospitalName>
                 <Info>
                     <InfoItem>
-                        <InfoItemImg src={`${locationIcon}`} alt="Location icon" />
+                        <InfoItemImg src={locationIcon} alt="Location icon" />
                         <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${distanceIcon}`} alt="Distance icon" />
+                        <InfoItemImg src={distanceIcon} alt="Distance icon" />
                         <span>광교중앙역 5번 출구에서 311m</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${phoneIcon}`} alt="Phone icon" />
+                        <InfoItemImg src={phoneIcon} alt="Phone icon" />
                         <span>0000-1234-1234</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={`${websiteIcon}`} alt="Website icon" />
+                        <InfoItemImg src={websiteIcon} alt="Website icon" />
                         <span>www.naver.com</span>
                     </InfoItem>
                 </Info>

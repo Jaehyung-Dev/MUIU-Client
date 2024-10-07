@@ -221,7 +221,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
+                            src={hoveredTab === 'traffic' ? transportationHover : transportation} 
                             alt="대중교통" 
                             className="tab-image" 
                         />
@@ -254,7 +254,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'bike' ? bikeHoverIcon : bikeIcon} 
+                            src={hoveredTab === 'bike' ? bicycleHover : bicycle} 
                             alt="자전거" 
                             className="tab-image" 
                         />
@@ -294,7 +294,6 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         <TakingTime>
                             <GoH>
                                 11<TimeText>시간</TimeText>
-
                             </GoH>
                             <GoM>
                                 11<TimeText>분</TimeText>
