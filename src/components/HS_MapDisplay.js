@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import userMarkerIcon from '../HS_images/userMarker.svg';
+import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
+
 const MapContainer = styled.div`
     width: 100%;
     height: 100%;
@@ -69,18 +72,17 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
                     position: initialLocation,
                     map: newMap,
                     icon: {
-                        url: `${process.env.PUBLIC_URL}/HS_images/userMarker.svg`,
+                        url: userMarkerIcon, // 임포트한 이미지 사용
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
                 });
 
-                
                 const hospitalMarker = new naver.maps.Marker({
                     position: new naver.maps.LatLng(37.4997779, 127.0324107),
                     map: newMap,
                     icon: {
-                        url: `${process.env.PUBLIC_URL}/HS_images/hospitalMarker.svg`,
+                        url: hospitalMarkerIcon, // 임포트한 이미지 사용
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
@@ -101,7 +103,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
             map.setCenter(newLocation);
         }
     }, [userLocation, map]);
-
 
     return (
         <MapContainer>

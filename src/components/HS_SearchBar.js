@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// 이미지 임포트
+import searchIcon from '../HS_images/search-icon.svg'; // 상대 경로로 이미지 임포트
+
 const SearchBarContainer = styled.div`
     width: 80%;
     max-width: calc(600px - 30px);
@@ -35,7 +38,7 @@ const SearchInput = styled.input`
 const HS_SearchBar = () => {
     return (
         <SearchBarContainer>
-            <SearchIcon src={`${process.env.PUBLIC_URL}/HS_images/search-icon.svg`} alt="search-icon" />
+            <SearchIcon src={searchIcon} alt="search-icon" /> {/* 임포트한 이미지 사용 */}
             <SearchInput name="search-location" id="search-location" placeholder="인근 역 검색" />
         </SearchBarContainer>
     );

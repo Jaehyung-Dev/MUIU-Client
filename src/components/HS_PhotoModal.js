@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// 이미지 임포트
+import image1 from '../HS_images/병원 예시 이미지 1.jpg';
+import image2 from '../HS_images/병원 예시 이미지 2.jpg';
+import image3 from '../HS_images/병원 예시 이미지 3.jpg';
+import image4 from '../HS_images/병원 예시 이미지 4.jpg';
+
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
     position: fixed;
@@ -30,7 +36,6 @@ const ImagesBox = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 5px;
-    overflow-y: auto;
 `;
 
 const Image = styled.img`
@@ -91,7 +96,7 @@ const HS_PhotoModal = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
             <ModalContent onClick={(e) => {e.stopPropagation();}}>
-                <BackBtn onClick={onClose} >&lt; </BackBtn>
+                <BackBtn onClick={onClose}>&lt; </BackBtn>
 
                 <TabsInfoPicture>
                     <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={onClose}>정보</Tab>
@@ -99,10 +104,10 @@ const HS_PhotoModal = ({ isOpen, onClose }) => {
                 </TabsInfoPicture>
 
                 <ImagesBox>
-                    <Image src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 1.jpg`} alt="병원 예시 이미지 1" />
-                    <Image src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 2.jpg`} alt="병원 예시 이미지 2" />
-                    <Image src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 3.jpg`} alt="병원 예시 이미지 3" />
-                    <Image src={`${process.env.PUBLIC_URL}/HS_images/병원 예시 이미지 4.jpg`} alt="병원 예시 이미지 4" />
+                    <Image src={image1} alt="병원 예시 이미지 1" />
+                    <Image src={image2} alt="병원 예시 이미지 2" />
+                    <Image src={image3} alt="병원 예시 이미지 3" />
+                    <Image src={image4} alt="병원 예시 이미지 4" />
                 </ImagesBox>
             </ModalContent>
         </Modal>
