@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav'; // 공용 Footer 컴포넌트
 
@@ -112,7 +112,14 @@ const DMHMDefinition = () => {
 
     // 스크롤을 페이지 상단으로 이동
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
   };
+
+    // 페이지 로드 시 스크롤을 맨 위로 이동
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+  
 
   return (
     <>
@@ -181,7 +188,7 @@ const DMHMDefinition = () => {
               <GrayBox>
                 <b>재난의 목격</b><br /><br />
                 시체, 화염, 가옥의 붕괴, 사람들의 혼란 등을 목격
-              </GrayBox>
+              </GrayBox><br/><br/>
             </>
           )}
 
