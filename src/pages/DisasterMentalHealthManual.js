@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav';
 import { useNavigate } from 'react-router-dom';
@@ -85,6 +85,12 @@ const MenuList = () => {
 
 // 전체 페이지 컴포넌트
 const DisasterMentalHealthManual = () => {
+
+    // 페이지 이동 시 스크롤을 맨 위로
+    useEffect(() => {
+      window.scrollTo(0, 0); // 페이지가 로드될 때 스크롤을 맨 위로 이동
+    }, []);
+
   return (
     <AppContainer>
       {/* <Header /> */}

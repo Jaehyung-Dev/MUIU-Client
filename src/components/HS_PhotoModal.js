@@ -5,6 +5,7 @@ import image1 from '../HS_images/병원 예시 이미지 1.jpg';
 import image2 from '../HS_images/병원 예시 이미지 2.jpg';
 import image3 from '../HS_images/병원 예시 이미지 3.jpg';
 import image4 from '../HS_images/병원 예시 이미지 4.jpg';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -76,7 +77,7 @@ const TabsInfoPicture = styled.div`
     }
 `;
 
-const BackBtn = styled.button`
+const BackButton = styled.button`
     width: 100%;
     height: 30px;
     text-align: left;
@@ -86,7 +87,8 @@ const BackBtn = styled.button`
     font-weight: bold;
     color: #A1A1A1;
     cursor: pointer;
-    padding-left: 15px;
+    padding: 5px 10px 0;
+    align-items: center;
 `;
 
 const HS_PhotoModal = ({ isOpen, onClose }) => {
@@ -95,7 +97,7 @@ const HS_PhotoModal = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
             <ModalContent onClick={(e) => {e.stopPropagation();}}>
-                <BackBtn onClick={onClose}>&lt; </BackBtn>
+                <BackButton onClick={onClose}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackButton>
 
                 <TabsInfoPicture>
                     <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={onClose}>정보</Tab>
