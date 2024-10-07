@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { MdGpsFixed } from "react-icons/md";
+import testImg from '../svg/test-img.svg';
+import bookmark from '../svg/bookmark.svg';
+import graphImg from '../svg/graphImg.svg';
 
 const Content = styled.div`
-    // margin-top: 62px;
+
 `;
 
 const Section = styled.div`
@@ -134,6 +138,15 @@ const Section = styled.div`
         }
     }
 
+    button.seeAll {
+        font-family: 'Pretendard-Regular';
+        font-size: 10px;
+        color: gray;
+        margin-left: auto;
+        background-color: transparent;
+        border: none;
+    }
+
     .funding-items {
         width: 100%;
         height: 150px;
@@ -153,7 +166,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/Main/backgroundImg1.svg');
+                    background-image: url('/images/store-card1.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -164,7 +177,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/Main/backgroundImg2.svg');
+                    background-image: url('/images/store-card2.png');
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -208,7 +221,7 @@ const Banner = styled.div`
     padding: 20px;
     width: 90%;
     height: 100px;
-    background-image: url('/images/Main/test-img.svg');
+    background-image: url(${testImg});
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat; 
@@ -248,6 +261,12 @@ const Block = styled.div`
 `;
 
 export const Main = () => {
+    const navi = useNavigate();
+
+    const handleFundClick = () => {
+        navi('/fund');
+    };
+
     return (
         <>
             <Content>
@@ -256,7 +275,7 @@ export const Main = () => {
                     <div className="bookmark-group">
                         <div className="bookmark">
                             <div className="bookmark-img">
-                                <img src="/images/Main/bookmark.svg" alt="bookmark"/>
+                                <img src={bookmark} alt="bookmark"/>
                             </div>
                             <div className="bookmark-title">상담접수지</div>
                             <div className="bookmark-content">
@@ -266,7 +285,7 @@ export const Main = () => {
 
                         <div className="bookmark">
                             <div className="bookmark-img">
-                                <img src="/images/Main/bookmark.svg" alt="bookmark"/>
+                                <img src={bookmark} alt="bookmark"/>
                             </div>
                             <div className="bookmark-title">상담접수지</div>
                             <div className="bookmark-content">
@@ -276,7 +295,7 @@ export const Main = () => {
 
                         <div className="bookmark">
                             <div className="bookmark-img">
-                                <img src="/images/Main/bookmark.svg" alt="bookmark"/>
+                                <img src={bookmark} alt="bookmark"/>
                             </div>
                             <div className="bookmark-title">상담접수지</div>
                             <div className="bookmark-content">
@@ -315,22 +334,23 @@ export const Main = () => {
                 <Block>
                     <div className="block-text-bold">안녕하세요. 서준님,</div>
                     <div className="block-text-small">오늘의 하루는<br/>어떠셨나요?</div>
-                    <img src="/images/Main/graphImg.svg" alt="graphImg"/>
+                    <img src={graphImg} alt="graphImg"/>
                 </Block>
                 <Block>
                     <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
                     <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src="/images/Main/counsel-ex.svg" alt="counsel-ex"/>
+                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex"/>
                 </Block>
             </Blocks>
             <Content>
                 <Section>
                     <h2>재난 안전 크라우드 펀딩
-                        <a className="seeAll" href="#">전체보기</a> {/** 추후 navi나 Nav로 바꿀 예정 */}
+                        <button className="seeAll" onClick={handleFundClick}>전체보기</button>
                     </h2>
                     
                     <div className="btn-group">
                         <button className="checked">재난기부금</button>
+                        &nbsp;&nbsp;
                         <button>재난용품</button>
                     </div>
 
@@ -348,7 +368,6 @@ export const Main = () => {
                                 </div>
                             </div>
                         </div>
-
                         <div className="funding-item-section">
                             <div className="funding-item">
                                 <div className="funding-top2">

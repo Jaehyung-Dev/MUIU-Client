@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-// 스타일 컴포넌트 정의
+import trafficIcon from '../svg/대중교통.svg';
+import trafficHoverIcon from '../svg/대중교통-hover.svg';
+import carIcon from '../svg/자동차.svg';
+import carHoverIcon from '../svg/자동차-hover.svg';
+import walkIcon from '../svg/도보.svg';
+import walkHoverIcon from '../svg/도보-hover.svg';
+import bikeIcon from '../svg/자전거.svg';
+import bikeHoverIcon from '../svg/자전거-hover.svg';
+import departIcon from '../svg/출발-icon.svg';
+import arriveIcon from '../svg/도착-icon.svg';
+import changeIcon from '../svg/변경.svg';
+import findIcon from '../svg/길찾기-hover.svg';
+import optimalIcon from '../svg/최적.svg';
+
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
     position: fixed;
@@ -21,7 +34,7 @@ const ModalContent = styled.div`
     width: 90%;
     max-width: 600px;
     height: 85%;
-    overflow: hidden;s
+    overflow: hidden;
 `;
 
 const BackBtn = styled.button`
@@ -104,12 +117,10 @@ const SearchingImage = styled.img`
 
 const SearchingInput = styled.input`
     width: 75%;
-    max-width: 
     height: 35px;
     resize: none;
     outline: none;
     border: none;
-    overflow: hidden;
 
     &::placeholder {
         color: gray;
@@ -192,33 +203,15 @@ const TimeText = styled.p`
     margin-left: 3px;
     font-size: 15px;
 `;
+
 const HS_FindRoadModal = ({ isOpen, onClose }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
-
-    const images = {
-        traffic: {
-            default: `${process.env.PUBLIC_URL}/HS_images/대중교통.svg`,
-            hover: `${process.env.PUBLIC_URL}/HS_images/대중교통-hover.svg`
-        },
-        car: {
-            default: `${process.env.PUBLIC_URL}/HS_images/자동차.svg`,
-            hover: `${process.env.PUBLIC_URL}/HS_images/자동차-hover.svg`
-        },
-        walk: {
-            default: `${process.env.PUBLIC_URL}/HS_images/도보.svg`,
-            hover: `${process.env.PUBLIC_URL}/HS_images/도보-hover.svg`
-        },
-        bike: {
-            default: `${process.env.PUBLIC_URL}/HS_images/자전거.svg`,
-            hover: `${process.env.PUBLIC_URL}/HS_images/자전거-hover.svg`
-        }
-    };
 
     if (!isOpen) return null;
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent  style={{backgroundColor: '#F3F3F3'}} onClick={(e) => {e.stopPropagation();}}>
+            <ModalContent style={{ backgroundColor: '#F3F3F3' }} onClick={(e) => { e.stopPropagation(); }}>
                 <BackBtn onClick={onClose}>&lt; </BackBtn>
                 
                 <SelectVehicle>
@@ -228,7 +221,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'traffic' ? images.traffic.hover : images.traffic.default} 
+                            src={hoveredTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
                             alt="대중교통" 
                             className="tab-image" 
                         />
@@ -239,7 +232,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'car' ? images.car.hover : images.car.default} 
+                            src={hoveredTab === 'car' ? carHoverIcon : carIcon} 
                             alt="자동차" 
                             className="tab-image" 
                         />
@@ -250,7 +243,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'walk' ? images.walk.hover : images.walk.default} 
+                            src={hoveredTab === 'walk' ? walkHoverIcon : walkIcon} 
                             alt="도보" 
                             className="tab-image" 
                         />
@@ -261,7 +254,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         onMouseLeave={() => setHoveredTab(null)}
                     >
                         <TabImage 
-                            src={hoveredTab === 'bike' ? images.bike.hover : images.bike.default} 
+                            src={hoveredTab === 'bike' ? bikeHoverIcon : bikeIcon} 
                             alt="자전거" 
                             className="tab-image" 
                         />
@@ -270,7 +263,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
 
                 <SearchingBox>
                     <SearchingDepart>
-                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/출발-icon.svg`} alt="출발" />
+                        <SearchingImage src={departIcon} alt="출발" />
                         <SearchingInput
                             type="text"
                             id="depart-input"
@@ -279,9 +272,9 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                             spellCheck="false"
                         />
                     </SearchingDepart>
-                    <ChangeIcon src={`${process.env.PUBLIC_URL}/HS_images/변경.svg`} alt="변경" id="changeDeAr" />
+                    <ChangeIcon src={changeIcon} alt="변경" id="changeDeAr" />
                     <SearchingArrive>
-                        <SearchingImage src={`${process.env.PUBLIC_URL}/HS_images/도착-icon.svg`} alt="도착" />
+                        <SearchingImage src={arriveIcon} alt="도착" />
                         <SearchingInput
                             type="text"
                             id="arrive-input"
@@ -291,13 +284,13 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                         />
                     </SearchingArrive>
                     <Finding>
-                        <FindingImage src={`${process.env.PUBLIC_URL}/HS_images/길찾기-hover.svg`} alt="길찾기" id="find-btn" />
+                        <FindingImage src={findIcon} alt="길찾기" id="find-btn" />
                     </Finding>
                 </SearchingBox>
 
                 <FindingResultItems>
                     <FindingResultItem id="finding-result-item1">
-                        <FindingResultImage id="shortCut" src={`${process.env.PUBLIC_URL}/HS_images/최적.svg`} alt="최적" />
+                        <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
                         <TakingTime>
                             <GoH>
                                 11<TimeText>시간</TimeText>

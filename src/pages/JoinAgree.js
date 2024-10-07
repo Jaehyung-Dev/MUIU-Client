@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import logo from '../svg/logo.svg';
 
 const Main = styled.main`
   width: 100%;
@@ -168,7 +169,7 @@ const JoinAgree = () => {
     <>
         <Main>
             <WelcomeDiv>
-                <img src="../svg/logo.svg" alt="logo" />
+                <img src={logo} alt="logo" />
                 <p>환영합니다!</p>
             </WelcomeDiv>
 
