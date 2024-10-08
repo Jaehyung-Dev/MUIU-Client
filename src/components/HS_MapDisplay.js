@@ -91,8 +91,8 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
     useEffect(() => {
         if (searchQuery) {
             const fetchLocalData = async () => {
-                const client_id = '6um4uarnuv'; // 클라이언트 ID
-                const client_secret = 'yKRqSVB06Gt0EBoYyRaYAdDbkfWfFXNc7rsCZ7f8'; // 클라이언트 비밀
+                const client_id = '6um4uarnuv';
+                const client_secret = 'yKRqSVB06Gt0EBoYyRaYAdDbkfWfFXNc7rsCZ7f8';
                 const api_url = `https://openapi.naver.com/v1/search/local?query=${encodeURI(searchQuery)}`;
 
                 try {
