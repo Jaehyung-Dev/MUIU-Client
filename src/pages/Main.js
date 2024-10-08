@@ -259,12 +259,12 @@ export const Main = () => {
                 <Block onClick={handleDiaryClick}>
                     <div className="block-text-bold">안녕하세요.<br/> 서준님,</div>
                     <div className="block-text-small">오늘의 하루는<br/>어떠셨나요?</div>
-                    <img src={graphImg} alt="graphImg" style={{marginLeft: "10%"}}/>
+                    <img src={graphImg} alt="graphImg" style={{marginBottom: "-5%"}}/>
                 </Block>
                 <Block>
                     <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
                     <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex"/>
+                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex" style={{marginBottom: "5%"}}/>
                 </Block>
             </Blocks>
             <Content>
