@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import styled from 'styled-components'; 
 import DonationDetails from '../components/DonationDetails';
@@ -11,10 +11,14 @@ import CheckAfterIcon from '@mui/icons-material/CheckCircleRounded';
 // Styled components
 const Main = styled.main`
 
+  .payment-box{
+    margin: 0 1rem;
+  }
   .payment-input-box {
     margin-top: 3.5rem;
     display: flex;
     justify-content: space-between;
+    font-weight: 600;
   }
 
   .fund-txt {
@@ -44,12 +48,17 @@ const Main = styled.main`
     display: flex;
     align-items: center; 
     padding-bottom: 0.3rem;
-    border: none;
 
     .won {
       color: #333;
       font-family: 'Pretendard-SemiBold';
       margin-right: 1rem;
+      font-weight:600;
+    }
+
+    input{
+      border: none;
+      font-size: 1rem;
     }
   }
 
@@ -123,6 +132,7 @@ const Main = styled.main`
       border-bottom: 1.5px solid #333;
       padding: 0.5rem;
       font-size: 1rem;
+      font-weight:600;
     }
 
     .name-input:focus {
@@ -154,24 +164,30 @@ const Main = styled.main`
     background-color: #3A76E9;
     color: #fff;
     font-family: 'Pretendard-SemiBold';
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.15rem;
     margin: 3rem 0 2rem 0;
     cursor: pointer;
+    font-weight: 600;
   }
 `;
 
 
 const FundPayment = () => {
-    const [percentage, setPercentage] = useState(0);
+    const [percentage, setPercentage] = useState('');
     const [targetAmount] = useState(1000000);
     const [currentAmount] = useState(400000);
     const [totalAmount, setTotalAmount] = useState(0);
     const [charCount, setCharCount] = useState(0);
     const [name, setName] = useState('');
-    
+
+    const totalAmountRef = useRef(null); // useRef를 통해 input 요소에 접근
+    const nameInputRef = useRef(null); // 기부자 성함 input을 참조하는 useRef
     const navigate = useNavigate(); // useNavigate를 사용해 페이지 이동
   
     useEffect(() => {
+      window.scrollTo(0, 0);
+      
       const calculatedPercentage = (currentAmount / targetAmount) * 100;
       setPercentage(calculatedPercentage);
     }, [currentAmount, targetAmount]);
@@ -181,7 +197,7 @@ const FundPayment = () => {
         setTotalAmount(totalAmount + amount);
     };
 
-    // 직접 입력
+    // 금액 입력 시 호출되는 함수
     const handleCustomAmountChange = (e) => {
         setTotalAmount(parseInt(e.target.value || '', 10));
     };
@@ -211,8 +227,23 @@ const FundPayment = () => {
       setIsAnonymous(!isAnonymous); // true <-> false로 토글
     };
 
-    // 결제 시스템 페이지에 보낼 내용
+    
     const handleSubmit = () => {
+      
+      if (!totalAmount) {
+        alert("기부 금액을 입력해주세요");
+        totalAmountRef.current.focus(); // 기부 금액 input에 포커스
+        return;
+      }
+    
+      if (!name && !isAnonymous) { // 익명이 아니면서 이름이 비어있을 때
+        alert("기부자 성함을 입력해주세요");
+        nameInputRef.current.focus(); // 기부자 성함 input에 포커스
+        return;
+      }
+    
+      // 기부 로직 처리
+      console.log("기부 완료");
       navigate('/fund-payment-system', {
         state: {
           name: isAnonymous ? '익명 기부자' : name,
@@ -234,6 +265,7 @@ const FundPayment = () => {
             <span className="fund-txt">기부금액</span>
             <div className="won-box">
               <input
+                ref={totalAmountRef}
                 type="number"
                 id="total-amount"
                 className="won"
@@ -274,10 +306,13 @@ const FundPayment = () => {
 
           <div className="name-input-box">
             <input 
+              ref={nameInputRef} 
               type="text" 
               className="name-input" 
               placeholder={isAnonymous ? "익명 기부자" : "기부자 성함"}
               disabled={isAnonymous} // 익명이면 수정 불가능
+              value={name}
+              onChange={(e) => setName(e.target.value)} 
             />
             <div className='anonymous-fund' onClick={handleAnonymousToggle}>
               {/* 익명 상태에 따라 아이콘 변경 */}

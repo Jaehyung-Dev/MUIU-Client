@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import DonationDetails from '../components/DonationDetails';
 
@@ -7,16 +7,16 @@ import DonationDetails from '../components/DonationDetails';
 const Main = styled.main`
 
   .fund-btn {
-    height: 2rem;
-    width: 8.5rem;
+    height: 2.5rem;
+    width: 9rem;
     border: none;
     border-radius: 0.35rem;
     display: block;
     margin: 5rem auto;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     background-color: #3A76E9;
     color: #fff;
-    // font-family: 'Pretendard-SemiBold';
+    font-weight: 600;
     font-size: 1.2rem;
     cursor: pointer;
   }
@@ -36,32 +36,37 @@ const Main = styled.main`
   }
 
   .post-detail-title {
-    // font-family: 'Pretendard-SemiBold';
-    // font-size: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
     margin-bottom: 1rem;
   }
 
   .post-detail-content {
-    // font-family: 'Pretendard-Regular';
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.3;
   }
 
-  .detail-info {
-    // font-family: 'Pretendard-Bold';
-    margin: 1rem;
-  }
+  .detail-info-box{
 
-  .detail-content {
-    margin: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .detail-info-description {
-    color: #9e9e9e;
-    font-size: 0.8rem;
-    margin: 0.7rem 0 0.7rem 0.5rem;
+    .detail-info {
+      font-weight: 600;
+      margin: 1rem;
+    }
+  
+    .detail-content {
+      margin: 0.65rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    }
+  
+    .detail-info-description {
+      color: #9e9e9e;
+      font-size: 0.85rem;
+      margin: 0.7rem 0 4rem 0.7rem;
+    }
   }
 
   @media (max-width: 600px) {
@@ -93,6 +98,8 @@ const FundDetail = () => {
     const navigate = useNavigate(); // useNavigate를 사용해 페이지 이동
   
     useEffect(() => {
+      window.scrollTo(0, 0);
+      
       const calculatedPercentage = (currentAmount / targetAmount) * 100;
       setPercentage(calculatedPercentage);
     }, [currentAmount, targetAmount]);
@@ -130,27 +137,29 @@ const FundDetail = () => {
   
         <div className="separator"></div>
   
-        <div className="detail-info">모금함 상세정보</div>
-        <div className="separator-thin"></div>
-        <div className="detail-content">
-          <span>프로젝트팀</span>
-          <span>강동종합사회복지관</span>
-        </div>
-        <div className="detail-content">
-          <span>모금기간</span>
-          <span>2024.07.26 - 2024.10.26</span>
-        </div>
-        <div className="detail-content">
-          <span>사업기간</span>
-          <span>2024.11.07 - 2024.11.28</span>
-        </div>
-        <div className="detail-content">
-          <span>영수증 발급기간</span>
-          <span>한국사회복지관협회</span>
-        </div>
-        <div className="separator-thin"></div>
-        <div className="detail-info-description">
-          본 모금은 한국사회복지관협회에서 가업 검토 및 기부금 집행, 사후관리를 담당하고 있습니다.
+        <div className='detail-info-box'>
+          <div className="detail-info">모금함 상세정보</div>
+          <div className="separator-thin"></div>
+          <div className="detail-content">
+            <span>프로젝트팀</span>
+            <span>강동종합사회복지관</span>
+          </div>
+          <div className="detail-content">
+            <span>모금기간</span>
+            <span>2024.07.26 - 2024.10.26</span>
+          </div>
+          <div className="detail-content">
+            <span>사업기간</span>
+            <span>2024.11.07 - 2024.11.28</span>
+          </div>
+          <div className="detail-content">
+            <span>영수증 발급기간</span>
+            <span>한국사회복지관협회</span>
+          </div>
+          <div className="separator-thin"></div>
+          <div className="detail-info-description">
+            본 모금은 한국사회복지관협회에서 가업 검토 및 기부금 집행, 사후관리를 담당하고 있습니다.
+          </div>
         </div>
       </Main>
     );
