@@ -158,6 +158,10 @@ const CalendarWrapper = styled.div`
     gap: 2rem;
     text-align: center;
     margin-top: 10px;
+
+    @media (max-width: 600px) {
+        gap: 0.5rem; 
+    }
 `;
 
 const DayBox = styled.div`
@@ -179,17 +183,27 @@ const WeekDaysHeader = styled.div`
     margin-bottom: 0.5rem;
     text-align: center;
     color: gray;
+
+    @media (max-width: 600px) {
+        gap: 2rem;
+    }
 `;
 
 const MiniCalendar = styled.div`
     position: absolute;
-    top: 240px;
-    right: 450px;
+    top: 15rem;
+    right: 16rem;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 1rem;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+
+    @media (max-width: 393px) {
+        top: 35%;
+        right: 12%;
+    }
 `;
 
 const MiniCalendarHeader = styled.div`

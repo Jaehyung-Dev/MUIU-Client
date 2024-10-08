@@ -176,6 +176,10 @@ const Block = styled.div`
     // margin: 5px
     padding: 0.8rem;
     width: 43%;
+
+    @media (max-width: 393px) {
+        width: 40%;
+    }
     
     .block-text-bold {
         font-weight: bold;
@@ -192,6 +196,22 @@ const Block = styled.div`
         width: 100%;
         height: 125px;
         padding-top: 10px;
+        align-items: center;
+        justify-content: center;
+
+        @media (max-width: 393px) {
+            margin-bottom: -30px;
+        }
+    }
+
+    svg {
+        align-items: center;
+        justify-content: center;
+
+        @media (max-width: 393px) {
+            margin-left: -50px;
+            margin-bottom: 20px;
+        }
     }
 `;
 
@@ -237,7 +257,7 @@ export const Main = () => {
             </Content>
             <Blocks>
                 <Block onClick={handleDiaryClick}>
-                    <div className="block-text-bold">안녕하세요. 서준님,</div>
+                    <div className="block-text-bold">안녕하세요.<br/> 서준님,</div>
                     <div className="block-text-small">오늘의 하루는<br/>어떠셨나요?</div>
                     <img src={graphImg} alt="graphImg" style={{marginLeft: "10%"}}/>
                 </Block>
