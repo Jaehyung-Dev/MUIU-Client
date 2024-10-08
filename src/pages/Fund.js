@@ -59,12 +59,6 @@ const Main = styled.main`
     z-index: 100;
   }
  
-  @media (min-width: 601px) {
-    body {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-  }
 
   @media (max-width: 600px) {
   // 카드 이미지 안넘치게 조정
@@ -72,6 +66,18 @@ const Main = styled.main`
       width: 100%;
       height: auto; 
       object-fit: cover; 
+    }
+
+    .card-text {
+      font-size: 1.25rem;
+    }
+
+    .card-date{
+      font-size: 0.9rem;
+    }
+
+    .write-button {
+      font-size: 1.15rem;
     }
   }
 `;

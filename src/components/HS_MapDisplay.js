@@ -100,6 +100,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         }
     }, [userLocation, map]);
 
+    // 입력 받은 주소를 지도에 띄우기
     useEffect(() => {
         if (searchQuery) {
             const fetchLocalData = async () => {
