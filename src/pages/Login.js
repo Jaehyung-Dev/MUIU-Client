@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import JH_NaverLogin from '../components/JH_NaverLogin';
 import logo from '../svg/logo.svg';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../apis/memberApis';
 
 const Main = styled.main`
+  
+`;
+
+const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,7 +37,7 @@ const Main = styled.main`
     padding: 0;
     color: black;
   }
-`;
+`
 
 const DefaultDiv = styled.div`
   margin: 1rem 0;
@@ -178,36 +185,82 @@ const SnsBarText = styled.span`
 `;
 
 export const Login = () => {
+  const [loginForm, setLoginForm] = useState({
+    username: '',
+    password: ''
+  });
+
+  const dispatch = useDispatch();
+  const navi = useNavigate();
+
+  const changeTextField = useCallback((e) => {
+      setLoginForm({
+          ...loginForm,
+          [e.target.name]: e.target.value
+      });
+  }, [loginForm]);
+
+  const handleLogin = useCallback((e) => {
+    e.preventDefault();
+
+    // dispatch의 비동기 처리가 제대로 완료됐을 때는 then 메소드의 state에 
+    // action 객체가 하나 넘어오고 에러가 발생했을 때는 에러 action 객체가 담긴다.
+    dispatch(login(loginForm)).then((action) => {
+        if(action.type === 'members/login/fulfilled') {
+            navi("/");
+        }
+    });
+
+}, [loginForm, dispatch, navi]);
   return (
     <Main>
-      <LogoDiv>
-        <img src={logo} alt='logo'/>
-        <p>안녕하세요<br/>마음이음입니다.</p>
-      </LogoDiv>
-      <InputDiv>
-        <InputDefault type="text" placeholder="아이디를 입력하세요" />
-      </InputDiv>
-      <InputDiv>
-        <InputDefault type="password" placeholder="비밀번호를 입력하세요" />
-      </InputDiv>
-      <LoginDiv>
-        <LoginButton>
-          <p>로그인</p>
-        </LoginButton>
-      </LoginDiv>
-      <DefaultDiv>
-        <TextHover>아이디 찾기</TextHover>
-        <DivLine></DivLine>
-        <TextHover>비밀번호 찾기</TextHover>
-        <DivLine></DivLine>
-        <TextHover onClick={() => window.location.href = 'join-agree'}>회원가입</TextHover>
-      </DefaultDiv>
-      <SnsBar>
-        <SnsLine></SnsLine>
-        <SnsBarText>sns 계정으로 로그인</SnsBarText>
-        <SnsLine></SnsLine>
-      </SnsBar>
-      <JH_NaverLogin/>
+      <form onSubmit={handleLogin}>
+        <MainContainer>
+          <LogoDiv>
+            <img src={logo} alt='logo'/>
+            <p>안녕하세요<br/>마음이음입니다.</p>
+          </LogoDiv>
+          <InputDiv>
+            <InputDefault
+                name='username'
+                required
+                id='username'
+                value={loginForm.username}
+                onChange={changeTextField} 
+                type="text" 
+                placeholder="아이디를 입력하세요" />
+          </InputDiv>
+          <InputDiv>
+            <InputDefault
+                name='password'
+                required
+                id='password'
+                value={loginForm.password}
+                onChange={changeTextField} 
+                type="password" 
+                placeholder="비밀번호를 입력하세요" />
+          </InputDiv>
+          <LoginDiv>
+            <LoginButton
+                  type='submit'>
+              <p>로그인</p>
+            </LoginButton>
+          </LoginDiv>
+          <DefaultDiv>
+            <TextHover>아이디 찾기</TextHover>
+            <DivLine></DivLine>
+            <TextHover>비밀번호 찾기</TextHover>
+            <DivLine></DivLine>
+            <TextHover onClick={() => window.location.href = 'join-agree'}>회원가입</TextHover>
+          </DefaultDiv>
+          <SnsBar>
+            <SnsLine></SnsLine>
+            <SnsBarText>sns 계정으로 로그인</SnsBarText>
+            <SnsLine></SnsLine>
+          </SnsBar>
+          <JH_NaverLogin/>
+        </MainContainer>
+      </form>
     </Main>
   );
 };
