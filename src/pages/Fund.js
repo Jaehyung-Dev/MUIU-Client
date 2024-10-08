@@ -27,7 +27,7 @@ const Main = styled.main`
   }
 
   .card-text {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
     margin-bottom: 1rem;
     color: #333;
@@ -35,7 +35,7 @@ const Main = styled.main`
 
   .card-date {
     color: gray;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: 400;
     letter-spacing: -0.3px;
   }
@@ -49,7 +49,7 @@ const Main = styled.main`
   .write-button {
     background-color: #FFCC00;
     color: white;
-    font-size: 1rem;
+    font-size: 1.35rem;
     font-weight: 600;
     padding: 0.5rem 1rem;
     border-radius: 0.6rem;
