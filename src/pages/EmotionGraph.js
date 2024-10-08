@@ -22,7 +22,7 @@ const EmotionDivCover = styled.div`
 
 const SelectDiv = styled.div`
   margin-top: 0.5rem;
-  width: 30%;
+  width: 40%;
   height: 2.5rem;
   display: flex;
   justify-content: space-between;
@@ -55,7 +55,7 @@ const SelectPeriod = styled.button`
 
 const GraphDiv = styled.div`
   width: 85%;
-  height: 70vh;
+  height: 90vh;
   background-color: white;
   border-radius: 20px;
   margin-top: 1.5rem;
