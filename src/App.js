@@ -1,6 +1,5 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import AICounseling from './pages/AICounseling';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
@@ -13,6 +12,8 @@ import Fund from './pages/Fund';
 import FundDetail from './pages/FundDetail';
 import FundPayment from './pages/FundPayment';
 import FundPaymentSystem from './pages/FundPaymentSystem';
+import FundPaymentSuccess from './pages/FundPaymentSuccess';
+import FundPost from './pages/FundPost';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
 import Join from './pages/Join';
@@ -58,7 +59,6 @@ function App() {
               <Route path="mypage" element={<MyPage />} />
               <Route path="mind-check" element={<MindCheck />} />
               <Route path="human-counseling" element={<HumanCounseling />} />
-              <Route path="ai-counseling" element={<AICounseling />} />
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
               <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
@@ -69,6 +69,8 @@ function App() {
               <Route path="fund-detail" element={<FundDetail />} />
               <Route path="fund-payment" element={<FundPayment />} />
               <Route path="fund-payment-system" element={<FundPaymentSystem />} />
+              <Route path="fund-payment-success" element={<FundPaymentSuccess />} />
+              <Route path="fund-post" element={<FundPost />} />
               <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
               <Route path="/new-consultation" element={<NewConsultation />} />
               <Route path="/existing-consultation" element={<ExistingConsultation />} />

@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import CreateIcon from '@mui/icons-material/Create';
+import angry from '../svg/angry.svg'
+import { useNavigate } from 'react-router-dom';
 
 const CoverDiv = styled.div`
     width: 100%;
@@ -117,43 +120,49 @@ const DiaryContent = styled.p`
 `
 
 const MyDiaryCollection = () => {
-  return (
-    <>
-        <CoverDiv>
-            <SearchDiv>
-                <SearchIcon style={{
-                    margin: '0 1rem',
-                }}/>
-                <input type='text' placeholder='Search'></input>
-            </SearchDiv>
-            <CalendarDiv>
+    const navi = useNavigate();
 
-            </CalendarDiv>
-            <DiaryContainer>
-                <DiaryDiv>
-                    <DiarySpaceBetween>
-                    <img src='../svg/angry.svg' style={{
-                        width: '3rem',
-                        height: '3rem'
-                    }}/>
-                        <DiaryButton>
-                            <MoreVertIcon style={{
-                                height: '2rem', width: '2rem'
-                            }}/>
-                        </DiaryButton>
-                    </DiarySpaceBetween>
-                    <DiaryCalendar>
-                        <ScheduleIcon style={{marginRight: '0.1rem'}}/>
-                        <span>28 May 21</span>
-                    </DiaryCalendar>
-                    <DiaryTitle>비트캠프 데브옵스 첫 날</DiaryTitle>
-                    <DiaryContent>인터넷이 끊켰다<br/>나는 너무 슬프다.</DiaryContent>
-                </DiaryDiv>
-            </DiaryContainer>
-        <button onClick={() => window.location.href = 'emotion-graph'}>임시</button>
-        </CoverDiv>
-    </>
-  );
+    const handleWriteClick = () => {
+        navi('/my-diary-write');
+    };
+
+    return (
+        <>
+            <CoverDiv>
+                <SearchDiv>
+                    <SearchIcon style={{
+                        margin: '0 1rem',
+                    }} />
+                    <input type='text' placeholder='Search'></input>
+                    <CreateIcon onClick={handleWriteClick}/>
+                </SearchDiv>
+                <CalendarDiv>
+
+                </CalendarDiv>
+                <DiaryContainer>
+                    <DiaryDiv>
+                        <DiarySpaceBetween>
+                            <img src={angry} style={{
+                                width: '3rem', height: '3rem'
+                            }} />
+                            <DiaryButton>
+                                <MoreVertIcon style={{
+                                    height: '2rem', width: '2rem'
+                                }} />
+                            </DiaryButton>
+                        </DiarySpaceBetween>
+                        <DiaryCalendar>
+                            <ScheduleIcon style={{ marginRight: '0.1rem' }} />
+                            <span>28 May 21</span>
+                        </DiaryCalendar>
+                        <DiaryTitle>비트캠프 데브옵스 첫 날</DiaryTitle>
+                        <DiaryContent>인터넷이 끊켰다<br />나는 너무 슬프다.</DiaryContent>
+                    </DiaryDiv>
+                </DiaryContainer>
+                <button onClick={() => window.location.href = 'emotion-graph'}>임시</button>
+            </CoverDiv>
+        </>
+    );
 };
 
 export default MyDiaryCollection;

@@ -1,6 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
+import PeopleIcon from '@mui/icons-material/People';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import TagFacesOutlinedIcon from '@mui/icons-material/TagFacesOutlined';
+import userProfile from '../svg/user-de-profile.svg';
 
 const Content = styled.div``;
 
@@ -143,7 +150,7 @@ export const MyPage = () => {
         <Content>
             <Profile>
                 <div className="profile-image">
-                    <img src="images/MyPage/user-de-profile.svg" alt=""/>
+                    <img src={userProfile} alt=""/>
                 </div>
                 <div className="profile-user">
                     <div className="profile-type">내담자</div>
@@ -154,19 +161,19 @@ export const MyPage = () => {
             <Menu>
                 <div className="menu-button">
                     <div className="menu-button-icon">
-                        <img src="images/MyPage/coupon.svg" alt="coupon"/>
+                        <StickyNote2Icon/>
                     </div>
                     <div className="menu-button-text">내 쿠폰</div>
                 </div>
                 <div className="menu-button" onClick={handleConsultationHistoryClick}>
                     <div className="menu-button-icon">
-                        <img src="images/MyPage/counsel-history.svg" alt="counsel-history"/>
+                        <PeopleIcon/>
                     </div>
                     <div className="menu-button-text">상담 내역</div>
                 </div>
                 <div className="menu-button">
                     <div className="menu-button-icon">
-                        <img src="images/MyPage/order-history.svg" alt="order-history"/>
+                        <AccountBalanceWalletIcon/>
                     </div>
                     <div className="menu-button-text">주문 내역</div>
                 </div>
@@ -188,19 +195,19 @@ export const MyPage = () => {
                     <div className="section-title">나의 관리</div>
                     <div className="menu-item">
                         <span className="menu-item-icon">
-                            <img src="images/MyPage/self-check.svg" alt="self-check"/>
+                            <FactCheckOutlinedIcon/>
                         </span>
                         <span className="menu-item-text">자가진단 기록</span>
                     </div>
                     <div className="menu-item">
                         <span className="menu-item-icon">
-                            <img src="images/MyPage/counsel-check.svg" alt="counsel-check"/>
+                            <ReceiptLongOutlinedIcon/>
                         </span>
                         <span className="menu-item-text">심리검사 기록지</span>
                     </div>
                     <div className="menu-item">
                         <span className="menu-item-icon">
-                            <img src="images/MyPage/emotion-check.svg" alt="emotion-check"/>
+                            <TagFacesOutlinedIcon/>
                         </span>
                         <span className="menu-item-text">감정 기록</span>
                     </div>

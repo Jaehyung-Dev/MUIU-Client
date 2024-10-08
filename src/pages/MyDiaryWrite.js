@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import EditIcon from '@mui/icons-material/Edit';
-import ShareIcon from '@mui/icons-material/Share';
-import DeleteIcon from '@mui/icons-material/Delete';
+import angry from '../svg/angry.svg'
+import depress from '../svg/depress.svg'
+import normal from '../svg/normal.svg'
+import good from '../svg/good.svg'
+import happy from '../svg/happy.svg'
 
 const Container = styled.div`
     margin-top: -10px;
     height: 100vh;
     width: 100vw;
     max-width: 600px;
-    background-color: #f3f3f3;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,6 +39,7 @@ const DatePicker = styled.div`
 
 const DiaryEntry = styled.div`
     width: 80%;
+    min-height: 230px;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
@@ -48,139 +48,108 @@ const DiaryEntry = styled.div`
     position: relative;
 `;
 
-const EntryHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    position: relative;
+const DiartTitle = styled.div`
+  width: 100%;
+  height: 15%;
+  padding-bottom: 5px;
+
+  input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    font-size: 1.3rem;
+    padding: 0 8px;
+    font-family: inherit; 
+    box-sizing: border-box; 
+  }
+
+  input:focus {
+    outline: none;
+  }
 `;
 
-const TimeBlock = styled.div`
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 5px;
-    background-color: #34C759;
-    padding: 5px 10px;
-    border-radius: 5px;
+const DiaryContent = styled.div`
+  width: 100%;
+  height: 80%;
+  padding-top: 8px;
+
+  textarea {
+    width: 100%;
+    height: 90%;
+    border: 0;
+    font-size: 1rem;
+    padding: 0 8px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: none;
+  }
+
+  textarea:focus {
+    outline: none;
+  }
 `;
 
-const EntryDateText = styled.span`
-    font-size: 14px;
-    color: #555;
-`;
-
-const EntryTitle = styled.h2`
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-`;
-
-const EntryContent = styled.p`
-    margin: 10px 0;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.5;
-`;
-
-const CommentSection = styled.div`
+const EmotionSection = styled.div`
     width: 80%; 
     padding: 20px;
     border-radius: 8px;
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-`;
-
-const CommentTitle = styled.h3`
-    margin: 0 0 10px 0;
-    font-size: 16px;
-`;
-
-const CommentWriter = styled.p`
-    margin: 0;
-    font-size: 14px;
-    font-weight: bold;
-    color: #555;
-`;
-
-const CommentContent = styled.p`
-    margin: 10px 0;
-    font-size: 14px;
-    color: #333;
-`;
-
-const CommentInputSection = styled.div`
-    width: 100%;
     display: flex;
-    background-color: #EEEEEE;
-    padding: 0;
-    margin-top: 25px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    overflow: hidden;
+    justify-content: space-between;
 `;
 
-const CommentInput = styled.input`
-    flex: 1;
-    border: none;
-    outline: none;
-    background-color: #EEEEEE;
-    padding: 15px;
-    font-size: 14px;
-`;
-
-const SubmitButton = styled.button`
-    width: 80px;
-    background-color: #D9D9D9;
-    border: none;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
+const EmotionDiv = styled.div`
+    margin: 0.2rem;
+    width: 25%;
+    height: 15vh;
+    border-radius: 10px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    color: black;
-
-    &:hover {
-        background-color: #a0a0a0;
-        color: black;
-    }
-`;
-
-const MenuContainer = styled.div`
-    position: absolute;
-    top: 40px;
-    right: 0;
-    width: 120px;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    padding: 10px;
-`;
-
-const MenuItem = styled.div`
-    display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #f0f0f0;
+    background-color: ${({ mood }) => {
+    switch(mood) {
+      case 'dissatisfied':
+        return '#FF3B30';
+      case 'bad':
+        return '#FF9500';
+      case 'soso':
+        return '#FFCC00';
+      case 'good':
+        return '#34C759';
+      case 'happy':
+        return '#00C7BE';
+      default:
+        return 'gray';
+        }
+    }};
+    @media screen and (max-width: 600px) {
+        width: 40%;
+        height: 10vh;
     }
+
+    img {
+        width: 100%;
+        height: 8vh;
+        margin-top: 0.5rem;
+    }
+`;
+
+const SaveBtn = styled.button`
+    margin-top: 20px;
+    width: 85%; 
+    height: 5rem;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    border: 0;
+    font-weight: bold;
+    font-size: large;
 `;
 
 const MyDiaryWrite = () => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-    const toggleMenu = () => {
-        setMenuVisible(!menuVisible);
-    };
 
   return (
     <Container>
@@ -193,52 +162,34 @@ const MyDiaryWrite = () => {
         <KeyboardArrowRightIcon style={{ cursor: 'pointer' }} />
       </DatePicker>
       <DiaryEntry>
-        <EntryHeader>
-            <img src={`${process.env.PUBLIC_URL}/svg/good.svg`} alt="좋음" />
-            <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
-            {menuVisible && (
-              <MenuContainer>
-                <MenuItem>
-                  <EditIcon />
-                  <span>Edit</span>
-                </MenuItem>
-                <MenuItem>
-                  <ShareIcon />
-                  <span>Share</span>
-                </MenuItem>
-                <MenuItem>
-                  <DeleteIcon />
-                  <span>Delete</span>
-                </MenuItem>
-              </MenuContainer>
-            )}
-        </EntryHeader>
-        <TimeBlock>
-          <AccessTimeFilledIcon style={{ width: '15px' }} />
-          <EntryDateText>28 May 21</EntryDateText>
-        </TimeBlock>
-        <EntryTitle>비트캠프에서의 첫 날</EntryTitle>
-        <EntryContent>
-            오늘은 비트캠프에 처음 왔다.
-            <br />
-            처음에는 많이 긴장했지만, 새로운 분들이 친절하게 맞아주셔서 금방 긴장이 풀렸다.
-            <br /><br />
-            오늘은 HTML, CSS, JavaScript에 대해 간단하게 배웠다.
-            앞으로도 열심히 해야지.
-        </EntryContent>
+        <form method='' action='' name='diary'>
+          <DiartTitle>
+            <input type='text' name='title' placeholder='제목'></input>
+          </DiartTitle>
+          <hr></hr>
+          <DiaryContent>
+            <textarea name='content' placeholder='내용'></textarea>
+          </DiaryContent>
+        </form>
       </DiaryEntry>
-      <CommentSection>
-        <CommentTitle>댓글</CommentTitle>
-        <hr />
-        <CommentWriter>상담사 한서준</CommentWriter>
-        <CommentContent>참 대~단 하시네요ㅋㅋ</CommentContent>
-        <hr />
-
-        <CommentInputSection>
-          <CommentInput type="text"/>
-          <SubmitButton>작성</SubmitButton>
-        </CommentInputSection>
-      </CommentSection>
+      <EmotionSection>
+        <EmotionDiv mood='dissatisfied'>
+          <img src={angry}/>
+        </EmotionDiv>
+        <EmotionDiv mood='bad'>
+          <img src={depress}/>
+        </EmotionDiv>
+        <EmotionDiv mood='soso'>
+          <img src={normal}/>
+        </EmotionDiv>
+        <EmotionDiv mood='good'>
+          <img src={good}/>
+        </EmotionDiv>
+        <EmotionDiv mood='happy'>
+          <img src={happy}/>
+        </EmotionDiv>
+      </EmotionSection>
+      <SaveBtn>일기 저장</SaveBtn>
     </Container>
   );
 };

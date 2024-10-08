@@ -6,6 +6,8 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import styled from 'styled-components';
+import bottomNav from '../svg/bottom-nav.svg';
+import redCall from '../svg/red-call.svg';
 
 const Nav = styled.nav`
     position: fixed;
@@ -17,7 +19,7 @@ const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: url('${process.env.PUBLIC_URL}/svg/bottom-nav.svg');
+    background-image: url(${bottomNav});
     background-size: cover;
     background-position: center;
     height: 150px;
@@ -94,6 +96,10 @@ const CenterNavItem = styled.div`
         width: 100%;
         height: 100%;
     }
+    @media (max-width: 393px) {
+        width: 60px;
+        height: 60px;
+    }
 `;
 
 const MenuContainer = styled.div`
@@ -113,6 +119,11 @@ const MenuContainer = styled.div`
     opacity: ${(props) => (props.show ? 1 : 0)};
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
+
+    @media (max-width: 393px) {
+        bottom: 190px;
+        scale: 0.3;
+    }
 `;
 
 const BottomNav = () => {
@@ -144,7 +155,7 @@ const BottomNav = () => {
                 </NavItem>
                 {/* 중앙 원형 버튼 */}
                 <CenterNavItem className="nav-center" isActive={isActive} onClick={handleCircleClick}>
-                    <img src={`${process.env.PUBLIC_URL}/svg/red-call.svg`} alt="중앙 아이콘" />
+                    <img src={redCall} alt="중앙 아이콘" />
                 </CenterNavItem>
                 <NavItem to="/my-diary" active={location.pathname === '/my-diary'}>
                     <AutoStoriesOutlinedIcon className="icon" />
