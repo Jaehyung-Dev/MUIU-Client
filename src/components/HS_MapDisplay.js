@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import userMarkerIcon from '../svg/userMarker.svg';
 import hospitalMarkerIcon from '../svg/hospitalMarker.svg';
 
 const MapContainer = styled.div`
     width: 100%;
-    height: 100%;
+    height: 100vh;
     padding-top: 10px;
     overflow: hidden;
 `;
@@ -15,15 +16,14 @@ const MapDisplay = styled.div`
     height: 100%;
 `;
 
-const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => {
+const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
     const mapRef = useRef(null);
-    // 사용자 위치 실시간 로딩 변수 설정
     const [userLocation, setUserLocation] = useState(null);
-    // 지도 변수 설정
     const [map, setMap] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(18);
+    const [results, setResults] = useState([]);
+    const [error, setError] = useState(null);
 
-    // 사용자 위치 실시간 로딩 기능
     const getUserLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -44,7 +44,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
         getUserLocation();
     }, []);
 
-    // 지도 구현 파트(사용자 위치 실시간 적용)
     useEffect(() => {
         const { naver } = window;
 
@@ -67,28 +66,14 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
             setMap(newMap);
 
             if (userLocation) {
-                const userMarker = new naver.maps.Marker({
+                new naver.maps.Marker({
                     position: initialLocation,
                     map: newMap,
                     icon: {
-                        url: userMarkerIcon, // 임포트한 이미지 사용
+                        url: userMarkerIcon,
                         size: new naver.maps.Size(100, 100),
                         anchor: new naver.maps.Point(11, 35)
                     },
-                });
-
-                const hospitalMarker = new naver.maps.Marker({
-                    position: new naver.maps.LatLng(37.4997779, 127.0324107),
-                    map: newMap,
-                    icon: {
-                        url: hospitalMarkerIcon, // 임포트한 이미지 사용
-                        size: new naver.maps.Size(100, 100),
-                        anchor: new naver.maps.Point(11, 35)
-                    },
-                });
-
-                naver.maps.Event.addListener(hospitalMarker, 'click', () => {
-                    openInfoPopUp();
                 });
             }
         }
@@ -103,11 +88,49 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp }) => 
         }
     }, [userLocation, map]);
 
+    useEffect(() => {
+        if (searchQuery) {
+            const fetchLocalData = async () => {
+                const client_id = '6um4uarnuv';
+                const client_secret = 'yKRqSVB06Gt0EBoYyRaYAdDbkfWfFXNc7rsCZ7f8';
+                const api_url = `https://openapi.naver.com/v1/search/local?query=${encodeURI(searchQuery)}`;
+
+                try {
+                    const response = await axios.get(api_url, {
+                        headers: {
+                            'X-Naver-Client-Id': client_id,
+                            'X-Naver-Client-Secret': client_secret
+                        }
+                    });
+                    setResults(response.data.items);
+                    setError(null);
+                } catch (err) {
+                    setError(err.response ? err.response.status : 'Error occurred');
+                    setResults([]);
+                }
+            };
+
+            fetchLocalData();
+        }
+    }, [searchQuery]);
+
     return (
         <MapContainer>
             <MapDisplay>
                 <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
             </MapDisplay>
+            <div>
+                {error && <p>오류: {error}</p>}
+                <ul>
+                    {results.map((item) => (
+                        <li key={item.link}>
+                            <a href={item.link} target="_blank" rel="noopener noreferrer">
+                                {item.title}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </MapContainer>
     );
 };

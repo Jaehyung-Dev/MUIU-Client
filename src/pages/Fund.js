@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 // Styled components
@@ -9,8 +9,7 @@ const Main = styled.main`
   }
 
   .card {
-    // font-family: 'Pretendard-Regular';
-    // margin: 0.5rem;
+    margin: 2rem 1rem;
     border-radius: 0.6rem;
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -19,32 +18,47 @@ const Main = styled.main`
 
   .card-img {
     width: 100%;
-    height: 200px; /* 카드 안에서 일정한 높이를 유지하도록 설정 */
+    height: 200px; 
     object-fit: cover; /* 이미지가 카드 영역을 꽉 채우게 */
-    // margin-left: 10px; 
-  }
-
-  /* 첫 번째 카드에만 여백을 추가 */
-  .card:first-child {
-    margin-top: 6rem; /* 첫 번째 카드 상단에 추가 여백 */
   }
 
   .card-body {
-    padding: 1.5rem;
+    padding: 0 1.5rem 0.7rem;
   }
 
   .card-text {
-    font-size: 1.3rem;
-    // font-family: 'Pretendard-Bold';
+    font-size: 1.35rem;
+    font-weight: 700;
     margin-bottom: 1rem;
     color: #333;
   }
 
   .card-date {
     color: gray;
-    font-size: 1em;
+    font-size: 1.1em;
+    font-weight: 400;
+    letter-spacing: -0.3px;
   }
 
+  .write-button-container {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 하단에 배치 */
+    margin: 4rem 1rem 2rem 0;
+  }
+
+  .write-button {
+    background-color: #FFCC00;
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.6rem;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 100;
+  }
+ 
   @media (min-width: 601px) {
     body {
       max-width: 600px;
@@ -62,6 +76,9 @@ const Main = styled.main`
   }
 `;
 
+
+
+
 const FundCard = ({ imageSrc, altText, title, date, link }) => {
   return (
     <Link to={link}>
@@ -77,6 +94,15 @@ const FundCard = ({ imageSrc, altText, title, date, link }) => {
 };
 
 const Fund = () => {
+  const location = useLocation();
+  const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
+
+  useEffect(() => {
+    if (location.state && location.state.postData) {
+      setPosts((prevPosts) => [...prevPosts, location.state.postData]); // postData가 있을 때만 추가
+    }
+  }, [location.state]); // location.state가 변경될 때마다 실행
+
   return (
     <Main>
       <FundCard
@@ -100,6 +126,21 @@ const Fund = () => {
         date="2024.7.16 ~ 2024.8.16"
         link="/fund-detail"
       />
+
+      {/* 새로 작성된 글들을 표시하는 카드들 */}
+      {posts.map((post, index) => (
+        <div className="card" key={index}>
+          <div className="card-body">
+            <p className="card-text">{post.title}</p>
+            <p className="card-date">{post.fundPeriod}</p>
+          </div>
+        </div>
+      ))}
+
+      <div className="write-button-container">
+        <Link to="/fund-post" className="write-button">글 작성하기</Link>
+      </div>
+
     </Main>
   );
 };

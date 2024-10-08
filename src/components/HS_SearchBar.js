@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -27,11 +27,27 @@ const SearchInput = styled.input`
     }
 `;
 
-const HS_SearchBar = () => {
+const HS_SearchBar = ({ onSearch }) => {
+    const [searchValue, setSearchValue] = useState('');
+
+    const handleInputChange = (event) => {
+        setSearchValue(event.target.value);
+    };
+
+    const handleSearch = () => {
+        onSearch(searchValue);
+    };
+
     return (
         <SearchBarContainer>
-            <SearchIcon/>
-            <SearchInput name="search-location" id="search-location" placeholder="인근 역 검색" />
+            <SearchIcon onClick={handleSearch} style={{ cursor: 'pointer' }} />
+            <SearchInput
+                name="search-location"
+                id="search-location"
+                placeholder="인근 역 검색"
+                value={searchValue}
+                onChange={handleInputChange}
+            />
         </SearchBarContainer>
     );
 };
