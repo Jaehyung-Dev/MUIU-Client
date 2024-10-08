@@ -18,6 +18,7 @@ const AppContainer = styled.div`
 const Content = styled.div`
   flex: 1;
   padding: 0rem 1rem;
+  padding-bottom: 100px;
   position: relative;
   z-index: 1;
   overflow-y: auto;
@@ -104,11 +105,38 @@ const GrayBox = styled.div`
     }`}
 `;
 
+const TopButton = styled.button`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: #FFD651;
+  border: 2px solid #FFD651;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  z-index: 100;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  bottom: 50px; 
+  right: 20px; 
+
+
+  &:hover {
+    background-color: #FFD651;
+    color: white;
+  }
+`;
+
+
 const DMHMDefinition = () => {
   const [selectedChapter, setSelectedChapter] = useState(null);
+  const [showTopButton, setShowTopButton] = useState(false);
 
   const toggleChapter = (chapter) => {
     setSelectedChapter(selectedChapter === chapter ? null : chapter);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // 스크롤을 페이지 상단으로 이동
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -119,6 +147,26 @@ const DMHMDefinition = () => {
     useEffect(() => {
       window.scrollTo(0, 0);
     }, []);
+
+    // TOP버튼
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 100) {
+          setShowTopButton(true);
+        } else {
+          setShowTopButton(false);
+        }
+      };
+  
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+
+  // 맨 위로 가는 함수
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
 
   return (
@@ -254,6 +302,9 @@ const DMHMDefinition = () => {
             </>
           )}
         </ButtonBox>
+        <TopButton show={showTopButton} onClick={scrollToTop}>
+          TOP
+        </TopButton>
       </Content>
       <BottomNav />
     </AppContainer>

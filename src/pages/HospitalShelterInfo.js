@@ -31,17 +31,17 @@ export const HospitalShelterInfo = () => {
     const closeFindRoadPopUp = () => setIsFindRoadOpen(false);
 
     const handleSearch = (query) => {
-        setSearchQuery(query); // 검색어 상태 업데이트
+        setSearchQuery(query);
     };
 
     return (
         <Main>
-            <HS_SearchBar onSearch={handleSearch} /> {/* 검색어 전달 */}
+            <HS_SearchBar onSearch={handleSearch} />
             <HS_MapDisplay
                 openInfoPopUp={openInfoPopUp}
                 openPhotoPopUp={openPhotoPopUp}
                 openFindRoadPopUp={openFindRoadPopUp}
-                searchQuery={searchQuery} // 검색어 전달
+                searchQuery={searchQuery}
             />
             <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} openPhotoPopUp={openPhotoPopUp} openFindRoadPopUp={openFindRoadPopUp} />
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />

@@ -65,6 +65,10 @@ const MenuList = () => {
       navigate('/DMHMDefinition'); // 페이지 이동
     } else if (page === 'ch2') {
       navigate('/DMHMDefinition2'); // 페이지 이동
+    } else if (page === 'ch3') {
+      navigate('/DMHMDefinition3'); // 페이지 이동
+    } else if (page === 'ch4') {
+      navigate('/DMHMDefinition4'); // 페이지 이동
     }
   };
 
