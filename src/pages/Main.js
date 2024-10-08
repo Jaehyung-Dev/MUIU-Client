@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { MdGpsFixed } from "react-icons/md";
 import graphImg from '../svg/graphImg.svg';
-import counselEx from '../svg/counsel-ex.svg';
-
 
 const Content = styled.div`
 
@@ -241,7 +239,7 @@ export const Main = () => {
                 <Block>
                     <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
                     <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src={counselEx} alt="counsel-ex"/>
+                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex"/>
                 </Block>
             </Blocks>
             <Content>
