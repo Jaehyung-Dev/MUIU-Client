@@ -177,7 +177,7 @@ const FundPaymentSystem = () => {
               totalPayAmount: totalAmount, // 결제 금액
               taxScopeAmount: totalAmount, // 과세 대상 금액
               taxExScopeAmount: 0, // 면세 대상 금액
-              returnUrl: "http://localhost:3000/fund-payment-success" 
+              returnUrl: "/fund-payment-success" 
             });
           });
         }
