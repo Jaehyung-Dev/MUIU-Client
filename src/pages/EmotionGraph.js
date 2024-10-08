@@ -65,18 +65,10 @@ const GraphDiv = styled.div`
   flex-direction: column;
   align-items: center;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-  @media screen and (max-width: 600px) {
-    height: 78vh;
+  @media screen and (max-width: 393px) {
+    height: 60%;
   }
-`;
-
-const GraphContent = styled.p`
-  margin: 2rem 0 0 0;
-  font-weight: bold;
-  font-size: 1.1rem;
-  @media screen and (max-width: 600px) {
-    font-size: 0.9rem;
-  }
+  
 `;
 
 const InnerGraphDiv = styled.div`
@@ -179,6 +171,9 @@ const GraphColumnDiv = styled.div`
   justify-content: space-around;
   color: gray;
   margin-left: 4.2rem;
+  @media screen and (max-width: 393px) {
+    margin-left: 3rem;
+  }
 `;
 
 const GraphColumnDiv1 = styled.div`
@@ -208,18 +203,18 @@ const EmotionGraph = () => {
     const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
     const weeksOfMonth = ["1주", "2주", "3주", "4주", "5주"];
     const monthsOfYear = [
-        "1월",
-        "2월",
-        "3월",
-        "4월",
-        "5월",
-        "6월",
-        "7월",
-        "8월",
-        "9월",
-        "10월",
-        "11월",
-        "12월",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
     ];
 
     const weeklyData = [

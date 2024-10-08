@@ -1,6 +1,5 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import AICounseling from './pages/AICounseling';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
@@ -52,7 +51,6 @@ function App() {
           <Route path="mypage" element={<MyPage />} />
           <Route path="mind-check" element={<MindCheck />} />
           <Route path="human-counseling" element={<HumanCounseling />} />
-          <Route path="ai-counseling" element={<AICounseling />} />
           <Route path="my-diary" element={<MyDiary />} />
           <Route path="mind-column" element={<MindColumn />} />
           <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
