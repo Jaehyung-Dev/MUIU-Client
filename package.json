@@ -19,6 +19,8 @@
     "ajv-keywords": "^5.1.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
+    "dotenv": "^16.4.5",
+    "http-proxy-middleware": "^3.0.3",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^7.4.0",
@@ -34,6 +36,7 @@
     "tui-color-picker": "^2.2.8",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "https://naveropenapi.apigw.ntruss.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

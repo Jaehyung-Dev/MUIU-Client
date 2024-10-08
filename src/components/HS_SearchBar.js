@@ -35,18 +35,31 @@ const HS_SearchBar = ({ onSearch }) => {
     };
 
     const handleSearch = () => {
-        onSearch(searchValue);
+        if (searchValue.trim()) {
+            onSearch(searchValue);
+            setSearchValue('');
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
     };
 
     return (
         <SearchBarContainer>
-            <SearchIcon onClick={handleSearch} style={{ cursor: 'pointer' }} />
+            <SearchIcon 
+                onClick={handleSearch} 
+                style={{ cursor: 'pointer' }} 
+            />
             <SearchInput
                 name="search-location"
                 id="search-location"
                 placeholder="인근 역 검색"
                 value={searchValue}
                 onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
             />
         </SearchBarContainer>
     );

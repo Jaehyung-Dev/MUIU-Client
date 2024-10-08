@@ -5,7 +5,14 @@ import styled from 'styled-components';
 import { join } from '../apis/memberApis';
 
 const Main = styled.main`
-
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important; /* 배경을 투명하게 */
+    -webkit-text-fill-color: #000 !important; /* 텍스트 색상 */
+    transition: background-color 5000s ease-in-out 0s;
+  }
 `;
 
 const MainContainer = styled.div`
@@ -16,7 +23,6 @@ const MainContainer = styled.div`
 
   button {
     border: none;
-    padding: 0;
     color: black;
   }
 
@@ -38,8 +44,7 @@ const MainContainer = styled.div`
 
 const CoverSelectDiv = styled.div`
   width: 80%;
-  margin-top: 5rem;
-  margin-bottom: 3rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -47,7 +52,6 @@ const CoverSelectDiv = styled.div`
 
   @media screen and (max-width: 600px) {
     margin-top: 3rem;
-    margin-bottom: 2rem;
   }
 `;
 
@@ -91,8 +95,13 @@ const SelectButton = styled.button`
 `;
 
 const CoverTextGuide = styled.div`
+  margin-top: 3rem;
   width: 80%;
   margin-bottom: 0.5rem;
+
+  @media screen and (max-width: 600px) {
+    margin-top: 2rem;
+  }
 `;
 
 const TextGuide = styled.p`
@@ -118,35 +127,49 @@ const JoinInput = styled.input`
   }
 `;
 
-const DefaultDiv = styled.div`
+const UsernameDiv = styled.div`
   width: 80%;
   height: 4rem;
   display: flex;
-  justify-content: center;
   align-items: center;
   box-sizing: border-box;
   background-color: #f0f0f0;
   border-radius: 10px;
-  margin-bottom: 3rem;
-
+  input {
+    width: 77%;
+  }
   @media screen and (max-width: 600px) {
     height: 3rem;
-    margin-bottom: 2rem;
+  }
+`
+
+const DefaultDiv = styled.div`
+  width: 80%;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  input {
+    width: 90%;
+  }
+  @media screen and (max-width: 600px) {
+    height: 3rem;
   }
 `;
 
 const AuthDiv = styled(DefaultDiv)`
-  margin-top: 2rem;
   background-color: #ffd651;
   transition: background-color 0.5s ease;
-
+  margin-top: 4rem;
+  margin-bottom: 2rem;
   &:hover {
     background-color: #f8cb37;
   }
 
   @media screen and (max-width: 600px) {
     height: 3rem;
-    margin-bottom: 2rem;
   }
 `;
 
@@ -159,9 +182,8 @@ const SubmitBtn = styled.button`
 
 const HiddenDiv = styled.div`
   width: 80%;
-  height: 4rem;
+  height: auto;
   display: ${(props) => (props.visible ? 'block' : 'none')};
-  margin-bottom: 3rem;
 `;
 
 const CounselorDiv = styled.div`
@@ -178,7 +200,22 @@ const CounselorDiv = styled.div`
     height: 3rem;
     margin-bottom: 2rem;
   }
+`;
+
+const DuplicationBtn = styled.button`
+  background-color: #ffd651;
+  border-radius: 5px;
+  padding: 0.6rem;
+  transition: transform 0.3s ease;  
+  &:hover {
+    transform: scale(1.1); 
+  }
+`;
+
+const PopupDiv = styled.div`
+  width: 80%;
 `
+
 export const Join = () => {
   const [isGeneral, setIsGeneral] = useState(true);
   const [isCounselor, setIsCounselor] = useState(false);
@@ -186,11 +223,39 @@ export const Join = () => {
   const generalClicked = () => {
     setIsGeneral(true);
     setIsCounselor(false);
+    // 폼 입력 값 초기화
+    setJoinForm({
+      username: '',
+      password: '',
+      passwordCheck: ''
+    });
+    // 유효성 상태 초기화
+    setUsernameChk(false);
+    setPasswordChk(false);
+    setPasswordValidate(false);
+    // 모든 메시지 숨기기
+    document.querySelector("#password-check-success").style.display = 'none';
+    document.querySelector("#password-check-fail").style.display = 'none';
+    document.querySelector("#password-validation").style.display = 'none';
   };
 
   const counselorClicked = () => {
     setIsGeneral(false);
     setIsCounselor(true);
+    // 폼 입력 값 초기화
+    setJoinForm({
+      username: '',
+      password: '',
+      passwordCheck: ''
+    });
+    // 유효성 상태 초기화
+    setUsernameChk(false);
+    setPasswordChk(false);
+    setPasswordValidate(false);
+    // 모든 메시지 숨기기
+    document.querySelector("#password-check-success").style.display = 'none';
+    document.querySelector("#password-check-fail").style.display = 'none';
+    document.querySelector("#password-validation").style.display = 'none';
   };
 
   // 회원가입 폼 상태 관리 (초기값 설정)
@@ -224,29 +289,37 @@ export const Join = () => {
     }
 
     // 입력 필드가 password일 경우 비밀번호 일치 여부 확인
-    if(e.target.name === 'password') {
-        if(e.target.value === joinForm.passwordCheck) { // 비밀번호 확인 값과 동일하면
-            setPasswordChk(true); // 비밀번호 일치로 설정
-            document.querySelector("#password-check-success").style.display = 'block'; // 성공 메시지 표시
-            document.querySelector("#password-check-fail").style.display = 'none'; // 실패 메시지 숨기기
-        } else {
-            setPasswordChk(false); // 비밀번호 불일치로 설정
-            document.querySelector("#password-check-success").style.display = 'none'; // 성공 메시지 숨기기
-            document.querySelector("#password-check-fail").style.display = 'block'; // 실패 메시지 표시
-        }
+    if (e.target.name === 'password') {
+      if (e.target.value === joinForm.passwordCheck && e.target.value !== '') {
+        setPasswordChk(true);
+        document.querySelector("#password-check-success").style.display = 'block';
+        document.querySelector("#password-check-fail").style.display = 'none';
+      } else if (e.target.value !== joinForm.passwordCheck && e.target.value !== '' && joinForm.passwordCheck !== '') {
+        setPasswordChk(false);
+        document.querySelector("#password-check-success").style.display = 'none';
+        document.querySelector("#password-check-fail").style.display = 'block';
+      } else {
+        // 비밀번호가 비어 있으면 메시지 숨김
+        document.querySelector("#password-check-success").style.display = 'none';
+        document.querySelector("#password-check-fail").style.display = 'none';
+        document.querySelector("#password-validation").style.display = 'none';
+      }
     }
 
     // 입력 필드가 passwordCheck일 경우 비밀번호와 일치하는지 확인
-    if(e.target.name === 'passwordCheck') {
-        if(e.target.value === joinForm.password) { // 입력된 비밀번호와 일치하는지 확인
-            setPasswordChk(true); // 일치할 경우 true
-            document.querySelector("#password-check-success").style.display = 'block'; // 성공 메시지 표시
-            document.querySelector("#password-check-fail").style.display = 'none'; // 실패 메시지 숨기기
-        } else {
-            setPasswordChk(false); // 불일치할 경우 false
-            document.querySelector("#password-check-success").style.display = 'none'; // 성공 메시지 숨기기
-            document.querySelector("#password-check-fail").style.display = 'block'; // 실패 메시지 표시
-        }
+    if (e.target.name === 'passwordCheck') {
+      if (e.target.value && e.target.value === joinForm.password) {
+        setPasswordChk(true);
+        document.querySelector("#password-check-success").style.display = 'block';
+        document.querySelector("#password-check-fail").style.display = 'none';
+      } else if (e.target.value) {
+        setPasswordChk(false);
+        document.querySelector("#password-check-success").style.display = 'none';
+        document.querySelector("#password-check-fail").style.display = 'block';
+      } else {
+        document.querySelector("#password-check-success").style.display = 'none';
+        document.querySelector("#password-check-fail").style.display = 'none';
+      }
     }
   }, [joinForm]);
 
@@ -331,19 +404,18 @@ export const Join = () => {
               <p>회원 유형을 선택하세요</p>
             </SelectDiv>
             <SelectDiv>
-              <SelectButton active={isGeneral} onClick={generalClicked}>
+              <SelectButton active={isGeneral} onClick={generalClicked} type='button'>
                 <p>일반회원</p>
               </SelectButton>
-              <SelectButton active={isCounselor} onClick={counselorClicked}>
+              <SelectButton active={isCounselor} onClick={counselorClicked} type='button'>
                 <p>상담사</p>
               </SelectButton>
             </SelectDiv>
           </CoverSelectDiv>
-
           <CoverTextGuide>
             <TextGuide>아이디</TextGuide>
           </CoverTextGuide>
-          <DefaultDiv>
+          <UsernameDiv>
             <JoinInput 
                 name='username' 
                 id='username' 
@@ -351,12 +423,12 @@ export const Join = () => {
                 onChange={changeTextField} 
                 type="text" 
                 placeholder="아이디를 입력하세요" />
-          </DefaultDiv>
-          <button name='username-check-btn' id='username-check-btn' color='primary'
-                  type='button'
-                  onClick={usernameCheck}>
-              중복확인
-          </button>
+            <DuplicationBtn name='username-check-btn' id='username-check-btn'
+                type='button'
+                onClick={usernameCheck}>
+            중복확인
+            </DuplicationBtn>
+          </UsernameDiv>
 
           <CoverTextGuide>
             <TextGuide>비밀번호</TextGuide>
@@ -371,12 +443,14 @@ export const Join = () => {
                 onBlur={passwordBlur}
                 placeholder="비밀번호를 입력하세요" />
           </DefaultDiv>
-          <p
-          name='password-validation'
-          id='password-validation'
-          style={{display: 'none', color: 'red'}}> {/* 비밀번호 유효성 검사 메시지 */}
-          비밀번호는 특수문자, 영문자, 숫자 조합의 9자리 이상으로 지정하세요.
-          </p>
+          <PopupDiv>
+            <p
+            name='password-validation'
+            id='password-validation'
+            style={{display: 'none', color: 'red', fontSize: '0.9rem', marginTop: '0.5rem', paddingLeft: '0.5rem'}}> {/* 비밀번호 유효성 검사 메시지 */}
+            비밀번호는 특수문자, 영문자, 숫자 조합의 9자리 이상으로 지정하세요.
+            </p>
+          </PopupDiv>
 
           <CoverTextGuide>
             <TextGuide>비밀번호 확인</TextGuide>
@@ -390,18 +464,20 @@ export const Join = () => {
                 onChange={changeTextField}
                 placeholder="비밀번호를 다시 입력하세요" />
           </DefaultDiv>
-          <p
-            name='password-check-success'
-            id='password-check-success'
-            style={{display: 'none', color: 'green'}}>
-              비밀번호가 일치합니다.
-          </p>
-          <p
-            name='password-check-fail'
-            id='password-check-fail'
-            style={{display: 'none', color: 'red'}}>
-              비밀번호가 일치합니다.
-          </p>
+          <PopupDiv>
+            <p
+              name='password-check-success'
+              id='password-check-success'
+              style={{display: 'none', color: 'green', fontSize: '0.9rem', marginTop: '0.5rem', paddingLeft: '0.5rem'}}>
+                비밀번호가 일치합니다.
+            </p>
+            <p
+              name='password-check-fail'
+              id='password-check-fail'
+              style={{display: 'none', color: 'red', fontSize: '0.9rem', marginTop: '0.5rem', paddingLeft: '0.5rem'}}>
+                비밀번호가 일치하지 않습니다.
+            </p>
+          </PopupDiv>
 
           <CoverTextGuide>
             <TextGuide>이메일</TextGuide>
