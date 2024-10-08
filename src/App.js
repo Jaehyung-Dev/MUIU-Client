@@ -6,6 +6,8 @@ import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
 import DMHMDefinition from './pages/DMHMDefinition';
 import DMHMDefinition2 from './pages/DMHMDefinition2';
+import DMHMDefinition3 from './pages/DMHMDefinition3';
+import DMHMDefinition4 from './pages/DMHMDefinition4';
 import DisasterGuide from './pages/DisasterGuide';
 import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
 import ExistingConsultation from './pages/ExistingConsultation';
@@ -56,6 +58,8 @@ function App() {
           <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
           <Route path="/DMHMDefinition" element={<DMHMDefinition/>} />
           <Route path="/DMHMDefinition2" element={<DMHMDefinition2/>} />
+          <Route path="/DMHMDefinition3" element={<DMHMDefinition3/>} />
+          <Route path="/DMHMDefinition4" element={<DMHMDefinition4/>} />
           <Route path="disaster-guide" element={<DisasterGuide />} />
           <Route path="fund" element={<Fund />} />
           <Route path="fund-detail" element={<FundDetail />} />

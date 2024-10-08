@@ -18,6 +18,7 @@ const AppContainer = styled.div`
 const Content = styled.div`
   flex: 1;
   padding: 0rem 1rem;
+  padding-bottom: 100px;
   position: relative;
   z-index: 1;
   overflow-y: auto;
@@ -212,11 +213,36 @@ const ImgBox = styled.div`
   }
 `;
 
+const TopButton = styled.button`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: #FFD651;
+  border: 2px solid #FFD651;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  z-index: 100;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  bottom: 50px; 
+  right: 20px; 
+
+
+  &:hover {
+    background-color: #FFD651;
+    color: white;
+  }
+`;
+
 
 const DMHMDefinition2 = () => {
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedSubButton, setSelectedSubButton] = useState(null);
   const [selectedStage, setSelectedStage] = useState('stage0');
+  const [showTopButton, setShowTopButton] = useState(false);
 
   // 페이지 로드 시 스크롤을 맨 위로 이동
   useEffect(() => {
@@ -256,6 +282,25 @@ const DMHMDefinition2 = () => {
    // 스크롤을 페이지 상단으로 이동
    window.scrollTo({ top: 0, behavior: 'smooth' });
    };
+
+   // TOP 버튼
+   useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setShowTopButton(true);
+      } else {
+        setShowTopButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+    // 맨 위로 가는 함수
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
     
   const renderContent = () => {
     switch (selectedSubButton) {
@@ -1422,6 +1467,9 @@ const DMHMDefinition2 = () => {
             </>
           )}
         </ButtonBox>
+        <TopButton show={showTopButton} onClick={scrollToTop}>
+          TOP
+        </TopButton>
       </Content>
       <BottomNav />
     </AppContainer>
