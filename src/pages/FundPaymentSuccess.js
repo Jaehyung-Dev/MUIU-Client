@@ -68,7 +68,7 @@ const FundPaymentSuccess = () => {
         <ThankYouMessage>진심으로 감사드립니다! 💛</ThankYouMessage>
         <Message>
         <img 
-          src={`${process.env.PUBLIC_URL}/images/꾸벅티콘.png`} 
+          src={`${process.env.PUBLIC_URL}/images/Emoji/꾸벅티콘.png`} 
           className='imty'
           alt="감사 이미지" 
           style={{ width: '100px', margin: '0 auto 1rem auto', display: 'block' }} 

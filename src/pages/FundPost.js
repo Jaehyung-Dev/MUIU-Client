@@ -8,7 +8,7 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { FaCalendarAlt } from 'react-icons/fa'; // 달력 아이콘 추가
+import { FaCalendarAlt } from 'react-icons/fa';
 
 const Main = styled.main`
   width: 100%;  
@@ -39,7 +39,6 @@ const Main = styled.main`
     margin-bottom: 1rem;
   }
 
-
   .date-label {
     font-weight: bold;
     font-size: 1.15rem;
@@ -51,16 +50,18 @@ const Main = styled.main`
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    position: relative;
   }
 
   .calendar-input {
     display: flex;
     align-items: center;
+    position: relative;
   }
 
   .calendar-input input {
     flex-grow: 1;
-    padding-right: 2rem; /* 아이콘 공간 확보 */
+    padding-right: 2rem;
   }
 
   .calendar-icon {
@@ -71,10 +72,16 @@ const Main = styled.main`
     color: #888;
   }
 
-  .target-money{
-      font-weight: 600;
-      margin-top: 1rem;
-    }
+  .tilde {
+    font-size: 1.5rem;
+    color: #333;
+    margin-top: 0.5rem;
+  }
+
+  .target-money {
+    font-weight: 600;
+    margin-top: 1rem;
+  }
 
   .submit-btn {
     height: 3.5rem;
@@ -90,24 +97,27 @@ const Main = styled.main`
     cursor: pointer;
   }
 
-
-  @media (max-width: 600px) {
-    .post-form, .post-input, .editor-container, .submit-btn {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 0.5rem;
-    }
-
-    .toastui-editor-defaultUI {
-      width: 100% !important; 
-      min-width: 100% !important; 
-      overflow-x: hidden; 
-    }
-    
+  @media (max-width: 768px) {
     .date-picker-container {
       flex-direction: column;
+      align-items: stretch;
+      gap: 0;
     }
 
+    .calendar-input input {
+      width: 100%;
+      padding-right: 2rem;
+    }
+
+    .tilde {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .date-label {
+      font-size: 1rem;
+    }
   }
 `;
 

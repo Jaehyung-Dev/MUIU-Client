@@ -9,6 +9,7 @@ import DMHMDefinition3 from './pages/DMHMDefinition3';
 import DMHMDefinition4 from './pages/DMHMDefinition4';
 import DisasterGuide from './pages/DisasterGuide';
 import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
+import Error from './pages/Error';
 import ExistingConsultation from './pages/ExistingConsultation';
 import Fund from './pages/Fund';
 import FundDetail from './pages/FundDetail';
@@ -42,6 +43,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import Loading from './pages/Loading';
 
 function App() {
   const persiststore = persistStore(store);
@@ -69,6 +71,7 @@ function App() {
               <Route path="/DMHMDefinition3" element={<DMHMDefinition3/>} />
               <Route path="/DMHMDefinition4" element={<DMHMDefinition4/>} />
               <Route path="disaster-guide" element={<DisasterGuide />} />
+              <Route path="error" element={<Error />} />
               <Route path="fund" element={<Fund />} />
               <Route path="fund-detail" element={<FundDetail />} />
               <Route path="fund-payment" element={<FundPayment />} />
@@ -93,6 +96,7 @@ function App() {
               <Route path="c-new-consultation" element={<C_NewConsultation />} />
               <Route path="emotion-graph" element={<EmotionGraph />} />
               <Route path="consultation-record" element={<ConsultationRecord />} />
+              <Route path="loading" element={<Loading />} />
             </Route>
           </Routes>
         </Router>
