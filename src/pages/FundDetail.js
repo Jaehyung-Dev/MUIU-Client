@@ -37,12 +37,12 @@ const Main = styled.main`
 
   .post-detail-title {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 1rem;
   }
 
   .post-detail-content {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 400;
     line-height: 1.3;
   }
