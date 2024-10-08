@@ -19,6 +19,7 @@ export const HospitalShelterInfo = () => {
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const [isFindRoadOpen, setIsFindRoadOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태 추가
 
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
@@ -29,14 +30,20 @@ export const HospitalShelterInfo = () => {
     const openFindRoadPopUp = () => setIsFindRoadOpen(true);
     const closeFindRoadPopUp = () => setIsFindRoadOpen(false);
 
+    const handleSearch = (query) => {
+        setSearchQuery(query); // 검색어 상태 업데이트
+    };
+
     return (
         <Main>
-            <HS_SearchBar/>
+            <HS_SearchBar onSearch={handleSearch} /> {/* 검색어 전달 */}
             <HS_MapDisplay
-                openInfoPopUp={openInfoPopUp} 
-                openPhotoPopUp={openPhotoPopUp} 
-                openFindRoadPopUp={openFindRoadPopUp} />
-            <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} openPhotoPopUp={openPhotoPopUp} openFindRoadPopUp={openFindRoadPopUp}/>
+                openInfoPopUp={openInfoPopUp}
+                openPhotoPopUp={openPhotoPopUp}
+                openFindRoadPopUp={openFindRoadPopUp}
+                searchQuery={searchQuery} // 검색어 전달
+            />
+            <HS_InfoModal isOpen={isInfoOpen} onClose={closeInfoPopUp} openPhotoPopUp={openPhotoPopUp} openFindRoadPopUp={openFindRoadPopUp} />
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
             <HS_FindRoadModal isOpen={isFindRoadOpen} onClose={closeFindRoadPopUp} />
         </Main>
