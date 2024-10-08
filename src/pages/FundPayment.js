@@ -11,6 +11,9 @@ import CheckAfterIcon from '@mui/icons-material/CheckCircleRounded';
 // Styled components
 const Main = styled.main`
 
+  // width: calc(100% - 2rem);
+  // 가장 바깥 요소에 width 100%를 주면 너비가 넘침. 몇으로 줘야 됨?
+
   .payment-box{
     margin: 0 1rem;
   }
@@ -169,6 +172,10 @@ const Main = styled.main`
     margin: 3rem 0 2rem 0;
     cursor: pointer;
     font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    
   }
 `;
 
