@@ -96,6 +96,10 @@ const CenterNavItem = styled.div`
         width: 100%;
         height: 100%;
     }
+    @media (max-width: 393px) {
+        width: 60px;
+        height: 60px;
+    }
 `;
 
 const MenuContainer = styled.div`

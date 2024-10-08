@@ -2,10 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { MdGpsFixed } from "react-icons/md";
-import testImg from '../svg/test-img.svg';
 import graphImg from '../svg/graphImg.svg';
-import counselEx from '../svg/counsel-ex.svg';
-
 
 const Content = styled.div`
 
@@ -24,54 +21,6 @@ const Section = styled.div`
             margin-left: auto;
             font-size: 10px;
             color: gray;
-        }
-    }
-
-    .bookmark-group {
-        display: flex;
-        justify-content: space-between;
-
-        .bookmark {
-            box-sizing: border-box;
-            background-color: #FFF5CF;
-            border-radius: 10px;
-            width: 31%;
-            height: 110px;
-            display: flex;
-            flex-direction: column;
-            padding: 4% 4% 3%;
-            position: relative;
-
-            .bookmark-img {
-                width: 100%;
-                height: 25px;
-                position: absolute;
-                top: -3%;
-                right: -75%
-            }
-            
-            .bookmark-title {
-                font-size: 15px;
-                color: #F90;
-                font-weight: bold;
-                text-align: left;
-            }
-
-            .bookmark-content {
-                width: 100%;
-                height: 30px;
-                display: flex;
-                justify-content: left;
-                align-items: center;
-                padding-top: 20px;
-
-                p {
-                    font-size: 13px;
-                    color: #F90;
-                    font-weight: normal;
-                    text-align: left;
-                }
-            }
         }
     }
 
@@ -123,22 +72,6 @@ const Section = styled.div`
         }
     }
 
-    button {
-        font-family: 'Pretendard-Regular';
-        color: gray;
-        outline: none;
-        border: none;
-        border-radius: 10px;
-        width: 80px;
-        height: 20px;
-        font-weight: bold;
-
-        .checked {
-            background-color: #FFCC00;
-            color: black;
-        }
-    }
-
     button.seeAll {
         font-family: 'Pretendard-Regular';
         font-size: 10px;
@@ -167,7 +100,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/background.png');
+                    background-image: url(${process.env.PUBLIC_URL}/images/store-card1.png);
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -178,7 +111,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url('/images/background.png');
+                    background-image: url(${process.env.PUBLIC_URL}/images/store-card2.png);
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -221,8 +154,8 @@ const Section = styled.div`
 const Banner = styled.div`
     padding: 20px;
     width: 90%;
-    height: 100px;
-    background-image: url(${testImg});
+    height: 200px;
+    background-image: url(${process.env.PUBLIC_URL}/images/test-img.png);
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat; 
@@ -306,7 +239,7 @@ export const Main = () => {
                 <Block>
                     <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
                     <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src={counselEx} alt="counsel-ex"/>
+                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex"/>
                 </Block>
             </Blocks>
             <Content>
