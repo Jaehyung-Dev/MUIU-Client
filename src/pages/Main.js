@@ -58,7 +58,7 @@ const Section = styled.div`
             .current-location-info {
                 width: 88%;
                 height: 40px;
-                font-size: 13px;
+                font-size: 14px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -100,7 +100,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url(${process.env.PUBLIC_URL}/images/store-card1.png);
+                    background-image: url(${process.env.PUBLIC_URL}/images/store-img1-1.png);
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -111,7 +111,7 @@ const Section = styled.div`
                     height: 60%;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
-                    background-image: url(${process.env.PUBLIC_URL}/images/store-card2.png);
+                    background-image: url(${process.env.PUBLIC_URL}/images/store-img1-2.png);
                     background-size: cover;
                     background-repeat: no-repeat;
                     color: white;
@@ -139,7 +139,7 @@ const Section = styled.div`
                     height: 40%;
                     padding: 10px;
                     color: black;
-                    font-size: 10px;
+                    font-size: 13px;
 
                     .funding-detail-content {
                         margin-top: 5px;
@@ -179,11 +179,12 @@ const Block = styled.div`
     
     .block-text-bold {
         font-weight: bold;
+        font-size: 18px;
     }
 
     .block-text-small {
         font-weight: normal;
-        font-size: small;
+        font-size: 15px;
         color: gray;
     }
 
@@ -199,6 +200,10 @@ export const Main = () => {
 
     const handleFundClick = () => {
         navi('/fund');
+    };
+
+    const handleDiaryClick = () => {
+        navi('/my-diary');
     };
 
     return (
@@ -231,7 +236,7 @@ export const Main = () => {
                 </Section>
             </Content>
             <Blocks>
-                <Block>
+                <Block onClick={handleDiaryClick}>
                     <div className="block-text-bold">안녕하세요. 서준님,</div>
                     <div className="block-text-small">오늘의 하루는<br/>어떠셨나요?</div>
                     <img src={graphImg} alt="graphImg" style={{marginLeft: "10%"}}/>

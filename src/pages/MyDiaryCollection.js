@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CreateIcon from '@mui/icons-material/Create';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import angry from '../svg/angry.svg'
 import { useNavigate } from 'react-router-dom';
 
 const CoverDiv = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: #efefef;
-    margin-top: 4rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-`
+`;
 
 const SearchDiv = styled.div`
     width: 85%;
@@ -38,19 +40,23 @@ const SearchDiv = styled.div`
         color: black;
         font-size: 1.1rem;
     }
-`
+`;
 
 const CalendarDiv = styled.div`
-    width: 85%;
-    min-height: 25vh;
+    width: 80%;
+    min-height: 17vh;
     background-color: white;
     margin-top: 1rem;    
     border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     @media screen and (max-width: 600px) {
         min-height: 20vh;
     }
-`
+`;
 
 const DiaryContainer = styled.div`
     width: 85%;
@@ -64,7 +70,7 @@ const DiaryContainer = styled.div`
     @media screen and (max-width: 600px) {
         min-height: 35vh;
     }
-`
+`;
 
 const DiaryDiv = styled.div`
     width: 85%;
@@ -72,7 +78,7 @@ const DiaryDiv = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
-`
+`;
 
 const DiarySpaceBetween = styled.div`
     width: 100%;
@@ -80,18 +86,20 @@ const DiarySpaceBetween = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`
+`;
+
 const DiaryButton = styled.button`
     border: none;
     background: none;
     color: black;
     display: flex;
     align-items: center;
-`
+`;
+
 const DiaryCalendar = styled.div`
     width: 30%;
     min-height: 2rem;
-    background-color: #34C759;
+    background-color: #FF3B30;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -100,7 +108,8 @@ const DiaryCalendar = styled.div`
     @media screen and (max-width: 600px) {
         width: 43%;
     }
-`
+`;
+
 const DiaryTitle = styled.p`
     font-size: 1.5rem;
     font-weight: bold;
@@ -109,7 +118,8 @@ const DiaryTitle = styled.p`
     @media screen and (max-width: 600px) {
         font-size: 1.3rem;
     }
-`
+`;
+
 const DiaryContent = styled.p`
     font-size: 1.1rem;
     font-weight: 600;
@@ -117,7 +127,199 @@ const DiaryContent = styled.p`
     @media screen and (max-width: 600px) {
         font-size: 1rem;
     }
-`
+`;
+
+const diaryData = {
+    '2024-10-02': 1,
+    '2024-10-03': 3,
+    '2024-10-05': 5,
+};
+
+const CalendarHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.3rem;
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    width: 100%;
+`;
+
+const HeaderTitle = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+`;
+
+const CalendarWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2rem;
+    text-align: center;
+    margin-top: 10px;
+`;
+
+const DayBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: ${({ emotion }) => getEmotionColor(emotion)};
+`;
+
+const WeekDaysHeader = styled.div`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3.6rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: gray;
+`;
+
+const MiniCalendar = styled.div`
+    position: absolute;
+    top: 240px;
+    right: 450px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 1rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const MiniCalendarHeader = styled.div`
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+`;
+
+const MiniCalendarGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+`;
+
+const MiniCalendarDay = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: ${({ emotion }) => getEmotionColor(emotion)};
+`;
+
+
+const getEmotionColor = (emotion) => {
+    switch (emotion) {
+        case 5:
+            return "#00C7BE";
+        case 4:
+            return "#34C759";
+        case 3:
+            return "#FFCC00";
+        case 2:
+            return "#FF9500";
+        case 1:
+            return "#FF3B30";
+        default:
+            return "transparent";
+    }
+};
+
+const WeekCalendar = () => {
+    const navi = useNavigate();
+    const [showMiniCalendar, setShowMiniCalendar] = useState(false);
+
+    const handleChartClick = () => {
+        navi('/emotion-graph');
+    };
+
+    const handleDropdownClick = () => {
+        setShowMiniCalendar((prev) => !prev); // Toggle 달력
+    };
+
+    const weekDays = [
+        '2024-10-01', '2024-10-02', '2024-10-03',
+        '2024-10-04', '2024-10-05', '2024-10-06', '2024-10-07'
+    ];
+
+    const weekDayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+    // 작은 달력 생성 함수
+    const getMiniCalendarDays = (year, month) => {
+        const firstDay = new Date(year, month, 1).getDay(); // 해당 월의 시작 요일
+        const daysInMonth = new Date(year, month + 1, 0).getDate(); // 해당 월의 마지막 일자
+        
+        const daysArray = [];
+        
+        // 시작 요일 전까지 빈 공간
+        for (let i = 0; i < firstDay; i++) {
+            daysArray.push('');
+        }
+
+        // 1일부터 말일까지 날짜 추가
+        for (let day = 1; day <= daysInMonth; day++) {
+            daysArray.push(day);
+        }
+
+        return daysArray;
+    };
+
+    const year = 2024; // 현재 년도
+    const month = 9; // 10월 (0부터 시작, 9는 10월)
+    const miniCalendarDays = getMiniCalendarDays(year, month);
+
+    return (
+        <>
+            <CalendarHeader>
+                <HeaderTitle>
+                    <CalendarTodayIcon style={{ marginRight: '0.5rem' }} />
+                    <b onClick={handleChartClick}>2024년 10월</b>
+                </HeaderTitle>
+                <ArrowDropDownIcon 
+                    style={{ marginLeft: 'auto', marginRight: '15px', cursor: 'pointer' }} 
+                    onClick={handleDropdownClick} 
+                />
+            </CalendarHeader>
+            <WeekDaysHeader>
+                {weekDayNames.map((day) => (
+                    <div key={day}>{day}</div>
+                ))}
+            </WeekDaysHeader>
+            <CalendarWrapper>
+                {weekDays.map((day) => (
+                    <DayBox key={day} emotion={diaryData[day]}>
+                        {new Date(day).getDate()}
+                    </DayBox>
+                ))}
+            </CalendarWrapper>
+
+            {showMiniCalendar && (
+                <MiniCalendar>
+                    <MiniCalendarHeader>2024년 10월</MiniCalendarHeader>
+                    <MiniCalendarGrid>
+                        {weekDayNames.map((day) => (
+                            <div key={day} style={{ color: 'gray' }}>{day}</div>
+                        ))}
+                        {miniCalendarDays.map((day, index) => (
+                            <MiniCalendarDay key={index} emotion={day ? diaryData[`2024-10-${String(day).padStart(2, '0')}`] : null}>
+                                {day}
+                            </MiniCalendarDay>
+                        ))}
+                    </MiniCalendarGrid>
+                </MiniCalendar>
+            )}
+        </>
+    );
+};
 
 const MyDiaryCollection = () => {
     const navi = useNavigate();
@@ -137,7 +339,7 @@ const MyDiaryCollection = () => {
                     <CreateIcon onClick={handleWriteClick}/>
                 </SearchDiv>
                 <CalendarDiv>
-
+                    <WeekCalendar />
                 </CalendarDiv>
                 <DiaryContainer>
                     <DiaryDiv>
@@ -159,7 +361,6 @@ const MyDiaryCollection = () => {
                         <DiaryContent>인터넷이 끊켰다<br />나는 너무 슬프다.</DiaryContent>
                     </DiaryDiv>
                 </DiaryContainer>
-                <button onClick={() => window.location.href = 'emotion-graph'}>임시</button>
             </CoverDiv>
         </>
     );
