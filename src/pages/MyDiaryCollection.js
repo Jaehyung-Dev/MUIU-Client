@@ -160,7 +160,7 @@ const CalendarWrapper = styled.div`
     margin-top: 10px;
 
     @media (max-width: 600px) {
-        gap: 0.5rem; 
+        gap: 0.2rem; 
     }
 `;
 
@@ -185,7 +185,7 @@ const WeekDaysHeader = styled.div`
     color: gray;
 
     @media (max-width: 600px) {
-        gap: 2rem;
+        gap: 1.8rem;
     }
 `;
 
@@ -267,19 +267,16 @@ const WeekCalendar = () => {
 
     const weekDayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-    // 작은 달력 생성 함수
     const getMiniCalendarDays = (year, month) => {
-        const firstDay = new Date(year, month, 1).getDay(); // 해당 월의 시작 요일
-        const daysInMonth = new Date(year, month + 1, 0).getDate(); // 해당 월의 마지막 일자
+        const firstDay = new Date(year, month, 1).getDay(); 
+        const daysInMonth = new Date(year, month + 1, 0).getDate(); 
         
         const daysArray = [];
         
-        // 시작 요일 전까지 빈 공간
         for (let i = 0; i < firstDay; i++) {
             daysArray.push('');
         }
 
-        // 1일부터 말일까지 날짜 추가
         for (let day = 1; day <= daysInMonth; day++) {
             daysArray.push(day);
         }
@@ -287,8 +284,8 @@ const WeekCalendar = () => {
         return daysArray;
     };
 
-    const year = 2024; // 현재 년도
-    const month = 9; // 10월 (0부터 시작, 9는 10월)
+    const year = 2024; 
+    const month = 9;
     const miniCalendarDays = getMiniCalendarDays(year, month);
 
     return (
