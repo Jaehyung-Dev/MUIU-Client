@@ -11,9 +11,15 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+<<<<<<< HEAD
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
     "@toast-ui/react-editor": "^3.2.3",
+=======
+    "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
+    "@toast-ui/react-editor": "^3.2.3",
+    "@tosspayments/tosspayments-sdk": "^2.3.2",
+>>>>>>> 618f5a7d78bee9f8d8a9af591ed399e027fd4bbd
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "react": "^18.3.1",
