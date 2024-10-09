@@ -139,7 +139,7 @@ const OkBtn = styled.button`
     margin: 1rem auto 0;
 `;
 
-const MindCheck_Depression_Result = ({ score }) => {
+const MindCheck_Anxiety_Result = ({ score }) => {
     const navigate = useNavigate();
 
     const handleSubmit = () => {
@@ -150,47 +150,35 @@ const MindCheck_Depression_Result = ({ score }) => {
     const isNormalChecked = score >= 0 && score <= 4;
     const isLittleCautionChecked = score >=5 && score <= 9;
     const isCautionChecked = score >= 10 && score <= 14;
-    const isLittleSevereChecked = score >=15 && score <= 19;
-    const isSevereChecked = score >= 20 && score <= 27;
+    const isSevereChecked = score >= 15 && score <= 21;
 
     return (
         <Board>
             <img src={clip} alt='집게'/>
             <Paper>
-                <Title>우울증상</Title>
+                <Title>불안증상</Title>
                 <Subtitle>검사결과</Subtitle>
                 <UserScore>총 {score}점</UserScore>
                 <ItemLine />
                 <CheckItem>
                     <input type="checkbox" checked={isNormalChecked} readOnly />
                     <Criteria>정상<span>0~4점</span></Criteria>
-                    <label>적응상의 지장을 초래할만한 우울 관련 증상을 거의 보고하지 않았습니다.</label>
+                    <label>주의가 필요한 정도의 과도한 걱정이나 불안을 보고하지 않았습니다.</label>
                 </CheckItem>
                 <CheckItem>
                     <input type="checkbox" checked={isLittleCautionChecked} readOnly />
                     <Criteria>경미한<br />수준<span>5~9점</span></Criteria>
-                    <label>경미한 수준의 우울감이 있으나 일상생활에 지장을 줄 정도는 아닙니다.</label>
+                    <label>다소 경미한 수준의 걱정과 불안을 보고하였습니다. 주의 깊은 관찰과 관심이 필요합니다.</label>
                 </CheckItem>
                 <CheckItem>
                     <input type="checkbox" checked={isCautionChecked} readOnly />
                     <Criteria>중간<br />수준<span>10~14점</span></Criteria>
-                    <label>
-                        중간수준의 우울감을 비교적 자주 경험하는 것으로 보고하였습니다.<br />
-                        직업적.사회적 적응에 일부 영향을 미칠 수 있어 주의 깊은 관찰과 관심이 필요합니다.
-                    </label>
-                </CheckItem>
-                <CheckItem>
-                    <input type="checkbox" checked={isLittleSevereChecked} readOnly />
-                    <Criteria>약간 심한<br />수준<span>15~19점</span></Criteria>
-                    <label>
-                        약간 심한 수준의 우울감을 자주 경험하는 것으로 보고하였습니다.<br />
-                        직업적, 사회적 적응에 일부 영향을 미칠 경우. 정신건강 전문가의 도움을 받아 보시기를 권해 드립니다.
-                    </label>
+                    <label>주의가 필요한 수준의 과도한 걱정과 불안을 보고하였습니다. 추가적인 평가나 정신건강 전문가의 도움을 받아보시기를 권해드립니다.</label>
                 </CheckItem>
                 <CheckItem>
                     <input type="checkbox" checked={isSevereChecked} readOnly />
-                    <Criteria>심한<br />수준<span>20~27점</span></Criteria>
-                    <label> 광범위한 우울 증상을 매우 자주, 심한 수준에서 경험하는 것으로 보고하였습니다. 일상생활의 다양한 영역에서 어려움이 초래될경우. 추가적인 평가나 정신건강 전문가의 도움을 받아보시기를 권해 드립니다.</label>
+                    <Criteria>심한<br />수준<span>15~21점</span></Criteria>
+                    <label>일상생활에 지장을 초래할 정도의 과도하고 심한 걱정과 불안을 보고하였습니다. 추가적인 평가나 정신건강 전문가의 도움을 받아 보시기를 권해드립니다.</label>
                 </CheckItem>
                 <Warning>‣ 결과는 자기보고 형식으로 측정되며, 정신과적 진단을 의미하는 것은 아닙니다.</Warning>
                 <ItemLine />
@@ -200,4 +188,4 @@ const MindCheck_Depression_Result = ({ score }) => {
     );
 }
 
-export default MindCheck_Depression_Result;
+export default MindCheck_Anxiety_Result;

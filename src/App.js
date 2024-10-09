@@ -45,12 +45,15 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import Loading from './pages/Loading';
 import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
-import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
 import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
 import MindCheck_Depression_Process from './pages/MindCheck_Depression_Process';
-import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
 import MindCheck_Physical_Process from './pages/MindCheck_Physical_Process';
 import MindCheck_Suicide_Process from './pages/MindCheck_Suicide_Process';
+import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
+import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
+import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
+import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
+import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
 
 function App() {
   const persiststore = persistStore(store);
@@ -86,13 +89,16 @@ function App() {
               <Route path="join-success" element={<JoinSuccess/>} />
               <Route path="mypage" element={<MyPage />} />
               <Route path="mind-check" element={<MindCheck />} />
-              <Route path="/mind-check/anxiety" element={<MindCheck_Anxiety_Process />} />
+              <Route path="/mind-check/anxiety" element={<MindCheck_Anxiety_Process updateScore={(score) => updateScore('anxiety', score)}/>} />
               <Route path="/mind-check/depression" element={<MindCheck_Depression_Process updateScore={(score) => updateScore('depression', score)}/>} />
-              <Route path="/mind-check/depression/result" element={<MindCheck_Depression_Result score={scores.depression} />} />
-              <Route path="/mind-check/physical" element={<MindCheck_Physical_Process />} />
+              <Route path="/mind-check/physical" element={<MindCheck_Physical_Process updateScore={(score) => updateScore('physical', score)}/>} />
               <Route path="/mind-check/stress" element={<MindCheck_Stress_Process updateScore={(score) => updateScore('stress', score)} />} />
+              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={(score) => updateScore('suicide', score)}/>} />
+              <Route path="/mind-check/anxiety/result" element={<MindCheck_Anxiety_Result score={scores.anxiety} />} />
+              <Route path="/mind-check/depression/result" element={<MindCheck_Depression_Result score={scores.depression} />} />
+              <Route path="/mind-check/physical/result" element={<MindCheck_Physical_Result score={scores.physical} />} />
               <Route path="/mind-check/stress/result" element={<MindCheck_Stress_Result score={scores.stress} />} />
-              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process />} />
+              <Route path="/mind-check/suicide/result" element={<MindCheck_Suicide_Result score={scores.suicide} />} />
               <Route path="human-counseling" element={<HumanCounseling />} />
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
