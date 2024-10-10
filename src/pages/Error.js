@@ -32,6 +32,7 @@ const ErrorMessage = styled.p`
   font-size: 1.2rem;
   color: #666;
   margin-bottom: 2rem;
+  line-height: 1.8rem;
 `;
 
 const Error = () => {

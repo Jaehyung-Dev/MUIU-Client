@@ -36,25 +36,32 @@ const LoadingContainer = styled.div`
   height: calc(100vh - 130px); //header,footer길이 제외
   text-align: center;
   background-color: #f7f8fa;
+  color: #333;
 `;
 
 // 로딩 이모지 스타일
 const Emoji = styled.img`
   width: 15rem;
   height: auto;
-  margin-bottom: 10rem;
+  margin-bottom: 8rem;
   animation: ${spin} 3s linear infinite;
+`;
+
+// 로딩 메시지 스타일
+const LoadingMessage = styled.div`
+  font-size: 1.7rem; /* 폰트 크기 키움 */
+  font-weight: 600;
+  margin-bottom: 1rem; /* 문구 사이 간격 */
 `;
 
 // 로딩 텍스트 스타일
 const LoadingText = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
 
   &::after {
     content: '';
-    animation: ${dots} 1.5s steps(3, end) infinite;
+    animation: ${dots} 2.5s steps(3, end) infinite;
   }
 `;
 
@@ -62,7 +69,8 @@ const Loading = () => {
   return (
     <LoadingContainer>
       <Emoji src={`${process.env.PUBLIC_URL}/images/Emoji/하늘마음티콘.png`} alt="Loading icon" />
-      <LoadingText>로딩 중</LoadingText>
+      <LoadingMessage>잠시만 기다려주세요</LoadingMessage>
+      <LoadingText>로딩 중입니다</LoadingText>
     </LoadingContainer>
   );
 };
