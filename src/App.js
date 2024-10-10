@@ -60,13 +60,17 @@ import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
 function App() {
   const persiststore = persistStore(store);
 
-  // 자가진단 점수 반영 (props 전달을 위해 const문 추가 -- 건들면 울어요. -- 대휘)
+  /*
+    ⚠️ 내 마음 알아보기(일일자가진단, MindCheck.js)
+      - 점수 반영을 위한 code
+      - topic : 'anxiety', 'depression', 'physical', 'stress', 'suicide', 
+  */
   const [scores, setScores] = useState({
     stress: 0,
     anxiety: 0,
     depression: 0,
     physical: 0,
-    suicide: 0
+    suicide: 0,
   });
 
   const updateScore = (topic, score) => {
@@ -75,8 +79,7 @@ function App() {
       [topic]: score,
     }));
   };
-
-
+  
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persiststore}>
@@ -95,7 +98,7 @@ function App() {
               <Route path="/mind-check/depression" element={<MindCheck_Depression_Process updateScore={(score) => updateScore('depression', score)}/>} />
               <Route path="/mind-check/physical" element={<MindCheck_Physical_Process updateScore={(score) => updateScore('physical', score)}/>} />
               <Route path="/mind-check/stress" element={<MindCheck_Stress_Process updateScore={(score) => updateScore('stress', score)} />} />
-              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={(score) => updateScore('suicide', score)}/>} />
+              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={(score) => updateScore('suicide', score)} />} />
               <Route path="/mind-check/anxiety/result" element={<MindCheck_Anxiety_Result score={scores.anxiety} />} />
               <Route path="/mind-check/depression/result" element={<MindCheck_Depression_Result score={scores.depression} />} />
               <Route path="/mind-check/physical/result" element={<MindCheck_Physical_Result score={scores.physical} />} />
