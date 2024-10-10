@@ -130,7 +130,7 @@ const OkBtn = styled.button`
 `;
 
 const MindCheck_Physical_Process = ({ updateScore }) => {
-    const [selectedScores, setSelectedScores] = useState(Array(7).fill(0));
+    const [selectedScores, setSelectedScores] = useState(Array(15).fill(0));
     const navigate = useNavigate();
 
     const handleScoreChange = (index, score) => {
@@ -164,7 +164,7 @@ const MindCheck_Physical_Process = ({ updateScore }) => {
                     2 - 대단히 시달림
                 </Warning2>
                 <ItemLine />
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,].map((index) => (
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((index) => (
                     <CheckItem key={index}>
                         <span>{index + 1}</span>
                         <label>
