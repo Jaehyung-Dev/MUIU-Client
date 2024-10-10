@@ -72,14 +72,18 @@ function App() {
     physical: 0,
     suicide: 0,
   });
-
   const updateScore = (topic, score) => {
     setScores((prevScores) => ({
       ...prevScores,
       [topic]: score,
     }));
   };
-  
+  const [suicideStatus, setSuicideStatus] = useState(null);
+  const handleSuicideResult = (score, status) => {
+    updateScore('suicide', score);
+    setSuicideStatus(status);
+  };
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persiststore}>
@@ -98,12 +102,12 @@ function App() {
               <Route path="/mind-check/depression" element={<MindCheck_Depression_Process updateScore={(score) => updateScore('depression', score)}/>} />
               <Route path="/mind-check/physical" element={<MindCheck_Physical_Process updateScore={(score) => updateScore('physical', score)}/>} />
               <Route path="/mind-check/stress" element={<MindCheck_Stress_Process updateScore={(score) => updateScore('stress', score)} />} />
-              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={(score) => updateScore('suicide', score)} />} />
+              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={handleSuicideResult} />} />
               <Route path="/mind-check/anxiety/result" element={<MindCheck_Anxiety_Result score={scores.anxiety} />} />
               <Route path="/mind-check/depression/result" element={<MindCheck_Depression_Result score={scores.depression} />} />
               <Route path="/mind-check/physical/result" element={<MindCheck_Physical_Result score={scores.physical} />} />
               <Route path="/mind-check/stress/result" element={<MindCheck_Stress_Result score={scores.stress} />} />
-              <Route path="/mind-check/suicide/result" element={<MindCheck_Suicide_Result score={scores.suicide} />} />
+              <Route path="/mind-check/suicide/result" element={<MindCheck_Suicide_Result score={scores.suicide} status={suicideStatus} />} />
               <Route path="human-counseling" element={<HumanCounseling />} />
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
