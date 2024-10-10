@@ -85,6 +85,7 @@ const CheckItem = styled.div`
     }
 
     label {
+        width: 250%;
         font-size: 0.85rem;
         margin-right: 1rem;
     }

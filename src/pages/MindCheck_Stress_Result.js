@@ -86,6 +86,7 @@ const CheckItem = styled.div`
     cursor: pointer;
 
     label {
+        width: 250%;
         font-size: 0.85rem;
         margin-left: auto;
     }
