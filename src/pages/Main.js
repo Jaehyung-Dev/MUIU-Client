@@ -1,12 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { MdGpsFixed } from "react-icons/md";
 import graphImg from '../svg/graphImg.svg';
 
-const Content = styled.div`
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import ClearIcon from '@mui/icons-material/Clear';
 
-`;
+const Content = styled.div``;
 
 const Section = styled.div`
 
@@ -173,7 +175,6 @@ const Blocks = styled.div`
 const Block = styled.div`
     border-radius: 10px;
     background-color: white;
-    // margin: 5px
     padding: 0.8rem;
     width: 43%;
 
@@ -194,7 +195,7 @@ const Block = styled.div`
 
     img {
         width: 100%;
-        height: 125px;
+        height: auto;
         padding-top: 10px;
         align-items: center;
         justify-content: center;
@@ -215,24 +216,124 @@ const Block = styled.div`
     }
 `;
 
+const ModalOverlay = styled.div`
+    display: flex; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+
+const ModalContent = styled.div`
+    padding: 1rem;
+    border-radius: 10px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    img {
+        max-width: 80%;
+        max-height: 80%;
+        border-radius: 10px;
+    }
+`;
+
+const NavButton = styled.button`
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background-color: white;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    ${(props) => (props.right ? 'right: 1rem;' : 'left: 1rem;')}
+`;
+
+const CloseButton = styled.button`
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 1.5rem;
+    background-color: white;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+`;
+
+const PageNumber = styled.div`
+    position: absolute;
+    bottom: 1rem;
+    font-size: 1rem;
+    color: #555;
+    width: 100%;
+    text-align: center;
+`;
+
 export const Main = () => {
     const navi = useNavigate();
 
-    const handleFundClick = () => {
-        navi('/fund');
+    const handleFundClick = () => navi('/fund');
+    const handleDiaryClick = () => navi('/my-diary');
+
+    // 이미지 리스트 정의
+    const imageList = {
+        sleepless_night: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/sleepless_night(${i}).png`),
+        ptsd: Array.from({ length: 8 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/ptsd(${i}).png`),
+        panic_disorder: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/panic_disorder(${i}).png`),
+        social_psychology: Array.from({ length: 9 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/social_psychology(${i}).png`)
     };
 
-    const handleDiaryClick = () => {
-        navi('/my-diary');
-    };
+    const imageKeys = Object.keys(imageList);
+    const [randomImageKey, setRandomImageKey] = useState(imageKeys[0]);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // 무작위 이미지 리스트 키 설정
+    useEffect(() => {
+        const randomKey = imageKeys[Math.floor(Math.random() * imageKeys.length)];
+        setRandomImageKey(randomKey);
+    }, []);
+
+    const closeModal = () => setModalOpen(false);
+    const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
+    const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
 
     return (
         <>
             <Content>
-                <Banner/>
+                <Banner />
                 <Section>
                     <h2>서울시 관악구&nbsp;&nbsp;
-                        <MdGpsFixed size="1.2rem"/>
+                        <MdGpsFixed size="1.2rem" />
                     </h2>
                     <div className="current-info-items">
                         <div className="current-info-item">
@@ -257,16 +358,43 @@ export const Main = () => {
             </Content>
             <Blocks>
                 <Block onClick={handleDiaryClick}>
-                    <div className="block-text-bold">안녕하세요.<br/> 서준님,</div>
-                    <div className="block-text-small">오늘의 하루는<br/>어떠셨나요?</div>
-                    <img src={graphImg} alt="graphImg" style={{marginBottom: "-5%"}}/>
+                    <div className="block-text-bold">안녕하세요.<br /> 서준님,</div>
+                    <div className="block-text-small">오늘의 하루는<br />어떠셨나요?</div>
+                    <img src={graphImg} alt="graphImg" style={{ marginBottom: "-5%" }} />
                 </Block>
-                <Block>
-                    <div className="block-text-small" style={{textAlign: 'right'}}>평생 써먹는<br/>자존감 높이는법</div>
-                    <div className="block-text-bold" style={{textAlign: 'right'}}>정다은 상담사</div>
-                    <img src={`${process.env.PUBLIC_URL}/images/counsel-ex.png`} alt="counsel-ex" style={{marginBottom: "5%"}}/>
+                <Block onClick={() => setModalOpen(true)}>
+                    <div className="block-text-small"
+                        style={{ textAlign: 'right', cursor: 'pointer' }}
+                        onClick={() => navi('/mind-column')}>
+                        마음컬럼 전체보기
+                    </div>
+                    <img src={`${process.env.PUBLIC_URL}/MC_images/${randomImageKey}(0).png`} alt="mind-column" />
                 </Block>
             </Blocks>
+
+            {/* 마음컬럼 모달 창 */}
+            {isModalOpen && (
+                <ModalOverlay>
+                    <ModalContent>
+                        <CloseButton onClick={closeModal}>
+                            <ClearIcon fontSize="large" />
+                        </CloseButton>
+                        <img src={imageList[randomImageKey][currentImageIndex]} alt="모달 이미지" />
+                        {currentImageIndex > 0 && (
+                            <NavButton onClick={showPrevImage}>
+                                <NavigateBeforeIcon fontSize="large" />
+                            </NavButton>
+                        )}
+                        {currentImageIndex < imageList[randomImageKey].length - 1 && (
+                            <NavButton right onClick={showNextImage}>
+                                <NavigateNextIcon fontSize="large" />
+                            </NavButton>
+                        )}
+                        <PageNumber>{`${currentImageIndex + 1} / ${imageList[randomImageKey].length}`}</PageNumber>
+                    </ModalContent>
+                </ModalOverlay>
+            )}
+
             <Content>
                 <Section>
                     <h2>마음나누기
@@ -276,8 +404,8 @@ export const Main = () => {
                         <div className="funding-item-section">
                             <div className="funding-item">
                                 <div className="funding-top1">
-                                    <div className="funding-title">호우피해<br/>긴급모금</div>
-                                    <div className="funding-content">폭우로 삶의 터전을 잃은<br/>이웃들에게 힘이 되어주세요.</div>
+                                    <div className="funding-title">호우피해<br />긴급모금</div>
+                                    <div className="funding-content">폭우로 삶의 터전을 잃은<br />이웃들에게 힘이 되어주세요.</div>
                                 </div>
                                 <div className="funding-bottom">
                                     호우피해긴급모금
@@ -288,8 +416,8 @@ export const Main = () => {
                         <div className="funding-item-section">
                             <div className="funding-item">
                                 <div className="funding-top2">
-                                    <div className="funding-title">산불피해<br/>긴급모금</div>
-                                    <div className="funding-content">삶의 터전을 잃어버린<br/>피해 주민들을 위해<br/>함께 힘을 모아주세요.</div>
+                                    <div className="funding-title">산불피해<br />긴급모금</div>
+                                    <div className="funding-content">삶의 터전을 잃어버린<br />피해 주민들을 위해<br />함께 힘을 모아주세요.</div>
                                 </div>
                                 <div className="funding-bottom">
                                     산불피해긴급모금

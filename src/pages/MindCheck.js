@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 import clip from '../svg/clip.svg'
+
+
 const Banner = styled.div`
     background-image: url('${process.env.PUBLIC_URL}/images/mind-check-header.png');
     background-size: contain;
@@ -59,58 +62,61 @@ const Paper = styled.div`
 `;
 
 const CheckItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 1rem auto;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 1rem auto;
+    cursor: pointer;
 
-  input {
-    margin-right: 1rem;
-  }
+    input {
+        margin-right: 1rem;
+    }
 
-  label {
-    font-size: 1.2rem;
-  }
+    label {
+        font-size: 1.2rem;
+    }
 `;
 
 const MindCheck = () => {
     const [selectedOption, setSelectedOption] = useState(null);
+    const navigate = useNavigate();
 
     const handleCheck = (option) => {
         setSelectedOption(option);
+        navigate(`/mind-check/${option}`);
     };
 
-  return (
-    <>
-        <Banner>
-        </Banner>
-        <Board>
-            <img src={clip} alt='집게'/>
-            <Paper>
-                <CheckItem onClick={() => handleCheck("stress")}>
-                    <input type="checkbox" checked={selectedOption === "stress"} readOnly />
-                    <label>외상 후 스트레스 증상</label>
-                </CheckItem>
-                <CheckItem onClick={() => handleCheck("depression")}>
-                    <input type="checkbox" checked={selectedOption === "depression"} readOnly />
-                    <label>우울 증상</label>
-                </CheckItem>
-                <CheckItem onClick={() => handleCheck("anxiety")}>
-                    <input type="checkbox" checked={selectedOption === "anxiety"} readOnly />
-                    <label>불안 증상</label>
-                </CheckItem>
-                <CheckItem onClick={() => handleCheck("physical")}>
-                    <input type="checkbox" checked={selectedOption === "physical"} readOnly />
-                    <label>신체 증상</label>
-                </CheckItem>
-                <CheckItem onClick={() => handleCheck("suicide")}>
-                    <input type="checkbox" checked={selectedOption === "suicide"} readOnly />
-                    <label>자살 위험성</label>
-                </CheckItem>
-            </Paper>
-        </Board>
-    </>
-  )
+
+    return (
+        <>
+            <Banner>
+            </Banner>
+            <Board>
+                <img src={clip} alt='집게'/>
+                <Paper>
+                    <CheckItem onClick={() => handleCheck("stress")}>
+                        <input type="checkbox" checked={selectedOption === "stress"} readOnly />
+                        <label>외상 후 스트레스 증상</label>
+                    </CheckItem>
+                    <CheckItem onClick={() => handleCheck("depression")}>
+                        <input type="checkbox" checked={selectedOption === "depression"} readOnly />
+                        <label>우울 증상</label>
+                    </CheckItem>
+                    <CheckItem onClick={() => handleCheck("anxiety")}>
+                        <input type="checkbox" checked={selectedOption === "anxiety"} readOnly />
+                        <label>불안 증상</label>
+                    </CheckItem>
+                    <CheckItem onClick={() => handleCheck("physical")}>
+                        <input type="checkbox" checked={selectedOption === "physical"} readOnly />
+                        <label>신체 증상</label>
+                    </CheckItem>
+                    <CheckItem onClick={() => handleCheck("suicide")}>
+                        <input type="checkbox" checked={selectedOption === "suicide"} readOnly />
+                        <label>자살 위험성</label>
+                    </CheckItem>
+                </Paper>
+            </Board>
+        </>
+    )
 }
 
 export default MindCheck

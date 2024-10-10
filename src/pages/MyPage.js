@@ -17,8 +17,8 @@ const Profile = styled.div`
     padding: 0 15px;
 
     .profile-image {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         background-color: #e0e0e0;
         margin-right: 15px;
@@ -193,20 +193,32 @@ const DividerButton = styled.button`
 export const MyPage = () => {
     const navigate = useNavigate();
 
+    const handleStarredPlaceClick = () => {
+        navigate('/starred-place');
+    }
+
     const handleConsultationHistoryClick = () => {
         navigate('/consultation-record');
     };
 
+    const handleDonationRecordClick = () => {
+        navigate('/donation-record');
+    };
+
+    const handleProfilehangeClick = () => {
+        alert('프로필 변경 모달 이동');
+    };
+
     const handlePasswordChangeClick = () => {
-        alert('비밀번호 변경 페이지로 이동');
+        alert('비밀번호 변경');
     };
 
     const handleSocialLinkClick = () => {
-        alert('소셜 연동 페이지로 이동');
+        alert('소셜 연동');
     };
 
     const handleAccountDeleteClick = () => {
-        alert('탈퇴하기 페이지로 이동');
+        alert('로그아웃?');
     };
 
     return (
@@ -222,7 +234,7 @@ export const MyPage = () => {
                 <div className="change-profile-btn">프로필 변경</div>
             </Profile>
             <Menu>
-                <div className="menu-button">
+                <div className="menu-button" onClick={handleStarredPlaceClick}>
                     <div className="menu-button-icon">
                         <StarIcon/>
                     </div>
@@ -234,7 +246,7 @@ export const MyPage = () => {
                     </div>
                     <div className="menu-button-text">상담 내역</div>
                 </div>
-                <div className="menu-button">
+                <div className="menu-button" onClick={handleDonationRecordClick}>
                     <div className="menu-button-icon">
                         <AccountBalanceWalletIcon/>
                     </div>

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import angry from '../svg/angry.svg'
-import depress from '../svg/depress.svg'
-import normal from '../svg/normal.svg'
-import good from '../svg/good.svg'
-import happy from '../svg/happy.svg'
+import angry from '../svg/angry.svg';
+import depress from '../svg/depress.svg';
+import normal from '../svg/normal.svg';
+import good from '../svg/good.svg';
+import happy from '../svg/happy.svg';
 
 const Container = styled.div`
     margin-top: -10px;
@@ -35,7 +35,6 @@ const DatePicker = styled.div`
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
 `;
-
 
 const DiaryEntry = styled.div`
     width: 80%;
@@ -123,6 +122,26 @@ const EmotionDiv = styled.div`
         return 'gray';
         }
     }};
+    transition: background-color 0.3s ease; 
+
+    &:hover {
+        background-color: ${({ mood }) => {
+        switch(mood) {
+          case 'dissatisfied':
+            return '#e32d26';  
+          case 'bad':
+            return '#e68400';  
+          case 'soso':
+            return '#e6b800';  
+          case 'good':
+            return '#2ea448';  
+          case 'happy':
+            return '#00a39e';  
+          default:
+            return 'gray';
+          }
+        }};
+    }
     @media screen and (max-width: 600px) {
         width: 40%;
         height: 10vh;
@@ -150,6 +169,43 @@ const SaveBtn = styled.button`
 `;
 
 const MyDiaryWrite = () => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [mood, setMood] = useState('');
+
+  const handleMoodClick = (selectedMood) => {
+    setMood(selectedMood);
+  };
+
+  const handleSaveDiary = () => {
+    const diaryData = {
+      title,
+      content,
+      mood,
+    };
+
+    console.log(diaryData);
+
+    fetch('https://xn--hz2b60wa3n.site/api/diaries/write', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(diaryData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });    
+  };
 
   return (
     <Container>
@@ -162,36 +218,47 @@ const MyDiaryWrite = () => {
         <KeyboardArrowRightIcon style={{ cursor: 'pointer' }} />
       </DatePicker>
       <DiaryEntry>
-        <form method='' action='' name='diary'>
+        <div>
           <DiartTitle>
-            <input type='text' name='title' placeholder='제목'></input>
+            <input
+              type='text'
+              name='title'
+              placeholder='제목'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </DiartTitle>
           <hr></hr>
           <DiaryContent>
-            <textarea name='content' placeholder='내용'></textarea>
+            <textarea
+              name='content'
+              placeholder='내용'
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
           </DiaryContent>
-        </form>
+        </div>
       </DiaryEntry>
       <EmotionSection>
-        <EmotionDiv mood='dissatisfied'>
-          <img src={angry}/>
+        <EmotionDiv style={{ cursor: 'pointer' }} mood='dissatisfied' onClick={() => handleMoodClick('dissatisfied')}>
+          <img src={angry} alt='angry' />
         </EmotionDiv>
-        <EmotionDiv mood='bad'>
-          <img src={depress}/>
+        <EmotionDiv style={{ cursor: 'pointer' }} mood='bad' onClick={() => handleMoodClick('bad')}>
+          <img src={depress} alt='depress' />
         </EmotionDiv>
-        <EmotionDiv mood='soso'>
-          <img src={normal}/>
+        <EmotionDiv style={{ cursor: 'pointer' }} mood='soso' onClick={() => handleMoodClick('soso')}>
+          <img src={normal} alt='normal' />
         </EmotionDiv>
-        <EmotionDiv mood='good'>
-          <img src={good}/>
+        <EmotionDiv style={{ cursor: 'pointer' }} mood='good' onClick={() => handleMoodClick('good')}>
+          <img src={good} alt='good' />
         </EmotionDiv>
-        <EmotionDiv mood='happy'>
-          <img src={happy}/>
+        <EmotionDiv style={{ cursor: 'pointer' }} mood='happy' onClick={() => handleMoodClick('happy')}>
+          <img src={happy} alt='happy' />
         </EmotionDiv>
       </EmotionSection>
-      <SaveBtn>일기 저장</SaveBtn>
+      <SaveBtn onClick={handleSaveDiary} style={{ cursor: 'pointer' }}>일기 저장</SaveBtn>
     </Container>
   );
 };
 
-export default MyDiaryWrite
+export default MyDiaryWrite;
