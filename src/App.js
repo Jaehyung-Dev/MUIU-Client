@@ -43,6 +43,8 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import StarredPlace from './pages/StarredPlace';
+import DonationRecord from './pages/DonationRecord';
 import Loading from './pages/Loading';
 import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
 import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
@@ -103,10 +105,10 @@ function App() {
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
               <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
-              <Route path="/DMHMDefinition" element={<DMHMDefinition/>} />
-              <Route path="/DMHMDefinition2" element={<DMHMDefinition2/>} />
-              <Route path="/DMHMDefinition3" element={<DMHMDefinition3/>} />
-              <Route path="/DMHMDefinition4" element={<DMHMDefinition4/>} />
+              <Route path="DMHMDefinition" element={<DMHMDefinition/>} />
+              <Route path="DMHMDefinition2" element={<DMHMDefinition2/>} />
+              <Route path="DMHMDefinition3" element={<DMHMDefinition3/>} />
+              <Route path="DMHMDefinition4" element={<DMHMDefinition4/>} />
               <Route path="disaster-guide" element={<DisasterGuide />} />
               <Route path="error" element={<Error />} />
               <Route path="fund" element={<Fund />} />
@@ -116,14 +118,14 @@ function App() {
               <Route path="fund-payment-success" element={<FundPaymentSuccess />} />
               <Route path="fund-post" element={<FundPost />} />
               <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
-              <Route path="/new-consultation" element={<NewConsultation />} />
-              <Route path="/existing-consultation" element={<ExistingConsultation />} />
-              <Route path="/video-consultation" element={<VideoConsultationScreen />} />
-              <Route path="/my-diary-check" element={<MyDiaryCheck />} />
+              <Route path="new-consultation" element={<NewConsultation />} />
+              <Route path="existing-consultation" element={<ExistingConsultation />} />
+              <Route path="video-consultation" element={<VideoConsultationScreen />} />
+              <Route path="my-diary-check" element={<MyDiaryCheck />} />
               <Route path='my-diary-collection' element={<MyDiaryCollection/>}/>
-              <Route path="/counselor-diary-check" element={<CounselorDiaryCheck />} />
-              <Route path="/counselor-diary" element={<CounselorDiary />} />
-              <Route path="/counselor-chart" element={<CounselorChart />} />
+              <Route path="counselor-diary-check" element={<CounselorDiaryCheck />} />
+              <Route path="counselor-diary" element={<CounselorDiary />} />
+              <Route path="counselor-chart" element={<CounselorChart />} />
               <Route path="new-consultation" element={<NewConsultation />} />
               <Route path="existing-consultation" element={<ExistingConsultation />} />
               <Route path="video-consultation" element={<VideoConsultationScreen />} />
@@ -133,6 +135,8 @@ function App() {
               <Route path="c-new-consultation" element={<C_NewConsultation />} />
               <Route path="emotion-graph" element={<EmotionGraph />} />
               <Route path="consultation-record" element={<ConsultationRecord />} />
+              <Route path="starred-place" element={<StarredPlace />} />
+              <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
             </Route>
           </Routes>
