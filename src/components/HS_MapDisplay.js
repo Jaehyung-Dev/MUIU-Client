@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import userMarkerIcon from '../svg/userMarker.svg';
 import hospitalMarkerIcon from '../svg/hospitalMarker.svg';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -16,16 +17,23 @@ const MapDisplay = styled.div`
     height: 100%;
 `;
 
-const CenterButton = styled.button`
+const NowLocationBtn = styled.button`
+    width: 30px;
+    height: 30px;
     position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px;
+    top: 180px;
+    right: 661px;
     background-color: white;
     border: 1px solid #666;
-    border-radius: 5px;
     cursor: pointer;
-    z-index: 1000; // 버튼이 지도 위에 보이도록 설정
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 600px) {
+        right: 10.25px;
+    }
 `;
 
 const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
@@ -35,6 +43,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
     const [zoomLevel, setZoomLevel] = useState(18);
     const [results, setResults] = useState([]);
     const [error, setError] = useState(null);
+    const [isLocationFixed, setIsLocationFixed] = useState(false); // 위치 고정 상태 관리
 
     const getUserLocation = () => {
         if (navigator.geolocation) {
@@ -100,7 +109,6 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         }
     }, [userLocation, map]);
 
-    // 입력 받은 주소를 지도에 띄우기
     useEffect(() => {
         if (searchQuery) {
             const fetchLocalData = async () => {
@@ -121,7 +129,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
                         setResults(response.data.addresses);
                         const { x, y } = response.data.addresses[0]; 
                         const newLocation = new window.naver.maps.LatLng(y, x);
-                        console.log('Setting map center to:', newLocation); // 새로운 위치 로그
+                        console.log('Setting map center to:', newLocation);
     
                         // 마커 추가
                         new window.naver.maps.Marker({
@@ -156,6 +164,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         if (userLocation && map) {
             const newLocation = new window.naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
             map.setCenter(newLocation);
+            setIsLocationFixed(true); // 위치 고정 상태 업데이트
         }
     };
 
@@ -163,9 +172,9 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         <MapContainer>
             <MapDisplay>
                 <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
-                <CenterButton onClick={centerMapOnUserLocation}>
-                    현재 위치로 중심 이동
-                </CenterButton>
+                <NowLocationBtn onClick={centerMapOnUserLocation}>
+                    <GpsFixedIcon style={{fontSize: '20px', color: '#666'}}/>
+                </NowLocationBtn>
             </MapDisplay>
             <div>
                 {error && <p>오류: {error}</p>}
