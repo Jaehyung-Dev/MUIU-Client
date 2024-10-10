@@ -323,11 +323,6 @@ export const Main = () => {
         setRandomImageKey(randomKey);
     }, []);
 
-    const openModal = (selectedImages) => {
-        setSelectedImages(selectedImages);
-        setCurrentImageIndex(0);
-        setModalOpen(true);
-    };
     const closeModal = () => setModalOpen(false);
     const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
     const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
