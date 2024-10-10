@@ -25,6 +25,10 @@ const SearchInput = styled.input`
     &::placeholder {
         color: gray;
     }
+
+    &:focus {
+        outline: none;
+    }
 `;
 
 const HS_SearchBar = ({ onSearch }) => {
@@ -57,6 +61,7 @@ const HS_SearchBar = ({ onSearch }) => {
                 name="search-location"
                 id="search-location"
                 placeholder="인근 역 검색"
+                spellCheck="false"
                 value={searchValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}

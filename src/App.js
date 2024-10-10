@@ -9,6 +9,7 @@ import DMHMDefinition3 from './pages/DMHMDefinition3';
 import DMHMDefinition4 from './pages/DMHMDefinition4';
 import DisasterGuide from './pages/DisasterGuide';
 import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
+import Error from './pages/Error';
 import ExistingConsultation from './pages/ExistingConsultation';
 import Fund from './pages/Fund';
 import FundDetail from './pages/FundDetail';
@@ -30,7 +31,7 @@ import MyDiaryCheck from './pages/MyDiaryCheck';
 import MyDiaryCollection from './pages/MyDiaryCollection';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
-import React from 'react';
+import React, { useState } from 'react';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import C_HumanCounseling from './pages/C_HumanCounseling';
@@ -44,9 +45,37 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import StarredPlace from './pages/StarredPlace';
 import DonationRecord from './pages/DonationRecord';
+import Loading from './pages/Loading';
+import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
+import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
+import MindCheck_Depression_Process from './pages/MindCheck_Depression_Process';
+import MindCheck_Physical_Process from './pages/MindCheck_Physical_Process';
+import MindCheck_Suicide_Process from './pages/MindCheck_Suicide_Process';
+import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
+import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
+import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
+import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
+import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
 
 function App() {
   const persiststore = persistStore(store);
+
+  // 자가진단 점수 반영 (props 전달을 위해 const문 추가 -- 건들면 울어요. -- 대휘)
+  const [scores, setScores] = useState({
+    stress: 0,
+    anxiety: 0,
+    depression: 0,
+    physical: 0,
+    suicide: 0
+  });
+
+  const updateScore = (topic, score) => {
+    setScores((prevScores) => ({
+      ...prevScores,
+      [topic]: score,
+    }));
+  };
+
 
   return (
     <Provider store={store}>
@@ -62,6 +91,16 @@ function App() {
               <Route path="join-success" element={<JoinSuccess/>} />
               <Route path="mypage" element={<MyPage />} />
               <Route path="mind-check" element={<MindCheck />} />
+              <Route path="/mind-check/anxiety" element={<MindCheck_Anxiety_Process updateScore={(score) => updateScore('anxiety', score)}/>} />
+              <Route path="/mind-check/depression" element={<MindCheck_Depression_Process updateScore={(score) => updateScore('depression', score)}/>} />
+              <Route path="/mind-check/physical" element={<MindCheck_Physical_Process updateScore={(score) => updateScore('physical', score)}/>} />
+              <Route path="/mind-check/stress" element={<MindCheck_Stress_Process updateScore={(score) => updateScore('stress', score)} />} />
+              <Route path="/mind-check/suicide" element={<MindCheck_Suicide_Process updateScore={(score) => updateScore('suicide', score)}/>} />
+              <Route path="/mind-check/anxiety/result" element={<MindCheck_Anxiety_Result score={scores.anxiety} />} />
+              <Route path="/mind-check/depression/result" element={<MindCheck_Depression_Result score={scores.depression} />} />
+              <Route path="/mind-check/physical/result" element={<MindCheck_Physical_Result score={scores.physical} />} />
+              <Route path="/mind-check/stress/result" element={<MindCheck_Stress_Result score={scores.stress} />} />
+              <Route path="/mind-check/suicide/result" element={<MindCheck_Suicide_Result score={scores.suicide} />} />
               <Route path="human-counseling" element={<HumanCounseling />} />
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
@@ -71,6 +110,7 @@ function App() {
               <Route path="DMHMDefinition3" element={<DMHMDefinition3/>} />
               <Route path="DMHMDefinition4" element={<DMHMDefinition4/>} />
               <Route path="disaster-guide" element={<DisasterGuide />} />
+              <Route path="error" element={<Error />} />
               <Route path="fund" element={<Fund />} />
               <Route path="fund-detail" element={<FundDetail />} />
               <Route path="fund-payment" element={<FundPayment />} />
@@ -97,6 +137,7 @@ function App() {
               <Route path="consultation-record" element={<ConsultationRecord />} />
               <Route path="starred-place" element={<StarredPlace />} />
               <Route path="donation-record" element={<DonationRecord />} />
+              <Route path="loading" element={<Loading />} />
             </Route>
           </Routes>
         </Router>
