@@ -6,7 +6,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CreateIcon from '@mui/icons-material/Create';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import angry from '../svg/angry.svg'
+import angry from '../svg/angry.svg';
 import { useNavigate } from 'react-router-dom';
 
 const CoverDiv = styled.div`
@@ -133,6 +133,25 @@ const diaryData = {
     '2024-10-02': 1,
     '2024-10-03': 3,
     '2024-10-05': 5,
+    '2024-10-06': 4,
+    '2024-10-07': 2,
+    '2024-10-08': 1,
+    '2024-10-11': 4,
+    '2024-10-13': 1,
+    '2024-10-15': 5,
+    '2024-10-16': 4,
+    '2024-10-18': 1,
+    '2024-10-19': 3,
+    '2024-10-20': 5,
+    '2024-10-21': 4,
+    '2024-10-22': 2,
+    '2024-10-24': 3,
+    '2024-10-25': 5,
+    '2024-10-26': 4,
+    '2024-10-28': 1,
+    '2024-10-29': 3,
+    '2024-10-30': 5,
+    '2024-10-31': 4
 };
 
 const CalendarHeader = styled.div`
@@ -189,47 +208,10 @@ const WeekDaysHeader = styled.div`
     }
 `;
 
-const MiniCalendar = styled.div`
-    position: absolute;
-    top: 15rem;
-    right: 16rem;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 1rem;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-
-    @media (max-width: 393px) {
-        top: 35%;
-        right: 12%;
-    }
+const RotatingArrow = styled(ArrowDropDownIcon)`
+    transition: transform 0.3s ease;
+    transform: ${({ open }) => (open ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
-
-const MiniCalendarHeader = styled.div`
-    display: flex;
-    justify-content: center;
-    font-weight: bold;
-    margin-bottom: 1rem;
-`;
-
-const MiniCalendarGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-    text-align: center;
-`;
-
-const MiniCalendarDay = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: ${({ emotion }) => getEmotionColor(emotion)};
-`;
-
 
 const getEmotionColor = (emotion) => {
     switch (emotion) {
@@ -250,43 +232,26 @@ const getEmotionColor = (emotion) => {
 
 const WeekCalendar = () => {
     const navi = useNavigate();
-    const [showMiniCalendar, setShowMiniCalendar] = useState(false);
+    const [showFullCalendar, setShowFullCalendar] = useState(false); // 전체 달력 표시 여부
 
     const handleChartClick = () => {
         navi('/emotion-graph');
     };
 
     const handleDropdownClick = () => {
-        setShowMiniCalendar((prev) => !prev); // Toggle 달력
+        setShowFullCalendar((prev) => !prev); // 전체 달력 토글
     };
 
-    const weekDays = [
-        '2024-10-01', '2024-10-02', '2024-10-03',
-        '2024-10-04', '2024-10-05', '2024-10-06', '2024-10-07'
+    // 둘째 주 날짜 (2024년 10월 8일 ~ 10월 14일)
+    const secondWeek = [
+        '2024-10-08', '2024-10-09', '2024-10-10',
+        '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14'
     ];
 
     const weekDayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-    const getMiniCalendarDays = (year, month) => {
-        const firstDay = new Date(year, month, 1).getDay(); 
-        const daysInMonth = new Date(year, month + 1, 0).getDate(); 
-        
-        const daysArray = [];
-        
-        for (let i = 0; i < firstDay; i++) {
-            daysArray.push('');
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            daysArray.push(day);
-        }
-
-        return daysArray;
-    };
-
-    const year = 2024; 
-    const month = 9;
-    const miniCalendarDays = getMiniCalendarDays(year, month);
+    // 10월 전체 날짜 (2024-10-01부터 2024-10-31까지)
+    const fullMonthDays = Array.from({ length: 31 }, (_, i) => `2024-10-${String(i + 1).padStart(2, '0')}`);
 
     return (
         <>
@@ -295,7 +260,8 @@ const WeekCalendar = () => {
                     <CalendarTodayIcon style={{ marginRight: '0.5rem' }} />
                     <b onClick={handleChartClick}>2024년 10월</b>
                 </HeaderTitle>
-                <ArrowDropDownIcon 
+                <RotatingArrow
+                    open={showFullCalendar}
                     style={{ marginLeft: 'auto', marginRight: '15px', cursor: 'pointer' }} 
                     onClick={handleDropdownClick} 
                 />
@@ -306,28 +272,12 @@ const WeekCalendar = () => {
                 ))}
             </WeekDaysHeader>
             <CalendarWrapper>
-                {weekDays.map((day) => (
+                {(showFullCalendar ? fullMonthDays : secondWeek).map((day) => (
                     <DayBox key={day} emotion={diaryData[day]}>
                         {new Date(day).getDate()}
                     </DayBox>
                 ))}
             </CalendarWrapper>
-
-            {showMiniCalendar && (
-                <MiniCalendar>
-                    <MiniCalendarHeader>2024년 10월</MiniCalendarHeader>
-                    <MiniCalendarGrid>
-                        {weekDayNames.map((day) => (
-                            <div key={day} style={{ color: 'gray' }}>{day}</div>
-                        ))}
-                        {miniCalendarDays.map((day, index) => (
-                            <MiniCalendarDay key={index} emotion={day ? diaryData[`2024-10-${String(day).padStart(2, '0')}`] : null}>
-                                {day}
-                            </MiniCalendarDay>
-                        ))}
-                    </MiniCalendarGrid>
-                </MiniCalendar>
-            )}
         </>
     );
 };
