@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import logo from '../svg/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../pages/Loading';
+
 
 const Main = styled.main`
   width: 100%;
@@ -134,6 +136,25 @@ const DetailFontsize = styled.p`
 `;
 
 const JoinAgree = () => {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+        try {
+            const response = await fetch('https://www.마음이음api.site/members');
+            const result = await response.json();
+            setData(result);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
+        }
+        };
+
+        fetchData();
+    }, []);
+
     const navigate = useNavigate();
     const [allCheck, setAllCheck] = useState(false);
     const [termsOfUseCheck, setTermsOfUseCheck] = useState(false);
@@ -205,6 +226,10 @@ const JoinAgree = () => {
 2. 구매계약이 체결된 재화 또는 용역의 배송
 3. 기타 “몰”이 정하는 업무
 `;
+
+    if (loading) {
+        return <Loading />;
+    }
 
   return (
     <>

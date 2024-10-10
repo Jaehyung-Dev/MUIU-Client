@@ -5,8 +5,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuDropdown from './MenuDropdown';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ShareIcon from '@mui/icons-material/Share';
-import StarIcon from '@mui/icons-material/Star';
 
 const HeaderContainer = styled.header`
     display: flex;
@@ -209,8 +207,6 @@ const Header = () => {
                                 { location.pathname === '/my-diary-write' && "일기를 추가해봐요" }
                             </DateText>
                             <IconGroup>
-                                <ShareIcon/>
-                                <StarIcon/>
                             </IconGroup>
                         </HeaderContainer>
                     ) : 

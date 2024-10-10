@@ -1,4 +1,8 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
+import { store } from './store/store';
 
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
@@ -39,10 +43,6 @@ import C_NewConsultation from './pages/C_NewConsultation';
 import EmotionGraph from './pages/EmotionGraph';
 import JoinAgree from './pages/JoinAgree';
 import ConsultationRecord from './pages/ConsultationRecord';
-import { Provider } from 'react-redux';
-import { store } from './store/store';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistStore } from 'redux-persist';
 import StarredPlace from './pages/StarredPlace';
 import DonationRecord from './pages/DonationRecord';
 import Loading from './pages/Loading';
