@@ -205,16 +205,20 @@ export const MyPage = () => {
         navigate('/donation-record');
     };
 
+    const handleProfilehangeClick = () => {
+        alert('프로필 변경 모달 이동');
+    };
+
     const handlePasswordChangeClick = () => {
-        alert('비밀번호 변경 페이지로 이동');
+        alert('비밀번호 변경');
     };
 
     const handleSocialLinkClick = () => {
-        alert('소셜 연동 페이지로 이동');
+        alert('소셜 연동');
     };
 
     const handleAccountDeleteClick = () => {
-        alert('로그아웃 페이지로 이동');
+        alert('로그아웃?');
     };
 
     return (
