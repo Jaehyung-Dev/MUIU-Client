@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { join } from '../apis/memberApis';
+import { useLocation } from 'react-router-dom';
 
 const Main = styled.main`
   input:-webkit-autofill,
@@ -217,6 +218,8 @@ const PopupDiv = styled.div`
 `
 
 export const Join = () => {
+  const location = useLocation();
+  const { locationAgree, recordConsent } = location.state || {};
   const [isGeneral, setIsGeneral] = useState(true);
   const [isCounselor, setIsCounselor] = useState(false);
 
@@ -391,9 +394,15 @@ export const Join = () => {
         return;
     }
 
+    const memberData = {
+      ...joinForm,
+      locationAgree,
+      recordConsent
+    };
+
      // 모든 조건을 만족하면 Redux의 join 액션 호출
-     dispatch(join(joinForm));
-  }, [joinForm, usernameChk, passwordChk, passwordValidate, dispatch]);
+     dispatch(join(memberData));
+  }, [joinForm, usernameChk, passwordChk, passwordValidate, locationAgree, recordConsent, dispatch]);
 
   return (
     <Main>

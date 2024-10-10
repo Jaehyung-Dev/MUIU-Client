@@ -100,11 +100,12 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         }
     }, [userLocation, map]);
 
+    // 입력 받은 주소를 지도에 띄우기
     useEffect(() => {
         if (searchQuery) {
             const fetchLocalData = async () => {
-                const client_id = '6um4uarnuv';
-                const client_secret = 'yKRqSVB06Gt0EBoYyRaYAdDbkfWfFXNc7rsCZ7f8';
+                const client_id = process.env.REACT_APP_CLIENT_ID;
+                const client_secret = process.env.REACT_APP_CLIENT_SECRET;
                 const api_url = `/map-geocode/v2/geocode?query=${encodeURI(searchQuery)}`;
     
                 try {

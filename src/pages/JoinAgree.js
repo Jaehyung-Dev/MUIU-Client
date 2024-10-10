@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import logo from '../svg/logo.svg';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../pages/Loading';
+
 
 const Main = styled.main`
   width: 100%;
@@ -133,46 +136,75 @@ const DetailFontsize = styled.p`
 `;
 
 const JoinAgree = () => {
-  const [allCheck, setAllCheck] = useState(false);
-  const [termsOfUseCheck, setTermsOfUseCheck] = useState(false);
-  const [personalCheck, setPersonalCheck] = useState(false);
-  const [gradingCheck, setGradingCheck] = useState(false);
-  const [examineeCheck, setExamineeCheck] = useState(false);
-  const [locationCheck, setLocationCheck] = useState(false);
-  const [recordCheck, setRecordCheck] = useState(false);
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  const [termsRotated, setTermsRotated] = useState(false);
-  const [personalRotated, setPersonalRotated] = useState(false);
-  const [gradingRotated, setGradingRotated] = useState(false);
-  const [examineeRotated, setExamineeRotated] = useState(false);
-  const [locRotated, setLocRotated] = useState(false);
-  const [recordRotated, setRecordRotated] = useState(false);
+    useEffect(() => {
+        const fetchData = async () => {
+        try {
+            const response = await fetch('https://www.마음이음api.site/members');
+            const result = await response.json();
+            setData(result);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
+        }
+        };
 
-  const allCheckClicked = () => {
-    setAllCheck(!allCheck);
-    setTermsOfUseCheck(!allCheck);
-    setPersonalCheck(!allCheck);
-    setGradingCheck(!allCheck);
-    setExamineeCheck(!allCheck);
-    setLocationCheck(!allCheck);
-    setRecordCheck(!allCheck);
-  };
+        fetchData();
+    }, []);
 
-  const termsOfUseCheckClicked = () => setTermsOfUseCheck(!termsOfUseCheck);
-  const personalCheckClicked = () => setPersonalCheck(!personalCheck);
-  const gradingCheckClicked = () => setGradingCheck(!gradingCheck);
-  const examineeCheckClicked = () => setExamineeCheck(!examineeCheck);
-  const locationCheckClicked = () => setLocationCheck(!locationCheck);
-  const recordCheckClicked = () => setRecordCheck(!recordCheck);
+    const navigate = useNavigate();
+    const [allCheck, setAllCheck] = useState(false);
+    const [termsOfUseCheck, setTermsOfUseCheck] = useState(false);
+    const [personalCheck, setPersonalCheck] = useState(false);
+    const [gradingCheck, setGradingCheck] = useState(false);
+    const [examineeCheck, setExamineeCheck] = useState(false);
+    const [locationAgree, setLocationAgree] = useState(false);
+    const [recordConsent, setRecordConsent] = useState(false);
 
-  const termsDetailClick = () => setTermsRotated(!termsRotated);
-  const personalDetailClick = () => setPersonalRotated(!personalRotated);
-  const gradingDetailClick = () => setGradingRotated(!gradingRotated);
-  const examineeDetailClick = () => setExamineeRotated(!examineeRotated);
-  const locationDetailClick = () => setLocRotated(!locRotated);
-  const recordDetailClick = () => setRecordRotated(!recordRotated);
+    const [termsRotated, setTermsRotated] = useState(false);
+    const [personalRotated, setPersonalRotated] = useState(false);
+    const [gradingRotated, setGradingRotated] = useState(false);
+    const [examineeRotated, setExamineeRotated] = useState(false);
+    const [locRotated, setLocRotated] = useState(false);
+    const [recordRotated, setRecordRotated] = useState(false);
 
-  const termsText = `
+    const allCheckClicked = () => {
+        setAllCheck(!allCheck);
+        setTermsOfUseCheck(!allCheck);
+        setPersonalCheck(!allCheck);
+        setGradingCheck(!allCheck);
+        setExamineeCheck(!allCheck);
+        setLocationAgree(!allCheck);
+        setRecordConsent(!allCheck);
+    };
+
+    const termsOfUseCheckClicked = () => setTermsOfUseCheck(!termsOfUseCheck);
+    const personalCheckClicked = () => setPersonalCheck(!personalCheck);
+    const gradingCheckClicked = () => setGradingCheck(!gradingCheck);
+    const examineeCheckClicked = () => setExamineeCheck(!examineeCheck);
+    const locationCheckClicked = () => setLocationAgree(!locationAgree);
+    const recordCheckClicked = () => setRecordConsent(!recordConsent);
+
+    const termsDetailClick = () => setTermsRotated(!termsRotated);
+    const personalDetailClick = () => setPersonalRotated(!personalRotated);
+    const gradingDetailClick = () => setGradingRotated(!gradingRotated);
+    const examineeDetailClick = () => setExamineeRotated(!examineeRotated);
+    const locationDetailClick = () => setLocRotated(!locRotated);
+    const recordDetailClick = () => setRecordRotated(!recordRotated);
+
+    const handleNextClick = () => {
+        navigate('/join', {
+            state: {
+                locationAgree,
+                recordConsent,
+            }
+        });
+    }
+
+    const termsText = `
 제1조(목적)
 이 약관은 주식회사 서연 회사(전자상거래 사업자)가 운영하는 마음이음(https://www.maumieum.co.kr) 몰(이하 “몰”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리․의무 및 책임사항을 규정함을 목적으로 합니다.
 ※「PC통신, 무선 등을 이용하는 전자상거래에 대해서도 그 성질에 반하지 않는 한 이 약관을 준용합니다.」
@@ -194,6 +226,10 @@ const JoinAgree = () => {
 2. 구매계약이 체결된 재화 또는 용역의 배송
 3. 기타 “몰”이 정하는 업무
 `;
+
+    if (loading) {
+        return <Loading />;
+    }
 
   return (
     <>
@@ -322,7 +358,7 @@ const JoinAgree = () => {
                 <AgreeDiv>
                 <InnerAgreeDiv>
                     <AgreeSpace onClick={recordCheckClicked}>
-                        {recordCheck ? (
+                        {recordConsent ? (
                         <CheckCircleIcon style={{ color: '#FFCB2A' }} />
                         ) : (
                         <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
@@ -346,7 +382,7 @@ const JoinAgree = () => {
                 <AgreeDiv>
                 <InnerAgreeDiv>
                     <AgreeSpace onClick={locationCheckClicked}>
-                        {locationCheck ? (
+                        {locationAgree ? (
                         <CheckCircleIcon style={{ color: '#FFCB2A' }} />
                         ) : (
                         <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
@@ -372,7 +408,7 @@ const JoinAgree = () => {
                 <NextButton
                 onClick={() => {
                     if (termsOfUseCheck && personalCheck && gradingCheck && examineeCheck) {
-                        window.location.href = 'join';
+                        handleNextClick();
                     } else {
                         alert('필수 항목을 모두 선택해주세요.');
                     }

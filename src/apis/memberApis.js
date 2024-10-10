@@ -5,6 +5,7 @@ export const join = createAsyncThunk(
     'members/join',
     async (member, thunkApi) => {
         try {
+            console.log("Sending member data to server:", member);
             const response = await axios.post('http://localhost:9090/members/join', member);
 
             return response.data.item;   
