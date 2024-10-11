@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Editor } from '@toast-ui/react-editor'; 
-import '@toast-ui/editor/dist/toastui-editor.css'; 
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import color from '@toast-ui/editor-plugin-color-syntax';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { createFundPost } from '../apis/fundApi';
 
 const Main = styled.main`
   width: 100%;  
@@ -129,99 +130,109 @@ const CustomInput = ({ value, onClick }) => (
 );
 
 const FundPost = () => {
-    const navigate = useNavigate();
-    const [title, setTitle] = useState('');
-    const [team, setTeam] = useState('');
-    const [fundStart, setFundStart] = useState(null);
-    const [fundEnd, setFundEnd] = useState(null);
-    const [businessStart, setBusinessStart] = useState(null);
-    const [businessEnd, setBusinessEnd] = useState(null);
-    const [targetAmount, setTargetAmount] = useState('');
-    const editorRef = useRef();
+  const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+  const [team, setTeam] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [fundStart, setFundStart] = useState(null);
+  const [fundEnd, setFundEnd] = useState(null);
+  //const [businessStart, setBusinessStart] = useState(null);
+  //const [businessEnd, setBusinessEnd] = useState(null);
+  const [targetAmount, setTargetAmount] = useState('');
+  const editorRef = useRef();
 
-    useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const content = editorRef.current?.getInstance().getHTML();
+    const content = editorRef.current?.getInstance().getHTML();
 
-        const postData = {
-            title,
-            content,
-            team,
-            fundPeriod: `${fundStart?.toLocaleDateString()} - ${fundEnd?.toLocaleDateString()}`,
-            businessPeriod: `${businessStart?.toLocaleDateString()} - ${businessEnd?.toLocaleDateString()}`,
-            targetAmount,
-        };
-
-        console.log('작성된 글:', postData);
-
-        setTimeout(() => {
-            navigate('/fund', { state: postData });
-        }, 0);
+    const postData = {
+      title,
+      content,
+      team,
+      fundStart,
+      fundEnd,
+      //businessPeriod: `${businessStart?.toLocaleDateString()} - ${businessEnd?.toLocaleDateString()}`,
+      targetAmount,
     };
 
-    return (
-        <Main>
-            <form className="post-form" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    className="post-input"
-                    placeholder="제목을 입력하세요"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
+    console.log('작성된 글:', postData);
 
-                <div className="editor-container">
-                    <Editor
-                        ref={editorRef}
-                        initialValue=""
-                        previewStyle="vertical"
-                        height="300px"
-                        initialEditType="wysiwyg"
-                        useCommandShortcut={true}
-                        placeholder="내용을 입력하세요"
-                        plugins={[color]}
-                    />
-                </div>
+    try {
+      const data = await createFundPost(postData);
+      console.log('등록된 게시글:', data);
+      navigate('/fund');
+    } catch (error) {
+      console.error('API 요청 중 에러 발생:', error);
+    }
+    
+    setTimeout(() => {
+      navigate('/fund', { state: postData });
+    }, 0);
+  };
 
-                <input
-                    type="text"
-                    className="post-input"
-                    placeholder="프로젝트팀을 입력하세요"
-                    value={team}
-                    onChange={(e) => setTeam(e.target.value)}
-                    required
-                />
+  return (
+    <Main>
+      <form className="post-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="post-input"
+          placeholder="제목을 입력하세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
 
-                <div className="date-field">
-                  <p className="date-label">모금 기간</p>
-                  <div className="date-picker-container">
-                    <DatePicker 
-                      selected={fundStart} 
-                      onChange={(date) => setFundStart(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="시작일 선택" 
-                      required
-                    />
-                    <span className="tilde">~</span>
-                    <DatePicker 
-                      selected={fundEnd} 
-                      onChange={(date) => setFundEnd(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="종료일 선택" 
-                      required
-                    />
-                  </div>
-                </div>
+        <div className="editor-container">
+          <Editor
+            ref={editorRef}
+            initialValue=""
+            previewStyle="vertical"
+            height="300px"
+            initialEditType="wysiwyg"
+            useCommandShortcut={true}
+            placeholder="내용을 입력하세요"
+            plugins={[color]}
+          />
+        </div>
 
-                <div className="date-field">
+        <input
+          type="text"
+          className="post-input"
+          placeholder="프로젝트팀을 입력하세요"
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+          required
+        />
+
+        <div className="date-field">
+          <p className="date-label">모금 기간</p>
+          <div className="date-picker-container">
+            <DatePicker
+              selected={fundStart}
+              onChange={(date) => setFundStart(date)}
+              customInput={<CustomInput />}
+              dateFormat="yyyy.MM.dd"
+              placeholderText="시작일 선택"
+              required
+            />
+            <span className="tilde">~</span>
+            <DatePicker
+              selected={fundEnd}
+              onChange={(date) => setFundEnd(date)}
+              customInput={<CustomInput />}
+              dateFormat="yyyy.MM.dd"
+              placeholderText="종료일 선택"
+              required
+            />
+          </div>
+        </div>
+
+        {/* <div className="date-field">
                   <p className="date-label">사업 기간</p>
                   <div className="date-picker-container">
                     <DatePicker 
@@ -242,23 +253,23 @@ const FundPost = () => {
                       required
                     />
                   </div>
-                </div>
+                </div> */}
 
-                <input
-                    type="number"
-                    className="post-input target-money"
-                    placeholder="목표 금액을 입력하세요"
-                    value={targetAmount}
-                    onChange={(e) => setTargetAmount(e.target.value)}
-                    required
-                />
+        <input
+          type="number"
+          className="post-input target-money"
+          placeholder="목표 금액을 입력하세요"
+          value={targetAmount}
+          onChange={(e) => setTargetAmount(e.target.value)}
+          required
+        />
 
-                <button type="submit" className="submit-btn">
-                    작성 완료
-                </button>
-            </form>
-        </Main>
-    );
+        <button type="submit" className="submit-btn">
+          작성 완료
+        </button>
+      </form>
+    </Main>
+  );
 };
 
 export default FundPost;
