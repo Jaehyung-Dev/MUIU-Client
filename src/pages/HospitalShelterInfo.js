@@ -35,6 +35,7 @@ export const HospitalShelterInfo = () => {
         setSearchQuery(query);
     };
 
+    /* 수도권(서울/경기) 지하철 역 정보 */
     const stations = {
         "DESCRIPTION" : {"LAT":"위도","BLDN_NM":"역사명","ROUTE":"호선","BLDN_ID":"역사_ID","LOT":"경도"},
         "DATA" : [
@@ -828,7 +829,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"0150","route":"1호선","lot":"126.972135","bldn_nm":"서울역","lat":"37.556228"}
         ]
     }
-
+    
     return (
         <Main>
             <HS_SearchBar onSearch={handleSearch} />
