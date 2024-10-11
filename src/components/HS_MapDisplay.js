@@ -5,8 +5,8 @@ import userMarkerIcon from '../svg/userMarker.svg';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import TrainIcon from '@mui/icons-material/Train';
-import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
-import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -161,18 +161,41 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         if (userLocation && stations) {
             const userLat = userLocation.latitude;
             const userLon = userLocation.longitude;
-
+    
             const stationsWithDistance = stations.map(station => {
                 const stationLat = parseFloat(station.lat);
                 const stationLon = parseFloat(station.lot);
                 const distance = calculateDistance(userLat, userLon, stationLat, stationLon);
                 return { ...station, distance };
             });
-
+    
+            // 1km 이내의 역만 필터링
+            const nearbyStations = stationsWithDistance.filter(station => station.distance <= 1); // 1km = 1
+    
             // 거리순으로 정렬
-            const sortedStations = stationsWithDistance.sort((a, b) => a.distance - b.distance);
-            const stationList = sortedStations.map(station => `${station.bldn_nm}: ${station.distance.toFixed(2)} km`).join('\n');
-            alert(`인근 역 목록:\n${stationList}`);
+            const sortedStations = nearbyStations.sort((a, b) => a.distance - b.distance);
+    
+            // 같은 역 이름으로 그룹화
+            const groupedStations = {};
+    
+            sortedStations.forEach(station => {
+                if (!groupedStations[station.bldn_nm]) {
+                    groupedStations[station.bldn_nm] = {
+                        routes: [],
+                        minDistance: station.distance
+                    };
+                }
+                groupedStations[station.bldn_nm].routes.push(station.route); // route 추가
+                groupedStations[station.bldn_nm].minDistance = Math.min(groupedStations[station.bldn_nm].minDistance, station.distance);
+            });
+    
+            // 최종 리스트 생성
+            const stationList = Object.entries(groupedStations).map(([name, data]) => {
+                const routes = [...new Set(data.routes)]; // 중복 route 제거
+                return `${name} (${routes.join(', ')}) ${data.minDistance.toFixed(1)} km`;
+            }).join('\n');
+    
+            alert(`인근 역 목록 (1km 이내):\n${stationList}`);
         }
     };
 
@@ -217,10 +240,10 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                             <TrainIcon />
                         </ControlButton>
                         <ControlButton onClick={zoomIn}>
-                            <ZoomInMapIcon />
+                            <ZoomInIcon />
                         </ControlButton>
                         <ControlButton onClick={zoomOut}>
-                            <ZoomOutMapIcon />
+                            <ZoomOutIcon />
                         </ControlButton>
                     </ControlPanel>
                 </div>
