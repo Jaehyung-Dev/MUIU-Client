@@ -6,7 +6,6 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
-import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
 import good from '../svg/good.svg';
 
@@ -204,10 +203,6 @@ const MyDiaryCheck = () => {
                             <MenuItem>
                                 <EditIcon />
                                 <span>Edit</span>
-                            </MenuItem>
-                            <MenuItem>
-                                <ShareIcon />
-                                <span>Share</span>
                             </MenuItem>
                             <MenuItem>
                                 <DeleteIcon />

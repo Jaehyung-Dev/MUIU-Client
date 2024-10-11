@@ -34,6 +34,7 @@ function Layout() {
     switch(currentLocation.pathname) {
       case '/my-diary': case '/my-diary-check': 
       case '/my-diary-write': case '/my-diary-collection':
+      case '/emotion-graph': 
         return '#efefef';
       default:
         return 'white';

@@ -20,6 +20,10 @@ const HeaderContainer = styled.header`
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
+
+    .back:hover{
+        cursor: pointer;
+    }
 `;
 
 const BackButton = styled.button`
@@ -195,16 +199,21 @@ const Header = () => {
         navigate(-1);
     }
 
+
     return (
         <>
             {location.pathname !== ('/existing-consultation' && '/consultation-record' && '/chat') && (
                 <HeaderContainer searchOpen={searchOpen}>
-                    {(location.pathname === '/my-diary-check' || location.pathname === '/my-diary-write') ? (
-                        <HeaderContainer style={{background:'#F3F3F3'}}>
-                            <BackIcon onClick={goBack} />
+                    {(location.pathname === '/my-diary-check' 
+                        || location.pathname === '/my-diary-write' 
+                        || location.pathname === '/emotion-graph'
+                    ) ? (
+                        <HeaderContainer style={{background:'#EFEFEF'}}>
+                            <BackIcon onClick={goBack} className='back'/>
                             <DateText>
                                 { location.pathname === '/my-diary-check' && "2024년 8월 17일" }
                                 { location.pathname === '/my-diary-write' && "일기를 추가해봐요" }
+                                { location.pathname === '/emotion-graph' && "기분 변화 확인" }
                             </DateText>
                             <IconGroup>
                             </IconGroup>
