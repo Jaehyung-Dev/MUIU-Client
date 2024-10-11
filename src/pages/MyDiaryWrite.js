@@ -204,7 +204,7 @@ const MyDiaryWrite = () => {
     <Container>
       <DatePicker>
         <KeyboardArrowLeftIcon style={{ cursor: 'pointer' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer'}}>
           <CalendarTodayIcon style={{ width: '18px' }} />
           <span>Today</span>
         </div>

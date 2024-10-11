@@ -6,6 +6,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CreateIcon from '@mui/icons-material/Create';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import angry from '../svg/angry.svg';
 import { useNavigate } from 'react-router-dom';
 
@@ -169,6 +170,10 @@ const HeaderTitle = styled.div`
     align-items: center;
     justify-content: center;
     flex-grow: 1;
+
+    b:hover{
+        cursor: pointer;
+    }
 `;
 
 const CalendarWrapper = styled.div`
@@ -230,6 +235,20 @@ const getEmotionColor = (emotion) => {
     }
 };
 
+const ButtonBar = styled.div`
+    width: 85%;
+    box-sizing: border-box;
+    margin-top: 1rem;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+
+    .click:hover {
+        cursor: pointer;
+    }
+`;
+
+
 const WeekCalendar = () => {
     const navi = useNavigate();
     const [showFullCalendar, setShowFullCalendar] = useState(false); // 전체 달력 표시 여부
@@ -289,6 +308,10 @@ const MyDiaryCollection = () => {
         navi('/my-diary-write');
     };
 
+    const handleChartClick = () => {
+        navi('/emotion-graph');
+    };
+
     return (
         <>
             <CoverDiv>
@@ -297,11 +320,14 @@ const MyDiaryCollection = () => {
                         margin: '0 1rem',
                     }} />
                     <input type='text' placeholder='Search'></input>
-                    <CreateIcon onClick={handleWriteClick}/>
                 </SearchDiv>
                 <CalendarDiv>
                     <WeekCalendar />
                 </CalendarDiv>
+                <ButtonBar>
+                    <TimelineIcon onClick={handleChartClick} className='click'/>
+                    <CreateIcon onClick={handleWriteClick} className='click'/>
+                </ButtonBar>
                 <DiaryContainer>
                     <DiaryDiv>
                         <DiarySpaceBetween>
