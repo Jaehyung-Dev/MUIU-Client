@@ -56,7 +56,7 @@ const Main = styled.main`
     text-align: center;
     cursor: pointer;
     text-decoration: none;
-    z-index: 100;
+    z-index: 10;
   }
  
 
