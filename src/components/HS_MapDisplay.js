@@ -2,13 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import userMarkerIcon from '../svg/userMarker.svg';
-import hospitalMarkerIcon from '../svg/hospitalMarker.svg';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import TrainIcon from '@mui/icons-material/Train';
+import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 
 const MapContainer = styled.div`
     width: 100%;
     height: 100vh;
     padding-top: 10px;
-    overflow: hidden;
+    position: relative;
 `;
 
 const MapDisplay = styled.div`
@@ -16,19 +20,31 @@ const MapDisplay = styled.div`
     height: 100%;
 `;
 
-const CenterButton = styled.button`
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px;
+const ControlPanel = styled.div`
+    position: absolute; 
+    top: 150px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+`;
+
+const ControlButton = styled.button`
     background-color: white;
+    color: #666;
     border: 1px solid #666;
     border-radius: 5px;
     cursor: pointer;
-    z-index: 1000; // 버튼이 지도 위에 보이도록 설정
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 30px;
+    height: 30px;
 `;
 
-const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
+const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
     const mapRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
     const [map, setMap] = useState(null);
@@ -67,11 +83,6 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
             const mapOptions = {
                 center: initialLocation,
                 zoom: zoomLevel,
-                zoomControl: true,
-                zoomControlOptions: {
-                    style: naver.maps.ZoomControlStyle.SMALL,
-                    position: naver.maps.Position.TOP_RIGHT,
-                },
             };
 
             const newMap = new naver.maps.Map(mapRef.current, mapOptions);
@@ -100,14 +111,15 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         }
     }, [userLocation, map]);
 
-    // 입력 받은 주소를 지도에 띄우기
     useEffect(() => {
+        setResults([]); 
+
         if (searchQuery) {
             const fetchLocalData = async () => {
                 const client_id = process.env.REACT_APP_CLIENT_ID;
                 const client_secret = process.env.REACT_APP_CLIENT_SECRET;
                 const api_url = `/map-geocode/v2/geocode?query=${encodeURI(searchQuery)}`;
-    
+        
                 try {
                     const response = await axios.get(api_url, {
                         headers: {
@@ -115,26 +127,12 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
                             'X-NCP-APIGW-API-KEY': client_secret
                         }
                     });
-    
-                    console.log(response.data); // API 응답 확인
+        
                     if (response.data && response.data.addresses) {
                         setResults(response.data.addresses);
                         const { x, y } = response.data.addresses[0]; 
                         const newLocation = new window.naver.maps.LatLng(y, x);
-                        console.log('Setting map center to:', newLocation); // 새로운 위치 로그
-    
-                        // 마커 추가
-                        new window.naver.maps.Marker({
-                            position: newLocation,
-                            map: map,
-                            icon: {
-                                url: hospitalMarkerIcon,
-                                size: new window.naver.maps.Size(100, 100),
-                                anchor: new window.naver.maps.Point(11, 35)
-                            },
-                        });
-    
-                        // 지도의 중심을 검색한 장소의 위치로 설정
+        
                         if (map) {
                             map.setCenter(newLocation);
                         }
@@ -147,7 +145,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
                     setResults([]);
                 }
             };
-    
+        
             fetchLocalData();
         }
     }, [searchQuery, map]);
@@ -159,13 +157,73 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery }) => {
         }
     };
 
+    const toggleNearbyStations = () => {
+        if (userLocation && stations) {
+            const userLat = userLocation.latitude;
+            const userLon = userLocation.longitude;
+
+            const stationsWithDistance = stations.map(station => {
+                const stationLat = parseFloat(station.lat);
+                const stationLon = parseFloat(station.lot);
+                const distance = calculateDistance(userLat, userLon, stationLat, stationLon);
+                return { ...station, distance };
+            });
+
+            // 거리순으로 정렬
+            const sortedStations = stationsWithDistance.sort((a, b) => a.distance - b.distance);
+            const stationList = sortedStations.map(station => `${station.bldn_nm}: ${station.distance.toFixed(2)} km`).join('\n');
+            alert(`인근 역 목록:\n${stationList}`);
+        }
+    };
+
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // 지구의 반지름 (킬로미터)
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // 거리 반환 (킬로미터)
+    };
+
+    const zoomIn = () => {
+        if (map) {
+            const newZoomLevel = map.getZoom() + 1;
+            map.setZoom(newZoomLevel);
+        }
+    };
+
+    const zoomOut = () => {
+        if (map) {
+            const newZoomLevel = map.getZoom() - 1;
+            map.setZoom(newZoomLevel);
+        }
+    };
+
     return (
         <MapContainer>
             <MapDisplay>
-                <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
-                <CenterButton onClick={centerMapOnUserLocation}>
-                    현재 위치로 중심 이동
-                </CenterButton>
+                <div ref={mapRef} style={{ width: "100%", height: "100%" }}>
+                    <ControlPanel>
+                        <ControlButton onClick={() => window.scrollTo(0, 0)}>
+                            <ArrowDropUpIcon />
+                        </ControlButton>
+                        <ControlButton onClick={centerMapOnUserLocation}>
+                            <GpsFixedIcon />
+                        </ControlButton>
+                        <ControlButton onClick={toggleNearbyStations}>
+                            <TrainIcon />
+                        </ControlButton>
+                        <ControlButton onClick={zoomIn}>
+                            <ZoomInMapIcon />
+                        </ControlButton>
+                        <ControlButton onClick={zoomOut}>
+                            <ZoomOutMapIcon />
+                        </ControlButton>
+                    </ControlPanel>
+                </div>
             </MapDisplay>
             <div>
                 {error && <p>오류: {error}</p>}
