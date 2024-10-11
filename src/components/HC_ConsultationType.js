@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import Button from './HC_Button';
@@ -16,6 +16,7 @@ const ConsultationSection = styled.section`
     text-align: center;
     padding: 0;
     flex: 1;
+    overflow: hidden;
 `;
 
 const ImageBanner = styled.div`
@@ -73,6 +74,10 @@ const ButtonContainer = styled.div`
 `;
 
 const ConsultationType = () => {
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
+
     const navigate = useNavigate();
 
     const handleNewConsultationClick = () => {
@@ -85,7 +90,7 @@ const ConsultationType = () => {
 
     return (
         <>
-            <GlobalStyle />
+            <GlobalStyle/>
             <ConsultationSection>
                 <ImageBanner>
                     <img src={`${process.env.PUBLIC_URL}/images/background.png`} alt="Room Image" />
