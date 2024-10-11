@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { store } from './store/store';
-
+import React, { useState } from 'react';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
@@ -35,7 +35,6 @@ import MyDiaryCheck from './pages/MyDiaryCheck';
 import MyDiaryCollection from './pages/MyDiaryCollection';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
-import React, { useState } from 'react';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import C_HumanCounseling from './pages/C_HumanCounseling';
@@ -56,6 +55,7 @@ import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
 import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
 import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
 import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
+import ChatComponent from './components/ChatComponent';
 
 function App() {
   const persiststore = persistStore(store);
@@ -145,6 +145,7 @@ function App() {
               <Route path="starred-place" element={<StarredPlace />} />
               <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
+              <Route path="/chat" element={<ChatComponent />} />
             </Route>
           </Routes>
         </Router>

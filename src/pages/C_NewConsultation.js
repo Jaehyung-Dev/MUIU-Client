@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -7,8 +7,8 @@ import ChatIcon from '@mui/icons-material/Chat';
 import EditIcon from '@mui/icons-material/Edit';
 
 const Container = styled.div`
-    padding-top: 50px;
     text-align: center;
+    overflow: hidden;
 `;
 
 const ImageBanner = styled.div`
@@ -105,6 +105,10 @@ const OptionSubText = styled.div`
 
 const NewConsultation = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
 
     return (
         <Container>
