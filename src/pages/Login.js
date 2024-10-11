@@ -7,7 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../apis/memberApis';
 
 const Main = styled.main`
-  
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important; /* 배경을 투명하게 */
+    -webkit-text-fill-color: #000 !important; /* 텍스트 색상 */
+    transition: background-color 5000s ease-in-out 0s;
+  }
 `;
 
 const MainContainer = styled.div`

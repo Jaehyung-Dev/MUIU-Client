@@ -13,11 +13,7 @@ const memberSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(join.fulfilled, (state, action) => {
-            console.log("Join Success Payload:", action.payload);
-            if (action.payload) {
-                alert(`${action.payload.username}님 가입 축하드립니다.`);
-                window.location.href = '/login';
-            }
+            window.location.href = '/join-success';
             return state;
         });
         builder.addCase(join.rejected, (state, action) => {

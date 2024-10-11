@@ -232,14 +232,15 @@ const ModalContainer = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 20rem;
-  height: 20rem;
-  padding: 2rem;
+  width: 25rem;
+  height: 70vh;
+  padding: 1rem;
   background-color: #fff;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 const CloseButton = styled.button`
@@ -254,12 +255,12 @@ const ModalInput = styled.input`
   width: 10rem;
   height: 2rem;
   padding: 0.5rem;
-  border: 1px solid #ddd;
   border-radius: 5px;
-  outline: none;
   border: none;
   outline: none;
   background: none;
+  font-size: 1.1rem;
+  text-align: center;
 
   &:placeholder {
     color: #A1A1A1;
@@ -270,11 +271,10 @@ const SmsButton = styled.button`
   background-color: #ffd651;
   border-radius: 5px;
   width: 6rem;
-  height: 2rem;
+  height: 95%;
   transition: background-color 0.5s ease;
   border: none;
   color: black;
-  margin-right: 0.5rem;
   &:hover {
     background-color: #f8cb37;
   }
@@ -288,11 +288,120 @@ const PhoneNumberDiv = styled.div`
   border-radius: 5px;
 `
 
+const ModalNameDiv = styled.div`
+  width: 16rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  p {
+    margin: 0 0 0.3rem 0;
+  }
+`
+const InputName = styled.input`
+  width: 100%;
+  height: 2rem;
+  background-color: #f0f0f0;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+` 
+const RegistNumCover = styled.div`
+  width: 16rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  p {
+    margin: 0 0 0.3rem 0;
+  }
+`
+
+const RegistNumDiv = styled.div`
+  width: 17rem;
+  height: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+const RegistNum = styled.input`
+  width: 40%;
+  height: 2rem;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  text-align: center;
+`
+
 export const Join = () => {
   const location = useLocation();
   const { locationAgree, recordConsent } = location.state || {};
   const [isGeneral, setIsGeneral] = useState(true);
   const [isCounselor, setIsCounselor] = useState(false);
+  
+  // 중복 확인 및 비밀번호 유효성 상태 관리
+  const [usernameChk, setUsernameChk] = useState(false); // 아이디 중복 확인 상태
+  const [passwordValidate, setPasswordValidate] = useState(false); // 비밀번호 유효성 검사 상태
+  const [passwordChk, setPasswordChk] = useState(false); // 비밀번호 일치 여부 상태
+  const [tel, setTel] = useState(''); // 휴대전화번호 입력 상태
+  const [receivedCode, setReceivedCode] = useState(''); // 서버로부터 받은 인증번호 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [verificationInput, setVerificationInput] = useState(''); // 사용자 입력 인증번호
+  const [role, setRole] = useState('ROLE_USER');
+  const [frontRegistNum, setFrontRegistNum] = useState(''); // 주민등록번호 앞자리
+  const [birth, setBirth] = useState(null); // 변환된 생년월일 (Date 타입)
+  const [gender, setGender] = useState(''); // 성별
+  const [backRegistNum, setBackRegistNum] = useState(''); // 주민등록번호 뒷자리 첫 숫자
+  const [name, setName] = useState('');
+
+  const handleFrontRegistNumChange = (e) => {
+    // 앞자리 6자리까지만 허용
+    const value = e.target.value;
+    if (/^\d{0,6}$/.test(value)) {
+      setFrontRegistNum(value);
+      // 6자리일 때 Date 타입으로 변환
+      if (value.length === 6) {
+        const yearPrefix = parseInt(value.substring(0, 2)) <= 23 ? '20' : '19'; // 23년 이하를 2000년대로, 그 외는 1900년대로 추정
+        const fullYear = yearPrefix + value.substring(0, 2);
+        const month = value.substring(2, 4) - 1; // 월은 0부터 시작
+        const day = value.substring(4, 6);
+
+        const date = new Date(fullYear, month, day);
+        
+        // Date 유효성 검사
+        if (!isNaN(date.getTime())) {
+          setBirth(date);
+        } else {
+          alert("유효하지 않은 날짜입니다.");
+          setBirth(null);
+        }
+      }
+    }
+  };
+  
+  const handleBackRegistNumChange = (e) => {
+    // 뒷자리 첫 숫자 1자리만 허용
+    const value = e.target.value;
+    if (/^\d{0,1}$/.test(value)) {
+      setBackRegistNum(value);
+
+      // 성별 판단 (예: 1,3은 남자, 2,4는 여자)
+      if (value === '1' || value === '3') {
+        setGender('남');
+      } else if (value === '2' || value === '4') {
+        setGender('여');
+      }
+    }
+  };
 
   const generalClicked = () => {
     setIsGeneral(true);
@@ -311,6 +420,8 @@ export const Join = () => {
     document.querySelector("#password-check-success").style.display = 'none';
     document.querySelector("#password-check-fail").style.display = 'none';
     document.querySelector("#password-validation").style.display = 'none';
+
+    setRole('ROLE_USER');
   };
 
   const counselorClicked = () => {
@@ -330,6 +441,8 @@ export const Join = () => {
     document.querySelector("#password-check-success").style.display = 'none';
     document.querySelector("#password-check-fail").style.display = 'none';
     document.querySelector("#password-validation").style.display = 'none';
+
+    setRole('ROLE_COUNSELOR');
   };
 
   // 회원가입 폼 상태 관리 (초기값 설정)
@@ -338,11 +451,6 @@ export const Join = () => {
     password: '', // 비밀번호
     passwordCheck: '', // 비밀번호 확인
   });
-
-  // 중복 확인 및 비밀번호 유효성 상태 관리
-  const [usernameChk, setUsernameChk] = useState(false); // 아이디 중복 확인 상태
-  const [passwordValidate, setPasswordValidate] = useState(false); // 비밀번호 유효성 검사 상태
-  const [passwordChk, setPasswordChk] = useState(false); // 비밀번호 일치 여부 상태
 
   // Redux의 dispatch 함수 가져오기
   const dispatch = useDispatch();
@@ -428,9 +536,9 @@ export const Join = () => {
     }
   }, [joinForm.username]);
 
-  // 비밀번호 유효성 검사 함수 (특수문자, 숫자, 영문자 조합 9자리 이상)
+  // 비밀번호 유효성 검사 함수 (특수문자, 숫자, 영문자 조합 8자리 이상)
   const validatePassword = useCallback(() => {
-    return /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*+=-]).{9,}$/.test(joinForm.password);
+    return /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*+=-]).{8,}$/.test(joinForm.password);
   }, [joinForm.password]);
 
   // 비밀번호 입력 후 블러 처리 시 유효성 검사
@@ -446,9 +554,51 @@ export const Join = () => {
       return;
   }, [validatePassword]);
 
-  const handleJoin = useCallback((e) => {
-    e.preventDefault();
+  // 모달 열기 함수
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    setTel(e.target.value); // 전화번호 입력 상태 업데이트
+  };
+
+  const handleSendSms = () => {
+    dispatch(verifySms(tel))
+      .then((response) => {
+        if (response.type.endsWith('fulfilled')) {
+          const receivedCode = response.payload.verificationCode; // 서버에서 받은 인증번호를 변수에 저장
+          setReceivedCode(receivedCode);
+        }
+      });
+  };
+
+  // 입력한 인증번호 상태 업데이트 함수
+  const handleVerificationInputChange = (e) => {
+    setVerificationInput(e.target.value);
+  };
+
+  const handleVerifySms = () => {
+    if (verificationInput === receivedCode) {
+      handleJoin();
+    } else {
+      alert("인증번호가 일치하지 않습니다. 다시 확인해주세요.");
+    }
+  }
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  }
+
+  const handleJoin = useCallback((e) => {
+    if(e) {
+        e.preventDefault();
+    }
+    
     // 각 조건을 만족하지 않으면 경고 메시지 표시
     if(!usernameChk) {
       alert('아이디 중복확인을 진행하세요.');
@@ -468,47 +618,18 @@ export const Join = () => {
     const memberData = {
       ...joinForm,
       locationAgree,
-      recordConsent
+      recordConsent,
+      role,
+      tel,
+      gender,
+      name,
+      birth
     };
 
-     // 모든 조건을 만족하면 Redux의 join 액션 호출
-     dispatch(join(memberData));
-  }, [joinForm, usernameChk, passwordChk, passwordValidate, locationAgree, recordConsent, dispatch]);
+    // 모든 조건을 만족하면 Redux의 join 액션 호출
+    dispatch(join(memberData));
+  }, [joinForm, usernameChk, passwordChk, passwordValidate, locationAgree, recordConsent, role, tel, gender, name, birth, dispatch]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 모달 열기 함수
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // 모달 닫기 함수
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const [phoneNumber, setPhoneNumber] = useState(''); // 휴대전화번호 입력 상태
-  const [verificationCode, setVerificationCode] = useState(''); // 인증번호 입력 상태
-  const [receivedCode, setReceivedCode] = useState(''); // 서버로부터 받은 인증번호 상태
-
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value); // 전화번호 입력 상태 업데이트
-  };
-
-  const handleVerificationCodeChange = (e) => {
-    setVerificationCode(e.target.value); // 인증번호 입력 상태 업데이트
-  };
-
-  const handleSendSms = () => {
-    dispatch(verifySms(phoneNumber))
-      .then((response) => {
-        if (response.type.endsWith('fulfilled')) {
-          const receivedCode = response.payload.verificationCode; // 서버에서 받은 인증번호를 변수에 저장
-          setReceivedCode(receivedCode); // 필요에 따라 상태로도 저장 가능
-          alert(`인증번호: ${receivedCode}`); // 인증번호 출력
-        }
-      });
-  };
 
   return (
     <Main>
@@ -563,7 +684,7 @@ export const Join = () => {
             name='password-validation'
             id='password-validation'
             style={{display: 'none', color: 'red', fontSize: '0.9rem', marginTop: '0.5rem', paddingLeft: '0.5rem'}}> {/* 비밀번호 유효성 검사 메시지 */}
-            비밀번호는 특수문자, 영문자, 숫자 조합의 9자리 이상으로 지정하세요.
+            비밀번호는 특수문자, 영문자, 숫자 조합의 8자리 이상으로 지정하세요.
             </p>
           </PopupDiv>
 
@@ -626,15 +747,46 @@ export const Join = () => {
             <ModalContent>
               <CloseButton onClick={closeModal} type='button'>×</CloseButton>
               <h2 style={{
-                marginBottom: '3rem'
-              }}>휴대전화 인증</h2>
+                margin: '0 0 1rem 0'
+              }}>본인인증</h2>
+              <ModalNameDiv>
+                <TextGuide>이름</TextGuide>
+                <InputName
+                    type="text"
+                    placeholder="이름 입력"
+                    value={name}
+                    onChange={handleNameChange} 
+                  />
+              </ModalNameDiv>
+
+              
+              <RegistNumCover>
+                <TextGuide>주민등록번호</TextGuide>
+                <RegistNumDiv>
+                  <RegistNum 
+                    type="text" 
+                    value={frontRegistNum} 
+                    onChange={handleFrontRegistNumChange} 
+                    placeholder="앞 6자리"
+                  />
+                  <p style={{
+                    margin: '0'
+                  }}>-</p>
+                  <RegistNum 
+                    type="text" 
+                    value={backRegistNum} 
+                    onChange={handleBackRegistNumChange}
+                    placeholder='뒷 1자리' 
+                  />
+                </RegistNumDiv>
+              </RegistNumCover>
+
               <PhoneNumberDiv>
                 <ModalInput
                   type="text"
-                  value={phoneNumber}
+                  value={tel}
                   onChange={handlePhoneNumberChange}
                   placeholder="휴대전화번호 입력"
-                  // 휴대전화번호 입력 필드 상태 관리
                 />
                 <SmsButton type='button' onClick={handleSendSms}>
                   인증번호 전송
@@ -643,12 +795,13 @@ export const Join = () => {
               <PhoneNumberDiv>
                 <ModalInput
                   type="text"
+                  value={verificationInput}
+                  onChange={handleVerificationInputChange}
                   placeholder="인증번호 입력"
-                  // 인증번호 입력 필드 상태 관리
                 />
-                <SmsButton type='button' onClick={(handleVerifySms) => {
-                  // 인증번호 확인 로직 추가
-                }}>입력완료</SmsButton>
+                <SmsButton type='button' onClick={handleVerifySms}>
+                  입력완료
+                </SmsButton>
               </PhoneNumberDiv>
             </ModalContent>
           </ModalContainer>
