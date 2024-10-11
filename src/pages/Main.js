@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { MdGpsFixed } from "react-icons/md";
 import graphImg from '../svg/graphImg.svg';
 
@@ -8,9 +8,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
 
-const Content = styled.div`
-
-`;
+const Content = styled.div``;
 
 const Section = styled.div`
 
@@ -325,11 +323,6 @@ export const Main = () => {
         setRandomImageKey(randomKey);
     }, []);
 
-    const openModal = (selectedImages) => {
-        setSelectedImages(selectedImages);
-        setCurrentImageIndex(0);
-        setModalOpen(true);
-    };
     const closeModal = () => setModalOpen(false);
     const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
     const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
@@ -337,10 +330,10 @@ export const Main = () => {
     return (
         <>
             <Content>
-                <Banner/>
+                <Banner />
                 <Section>
                     <h2>서울시 관악구&nbsp;&nbsp;
-                        <MdGpsFixed size="1.2rem"/>
+                        <MdGpsFixed size="1.2rem" />
                     </h2>
                     <div className="current-info-items">
                         <div className="current-info-item">
@@ -401,7 +394,7 @@ export const Main = () => {
                     </ModalContent>
                 </ModalOverlay>
             )}
-            
+
             <Content>
                 <Section>
                     <h2>마음나누기
@@ -411,8 +404,8 @@ export const Main = () => {
                         <div className="funding-item-section">
                             <div className="funding-item">
                                 <div className="funding-top1">
-                                    <div className="funding-title">호우피해<br/>긴급모금</div>
-                                    <div className="funding-content">폭우로 삶의 터전을 잃은<br/>이웃들에게 힘이 되어주세요.</div>
+                                    <div className="funding-title">호우피해<br />긴급모금</div>
+                                    <div className="funding-content">폭우로 삶의 터전을 잃은<br />이웃들에게 힘이 되어주세요.</div>
                                 </div>
                                 <div className="funding-bottom">
                                     호우피해긴급모금
@@ -423,8 +416,8 @@ export const Main = () => {
                         <div className="funding-item-section">
                             <div className="funding-item">
                                 <div className="funding-top2">
-                                    <div className="funding-title">산불피해<br/>긴급모금</div>
-                                    <div className="funding-content">삶의 터전을 잃어버린<br/>피해 주민들을 위해<br/>함께 힘을 모아주세요.</div>
+                                    <div className="funding-title">산불피해<br />긴급모금</div>
+                                    <div className="funding-content">삶의 터전을 잃어버린<br />피해 주민들을 위해<br />함께 힘을 모아주세요.</div>
                                 </div>
                                 <div className="funding-bottom">
                                     산불피해긴급모금

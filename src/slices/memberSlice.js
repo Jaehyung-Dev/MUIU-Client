@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { join, login, logout } from '../apis/memberApis';
+import { join, login, logout, verifySms } from '../apis/memberApis';
 
 const memberSlice = createSlice({
     name: 'members',
@@ -63,6 +63,20 @@ const memberSlice = createSlice({
         builder.addCase(logout.rejected, (state, action) => {
             alert("에러가 발생했습니다.");
             return state;
+        });
+        builder.addCase(verifySms.fulfilled, (state, action) => {
+            alert("인증 코드가 성공적으로 전송되었습니다.");
+            return {
+                ...state,
+                smsSent: true,
+            };
+        });
+        builder.addCase(verifySms.rejected, (state, action) => {
+            alert("인증 코드 전송에 실패했습니다. 다시 시도해주세요.");
+            return {
+                ...state,
+                smsSent: false,
+            };
         });
     }
 });

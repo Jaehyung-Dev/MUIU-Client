@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { join } from '../apis/memberApis';
 import { useLocation } from 'react-router-dom';
+import { verifySms } from '../apis/memberApis';
 
 const Main = styled.main`
   input:-webkit-autofill,
@@ -217,6 +218,76 @@ const PopupDiv = styled.div`
   width: 80%;
 `
 
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: ${(props) => (props.visible ? 'flex' : 'none')};
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  width: 20rem;
+  height: 20rem;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CloseButton = styled.button`
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+`;
+
+const ModalInput = styled.input`
+  width: 10rem;
+  height: 2rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  outline: none;
+  background: none;
+
+  &:placeholder {
+    color: #A1A1A1;
+  }
+`;
+
+const SmsButton = styled.button`
+  background-color: #ffd651;
+  border-radius: 5px;
+  width: 6rem;
+  height: 2rem;
+  transition: background-color 0.5s ease;
+  border: none;
+  color: black;
+  margin-right: 0.5rem;
+  &:hover {
+    background-color: #f8cb37;
+  }
+`
+const PhoneNumberDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+`
+
 export const Join = () => {
   const location = useLocation();
   const { locationAgree, recordConsent } = location.state || {};
@@ -404,6 +475,41 @@ export const Join = () => {
      dispatch(join(memberData));
   }, [joinForm, usernameChk, passwordChk, passwordValidate, locationAgree, recordConsent, dispatch]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 모달 열기 함수
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const [phoneNumber, setPhoneNumber] = useState(''); // 휴대전화번호 입력 상태
+  const [verificationCode, setVerificationCode] = useState(''); // 인증번호 입력 상태
+  const [receivedCode, setReceivedCode] = useState(''); // 서버로부터 받은 인증번호 상태
+
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value); // 전화번호 입력 상태 업데이트
+  };
+
+  const handleVerificationCodeChange = (e) => {
+    setVerificationCode(e.target.value); // 인증번호 입력 상태 업데이트
+  };
+
+  const handleSendSms = () => {
+    dispatch(verifySms(phoneNumber))
+      .then((response) => {
+        if (response.type.endsWith('fulfilled')) {
+          const receivedCode = response.payload.verificationCode; // 서버에서 받은 인증번호를 변수에 저장
+          setReceivedCode(receivedCode); // 필요에 따라 상태로도 저장 가능
+          alert(`인증번호: ${receivedCode}`); // 인증번호 출력
+        }
+      });
+  };
+
   return (
     <Main>
       <form onSubmit={handleJoin}>
@@ -511,11 +617,41 @@ export const Join = () => {
           </HiddenDiv>
 
           <AuthDiv>
-            <SubmitBtn>
+            <SubmitBtn onClick={(e) => { e.preventDefault(); openModal(); }}>
               <p>본인인증</p>
-            </SubmitBtn>  
+            </SubmitBtn>
           </AuthDiv>
         </MainContainer>
+        <ModalContainer visible={isModalOpen}>
+            <ModalContent>
+              <CloseButton onClick={closeModal} type='button'>×</CloseButton>
+              <h2 style={{
+                marginBottom: '3rem'
+              }}>휴대전화 인증</h2>
+              <PhoneNumberDiv>
+                <ModalInput
+                  type="text"
+                  value={phoneNumber}
+                  onChange={handlePhoneNumberChange}
+                  placeholder="휴대전화번호 입력"
+                  // 휴대전화번호 입력 필드 상태 관리
+                />
+                <SmsButton type='button' onClick={handleSendSms}>
+                  인증번호 전송
+                </SmsButton>
+              </PhoneNumberDiv>
+              <PhoneNumberDiv>
+                <ModalInput
+                  type="text"
+                  placeholder="인증번호 입력"
+                  // 인증번호 입력 필드 상태 관리
+                />
+                <SmsButton type='button' onClick={(handleVerifySms) => {
+                  // 인증번호 확인 로직 추가
+                }}>입력완료</SmsButton>
+              </PhoneNumberDiv>
+            </ModalContent>
+          </ModalContainer>
       </form>
     </Main>
   );
