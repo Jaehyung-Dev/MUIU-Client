@@ -94,7 +94,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             const testMarkerPosition = userLocation
                 ? new naver.maps.LatLng(userLocation.latitude + 0.001, userLocation.longitude + 0.001)
                 : new naver.maps.LatLng(37.4997777, 127.0324107);
-                
+
             const testMarker = new naver.maps.Marker({
                 position: testMarkerPosition,
                 map: newMap,
@@ -280,7 +280,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         if (map) {
             const newZoomLevel = map.getZoom() - 1;
             if (newZoomLevel < 10) {
-                alert('최소 줌인입니다.');
+                alert('최소 줌아웃입니다.');
             } else {
                 map.setZoom(newZoomLevel);
             }
