@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import userMarkerIcon from '../svg/userMarker.svg';
+import nearbyIcon from '../svg/nearby.svg';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import TrainIcon from '@mui/icons-material/Train';
@@ -26,7 +27,7 @@ const ControlPanel = styled.div`
     right: 10px;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    z-index: 990;
 `;
 
 const ControlButton = styled.button`
@@ -48,10 +49,11 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
     const mapRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
     const [map, setMap] = useState(null);
-    const [zoomLevel, setZoomLevel] = useState(18);
+    const [zoomLevel, setZoomLevel] = useState(15);
     const [results, setResults] = useState([]);
     const [error, setError] = useState(null);
 
+    /* 사용자 위치를 실시간으로 받아오는 기능 */
     const getUserLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -88,6 +90,26 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             const newMap = new naver.maps.Map(mapRef.current, mapOptions);
             setMap(newMap);
 
+            // 기본 마커 추가 (테스트용)
+            const testMarkerPosition = userLocation
+                ? new naver.maps.LatLng(userLocation.latitude + 0.001, userLocation.longitude + 0.001)
+                : new naver.maps.LatLng(37.4997777, 127.0324107);
+                
+            const testMarker = new naver.maps.Marker({
+                position: testMarkerPosition,
+                map: newMap,
+                icon: {
+                    url: nearbyIcon,
+                    size: new naver.maps.Size(100, 100),
+                    anchor: new naver.maps.Point(11, 35)
+                },
+            });
+
+            // 마커 클릭 이벤트 리스너 추가 
+            naver.maps.Event.addListener(testMarker, 'click', () => {
+                openInfoPopUp(); // 클릭 시 openInfoPopUp 호출
+            });
+
             if (userLocation) {
                 new naver.maps.Marker({
                     position: initialLocation,
@@ -110,7 +132,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             map.setCenter(newLocation);
         }
     }, [userLocation, map]);
-
+    
     useEffect(() => {
         setResults([]); 
 
@@ -150,6 +172,11 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         }
     }, [searchQuery, map]);
 
+
+
+
+    /* 【 ControlPanel에 들어갈 버튼들의 기능 구현 】 */
+    /* 사용자 위치를 중심으로 지도 중심 이동 기능 구현 */
     const centerMapOnUserLocation = () => {
         if (userLocation && map) {
             const newLocation = new window.naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
@@ -157,6 +184,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         }
     };
 
+    /* 사용자 위치 기준 인근역 표시 기능 구현*/
     const toggleNearbyStations = () => {
         if (userLocation && stations) {
             const userLat = userLocation.latitude;
@@ -169,13 +197,13 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                 return { ...station, distance };
             });
     
-            // 1km 이내의 역만 필터링
-            const nearbyStations = stationsWithDistance.filter(station => station.distance <= 1); // 1km = 1
+            /* 1km 이내의 역만 필터링 */ 
+            const nearbyStations = stationsWithDistance.filter(station => station.distance <= 1);
     
-            // 거리순으로 정렬
+            /* 거리순 정렬 */
             const sortedStations = nearbyStations.sort((a, b) => a.distance - b.distance);
     
-            // 같은 역 이름으로 그룹화
+            /* 같은 역사명을 가진 지하철역 그룹화 */
             const groupedStations = {};
     
             sortedStations.forEach(station => {
@@ -189,18 +217,43 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                 groupedStations[station.bldn_nm].minDistance = Math.min(groupedStations[station.bldn_nm].minDistance, station.distance);
             });
     
-            // 최종 리스트 생성
+            /* 최종 리스트 생성 */
             const stationList = Object.entries(groupedStations).map(([name, data]) => {
-                const routes = [...new Set(data.routes)]; // 중복 route 제거
+                const routes = [...new Set(data.routes)];
                 return `${name} (${routes.join(', ')}) ${data.minDistance.toFixed(1)} km`;
             }).join('\n');
     
-            alert(`인근 역 목록 (1km 이내):\n${stationList}`);
+            alert(`인근 역 목록(반경 1km 이내):\n${stationList}`);
+            
+            /* 인근역 Marker 생성 및 Marker 삭제(3초 후) */ 
+            const { naver } = window;
+            const markers = []; 
+
+            sortedStations.forEach(station => {
+                const position = new naver.maps.LatLng(station.lat, station.lot);
+                const marker = new naver.maps.Marker({
+                    position,
+                    map: map,
+                    title: station.bldn_nm,
+                    icon: {
+                        url: nearbyIcon,
+                        size: new naver.maps.Size(100, 100),
+                        anchor: new naver.maps.Point(0, 0)
+                    },
+                });
+                markers.push(marker);
+            });
+
+            setTimeout(() => {
+                markers.forEach(marker => {
+                    marker.setMap(null);
+                });
+            }, 3000);
         }
     };
-
+    /* 인근 지하철역과 사용자 위치 간 거리 계산 */
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // 지구의 반지름 (킬로미터)
+        const R = 6371;
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
         const a =
@@ -208,23 +261,31 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // 거리 반환 (킬로미터)
+        return R * c; 
     };
 
+    /* zoomIn 기능 구현 */
     const zoomIn = () => {
         if (map) {
             const newZoomLevel = map.getZoom() + 1;
-            map.setZoom(newZoomLevel);
+            if (newZoomLevel > 20) {
+                alert('최대 줌인입니다.');
+            } else {
+                map.setZoom(newZoomLevel);
+            }
         }
     };
-
+    /* zoomOut 기능 구현 */
     const zoomOut = () => {
         if (map) {
             const newZoomLevel = map.getZoom() - 1;
-            map.setZoom(newZoomLevel);
+            if (newZoomLevel < 10) {
+                alert('최소 줌인입니다.');
+            } else {
+                map.setZoom(newZoomLevel);
+            }
         }
     };
-
     return (
         <MapContainer>
             <MapDisplay>

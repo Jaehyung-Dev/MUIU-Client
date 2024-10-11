@@ -11,6 +11,7 @@ const SearchBarContainer = styled.div`
     background-color: white;
     align-items: center;
     margin: 10px auto 0;
+    border-bottom: 1px solid #666;
 `;
 
 const SearchInput = styled.input`
@@ -20,9 +21,12 @@ const SearchInput = styled.input`
     border: none;
     overflow: hidden;
     spellCheck: false;
+    height: 24px;
 
     &::placeholder {
-        color: gray;
+        font-size: 12px;
+        padding-left: 3px;
+        color: black;
     }
 
     &:focus {
@@ -59,7 +63,7 @@ const HS_SearchBar = ({ onSearch }) => {
             <SearchInput
                 name="search-location"
                 id="search-location"
-                placeholder="SEARCH"
+                placeholder="Search"
                 spellCheck="false"
                 value={searchValue}
                 onChange={handleInputChange}

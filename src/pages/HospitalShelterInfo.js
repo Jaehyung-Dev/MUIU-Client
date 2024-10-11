@@ -9,7 +9,7 @@ import HS_FindRoadModal from '../components/HS_FindRoadModal';
 const Main = styled.div`
     width: 100%;
     max-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
