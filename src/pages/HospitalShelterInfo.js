@@ -9,7 +9,7 @@ import HS_FindRoadModal from '../components/HS_FindRoadModal';
 const Main = styled.div`
     width: 100%;
     max-height: 100vh;
-    background-color: white;
+    background-color: #f0f0f0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -829,7 +829,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"0150","route":"1호선","lot":"126.972135","bldn_nm":"서울역","lat":"37.556228"}
         ]
     }
-    
+
     return (
         <Main>
             <HS_SearchBar onSearch={handleSearch} />
