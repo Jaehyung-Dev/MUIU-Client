@@ -214,6 +214,7 @@ export const Login = () => {
     // action 객체가 하나 넘어오고 에러가 발생했을 때는 에러 action 객체가 담긴다.
     dispatch(login(loginForm)).then((action) => {
         if(action.type === 'members/login/fulfilled') {
+          localStorage.setItem('userId', loginForm.username); // 로그인된 사용자 ID 저장
             navi("/");
         }
     });

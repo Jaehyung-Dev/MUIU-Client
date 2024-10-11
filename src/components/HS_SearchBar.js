@@ -8,10 +8,10 @@ const SearchBarContainer = styled.div`
     height: 35px;
     display: flex;
     padding: 0 10px;
+    background-color: white;
     align-items: center;
-    border: 1px solid #666;
-    border-radius: 20px;
-    margin: 0 auto;
+    margin: 10px auto 0;
+    border-bottom: 1px solid #666;
 `;
 
 const SearchInput = styled.input`
@@ -21,9 +21,12 @@ const SearchInput = styled.input`
     border: none;
     overflow: hidden;
     spellCheck: false;
+    height: 24px;
 
     &::placeholder {
-        color: gray;
+        font-size: 12px;
+        padding-left: 3px;
+        color: black;
     }
 
     &:focus {
@@ -60,7 +63,7 @@ const HS_SearchBar = ({ onSearch }) => {
             <SearchInput
                 name="search-location"
                 id="search-location"
-                placeholder="인근 역 검색"
+                placeholder="Search"
                 spellCheck="false"
                 value={searchValue}
                 onChange={handleInputChange}

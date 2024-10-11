@@ -8,6 +8,7 @@ import depress from '../svg/depress.svg';
 import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
+import { WriteDiaryAPI } from '../apis/diaryWriteApis'; 
 
 const Container = styled.div`
     margin-top: -10px;
@@ -173,39 +174,31 @@ const MyDiaryWrite = () => {
   const [content, setContent] = useState('');
   const [mood, setMood] = useState('');
 
+  // // 유저 id를 가져오는 함수
+  // const getUserId = () => {
+  //   return sessionStorage.getItem('userId'); // 예시로 sessionStorage에서 가져옴
+  // };
+
   const handleMoodClick = (selectedMood) => {
     setMood(selectedMood);
   };
 
-  const handleSaveDiary = () => {
+  const handleSaveDiary = async () => {
     const diaryData = {
+      id: '3',  // 임의로 설정한 id 값
       title,
       content,
       mood,
     };
-
-    console.log(diaryData);
-
-    fetch('https://xn--hz2b60wa3n.site/api/diaries/write', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(diaryData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });    
+  
+    try {
+      const response = await WriteDiaryAPI(diaryData); // 백엔드로 데이터 전송
+      console.log('Diary saved successfully:', response); // 성공 시 결과 출력
+    } catch (error) {
+      console.error('Error saving diary:', error); // 오류 시 출력
+    }
   };
+  
 
   return (
     <Container>
