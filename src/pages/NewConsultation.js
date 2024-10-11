@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const Container = styled.div`
     text-align: center;
+    overflow: hidden;
 `;
 
 const ImageBanner = styled.div`
@@ -104,6 +105,10 @@ const OptionSubText = styled.div`
 
 const NewConsultation = () => {
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
 
     return (
         <Container>
@@ -115,7 +120,8 @@ const NewConsultation = () => {
             <ShortHr />
 
             <OptionsContainer>
-                <Option bgColor="#FFE5D8" onClick={() => { navigate('/video-consultation');}} >                    <VideoCallIcon style={{ fontSize: '40px', color: '#FF3D3B' }} />
+                <Option bgColor="#FFE5D8" onClick={() => { navigate('/video-consultation');}}>
+                    <VideoCallIcon style={{ fontSize: '40px', color: '#FF3D3B' }} />
                     <OptionText style={{color: '#FF3D3B'}}>영상 상담</OptionText>
                     <OptionSubText style={{color: '#FF3D3B'}}>대기 혼잡</OptionSubText>
                 </Option>
@@ -126,7 +132,7 @@ const NewConsultation = () => {
                     <OptionSubText style={{color: '#FF8800'}}>대기 보통</OptionSubText>
                 </Option>
 
-                <Option bgColor="#DEF6DE">
+                <Option bgColor="#DEF6DE" onClick={() => { navigate('/chat'); }}>
                     <ChatIcon style={{ fontSize: '40px', color: '#19A03C' }} />
                     <OptionText style={{color: '#19A03C'}}>채팅 상담</OptionText>
                     <OptionSubText style={{color: '#19A03C'}}>대기 양호</OptionSubText>
