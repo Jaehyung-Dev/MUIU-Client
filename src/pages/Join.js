@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { join } from '../apis/memberApis';
@@ -114,7 +114,7 @@ const TextGuide = styled.p`
 
 const JoinInput = styled.input`
   font-size: 1.2rem;
-  padding-left: 1.5rem;
+  padding: 0 1.5rem;
   width: 100%;
   background: none;
   border: none;
@@ -137,9 +137,6 @@ const UsernameDiv = styled.div`
   box-sizing: border-box;
   background-color: #f0f0f0;
   border-radius: 10px;
-  input {
-    width: 77%;
-  }
   @media screen and (max-width: 600px) {
     height: 3rem;
   }
@@ -166,6 +163,7 @@ const AuthDiv = styled(DefaultDiv)`
   transition: background-color 0.5s ease;
   margin-top: 4rem;
   margin-bottom: 2rem;
+  border-radius: 10px;
   &:hover {
     background-color: #f8cb37;
   }
@@ -200,17 +198,23 @@ const CounselorDiv = styled.div`
 
     @media screen and (max-width: 600px) {
     height: 3rem;
-    margin-bottom: 2rem;
-  }
+    }
 `;
 
 const DuplicationBtn = styled.button`
+  width: 10rem;
+  height: 100%;
   background-color: #ffd651;
   border-radius: 5px;
   padding: 0.6rem;
-  transition: transform 0.3s ease;  
+  transition: background-color 0.5s ease;  
+  font-size: 1.1rem;
   &:hover {
-    transform: scale(1.1); 
+    background-color: #f8cb37;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 8rem;
   }
 `;
 
@@ -233,7 +237,7 @@ const ModalContainer = styled.div`
 
 const ModalContent = styled.div`
   width: 25rem;
-  height: 70vh;
+  height: 29rem;
   padding: 1rem;
   background-color: #fff;
   border-radius: 10px;
@@ -241,6 +245,10 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 600px) {
+    width: 20rem;
+    height: 27rem;
 `;
 
 const CloseButton = styled.button`
@@ -249,18 +257,19 @@ const CloseButton = styled.button`
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: black;
 `;
 
 const ModalInput = styled.input`
   width: 10rem;
   height: 2rem;
-  padding: 0.5rem;
-  border-radius: 5px;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: 10px;
   border: none;
   outline: none;
   background: none;
   font-size: 1.1rem;
-  text-align: center;
+  line-height: 2rem;
 
   &:placeholder {
     color: #A1A1A1;
@@ -271,10 +280,11 @@ const SmsButton = styled.button`
   background-color: #ffd651;
   border-radius: 5px;
   width: 6rem;
-  height: 95%;
+  height: 100%;
   transition: background-color 0.5s ease;
   border: none;
   color: black;
+  font-size: 1rem;
   &:hover {
     background-color: #f8cb37;
   }
@@ -285,7 +295,7 @@ const PhoneNumberDiv = styled.div`
   align-items: center;
   margin-bottom: 2rem;
   background-color: #f0f0f0;
-  border-radius: 5px;
+  border-radius: 10px;
 `
 
 const ModalNameDiv = styled.div`
@@ -304,11 +314,12 @@ const InputName = styled.input`
   width: 100%;
   height: 2rem;
   background-color: #f0f0f0;
-  padding: 0.5rem;
-  border-radius: 5px;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: 10px;
   border: none;
   outline: none;
   font-size: 1.1rem;
+  line-height: 2rem;
 ` 
 const RegistNumCover = styled.div`
   width: 16rem;
@@ -324,7 +335,7 @@ const RegistNumCover = styled.div`
 `
 
 const RegistNumDiv = styled.div`
-  width: 17rem;
+  width: 17.5rem;
   height: 3rem;
   display: flex;
   justify-content: space-between;
@@ -335,11 +346,12 @@ const RegistNum = styled.input`
   height: 2rem;
   background-color: #f0f0f0;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   outline: none;
   padding: 0.5rem;
   font-size: 1.1rem;
   text-align: center;
+  line-height: 2rem;
 `
 
 export const Join = () => {
@@ -362,44 +374,60 @@ export const Join = () => {
   const [gender, setGender] = useState(''); // 성별
   const [backRegistNum, setBackRegistNum] = useState(''); // 주민등록번호 뒷자리 첫 숫자
   const [name, setName] = useState('');
+  const [counselNum, setCounselNum] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
+  const [timeLeft, setTimeLeft] = useState(0); // 타이머 초기값
+  
+  // Date 객체 생성 함수
+  const createBirthDate = () => {
+    if (frontRegistNum.length === 6 && backRegistNum) {
+      const yearPrefix = (backRegistNum === '1' || backRegistNum === '2') ? '19' : '20';
+      const fullYear = yearPrefix + frontRegistNum.substring(0, 2);
+      const month = parseInt(frontRegistNum.substring(2, 4), 10) - 1; // 월은 0부터 시작
+      const day = parseInt(frontRegistNum.substring(4, 6), 10);
+      
+      // 월, 일 유효성 검사
+      if (month < 0 || month > 11 || day < 1 || day > 31) {
+        alert("유효하지 않은 날짜입니다.");
+        setBirth(null);
+        return;
+      }
 
-  const handleFrontRegistNumChange = (e) => {
-    // 앞자리 6자리까지만 허용
-    const value = e.target.value;
-    if (/^\d{0,6}$/.test(value)) {
-      setFrontRegistNum(value);
-      // 6자리일 때 Date 타입으로 변환
-      if (value.length === 6) {
-        const yearPrefix = parseInt(value.substring(0, 2)) <= 23 ? '20' : '19'; // 23년 이하를 2000년대로, 그 외는 1900년대로 추정
-        const fullYear = yearPrefix + value.substring(0, 2);
-        const month = value.substring(2, 4) - 1; // 월은 0부터 시작
-        const day = value.substring(4, 6);
-
-        const date = new Date(fullYear, month, day);
-        
-        // Date 유효성 검사
-        if (!isNaN(date.getTime())) {
-          setBirth(date);
-        } else {
-          alert("유효하지 않은 날짜입니다.");
-          setBirth(null);
-        }
+      const date = new Date(fullYear, month, day);
+      if (!isNaN(date.getTime())) {
+        setBirth(date);
+      } else {
+        alert("유효하지 않은 날짜입니다.");
+        setBirth(null);
       }
     }
   };
+
+  // 앞자리 입력 변경 함수
+  const handleFrontRegistNumChange = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,6}$/.test(value)) {
+      setFrontRegistNum(value);
+      // Date 객체 생성 시도
+      createBirthDate();
+    }
+  };
   
+  // 뒷자리 입력 변경 함수
   const handleBackRegistNumChange = (e) => {
-    // 뒷자리 첫 숫자 1자리만 허용
     const value = e.target.value;
     if (/^\d{0,1}$/.test(value)) {
       setBackRegistNum(value);
 
-      // 성별 판단 (예: 1,3은 남자, 2,4는 여자)
+      // 성별 설정
       if (value === '1' || value === '3') {
         setGender('남');
       } else if (value === '2' || value === '4') {
         setGender('여');
       }
+
+      // Date 객체 생성 시도
+      createBirthDate();
     }
   };
 
@@ -410,7 +438,9 @@ export const Join = () => {
     setJoinForm({
       username: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      email: '',
+
     });
     // 유효성 상태 초기화
     setUsernameChk(false);
@@ -420,7 +450,7 @@ export const Join = () => {
     document.querySelector("#password-check-success").style.display = 'none';
     document.querySelector("#password-check-fail").style.display = 'none';
     document.querySelector("#password-validation").style.display = 'none';
-
+    setCounselNum('');
     setRole('ROLE_USER');
   };
 
@@ -431,7 +461,8 @@ export const Join = () => {
     setJoinForm({
       username: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      email: ''
     });
     // 유효성 상태 초기화
     setUsernameChk(false);
@@ -506,7 +537,7 @@ export const Join = () => {
   }, [joinForm]);
 
    // 아이디 중복 체크 함수
-   const usernameCheck = useCallback(async () => {
+  const usernameCheck = useCallback(async () => {
     try {
         if(joinForm.username === '') { // 아이디가 빈 값이면
             alert('아이디를 입력하세요.'); // 경고 메시지
@@ -554,28 +585,85 @@ export const Join = () => {
       return;
   }, [validatePassword]);
 
-  // 모달 열기 함수
+  const counselNumCheck = () => {
+    alert("상담사 인증!");
+  }
+
   const openModal = () => {
+    // 조건 확인
+    // if (!usernameChk) {
+    //   alert('아이디 중복 확인을 진행하세요.');
+    //   return;
+    // }
+    if (!passwordValidate) {
+      alert('비밀번호를 확인하세요.');
+      return;
+    }
+    if (!passwordChk) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (!joinForm.email) {
+      alert('이메일을 입력하세요.');
+      return;
+    }
+    if (isCounselor && !counselNum) {
+      alert('상담사 인증번호를 입력하세요.');
+      return;
+    }
+
     setIsModalOpen(true);
   };
 
   // 모달 닫기 함수
   const closeModal = () => {
     setIsModalOpen(false);
+
+    // 모달 창 내의 input 상태 초기화
+    setName('');
+    setFrontRegistNum('');
+    setBackRegistNum('');
+    setTel('');
+    setVerificationInput('');
   };
 
   const handlePhoneNumberChange = (e) => {
     setTel(e.target.value); // 전화번호 입력 상태 업데이트
   };
 
+  // 2분 타이머를 관리
+  useEffect(() => {
+    let timer;
+    if (isButtonDisabled) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(timer);
+            setIsButtonDisabled(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearInterval(timer);
+  }, [isButtonDisabled]);
+
   const handleSendSms = () => {
-    dispatch(verifySms(tel))
-      .then((response) => {
-        if (response.type.endsWith('fulfilled')) {
-          const receivedCode = response.payload.verificationCode; // 서버에서 받은 인증번호를 변수에 저장
-          setReceivedCode(receivedCode);
-        }
-      });
+    if (isButtonDisabled) return; // 버튼이 이미 비활성화되어 있으면 동작하지 않음
+  
+    setIsButtonDisabled(true);
+    setTimeLeft(10);
+
+    // 인증 번호 전송 요청
+    dispatch(verifySms(tel)).then((response) => {
+      if (response.type.endsWith('fulfilled')) {
+        const receivedCode = response.payload.verificationCode;
+        setReceivedCode(receivedCode);
+      }
+    });
   };
 
   // 입력한 인증번호 상태 업데이트 함수
@@ -592,6 +680,9 @@ export const Join = () => {
   }
   const handleNameChange = (e) => {
     setName(e.target.value);
+  }
+  const counselNumChange = (e) => {
+    setCounselNum(e.target.value);
   }
 
   const handleJoin = useCallback((e) => {
@@ -653,12 +744,13 @@ export const Join = () => {
           </CoverTextGuide>
           <UsernameDiv>
             <JoinInput 
-                name='username' 
-                id='username' 
-                autoFocus value={joinForm.username} 
-                onChange={changeTextField} 
-                type="text" 
-                placeholder="아이디를 입력하세요" />
+              name='username' 
+              id='username' 
+              autoFocus value={joinForm.username} 
+              onChange={changeTextField} 
+              type="text" 
+              placeholder="아이디를 입력하세요" 
+            />
             <DuplicationBtn name='username-check-btn' id='username-check-btn'
                 type='button'
                 onClick={usernameCheck}>
@@ -671,13 +763,14 @@ export const Join = () => {
           </CoverTextGuide>
           <DefaultDiv>
             <JoinInput
-                name='password'
-                id='password' 
-                type="password" 
-                value={joinForm.password}
-                onChange={changeTextField}
-                onBlur={passwordBlur}
-                placeholder="비밀번호를 입력하세요" />
+              name='password'
+              id='password' 
+              type="password" 
+              value={joinForm.password}
+              onChange={changeTextField}
+              onBlur={passwordBlur}
+              placeholder="비밀번호를 입력하세요" 
+            />
           </DefaultDiv>
           <PopupDiv>
             <p
@@ -693,12 +786,13 @@ export const Join = () => {
           </CoverTextGuide>
           <DefaultDiv>
             <JoinInput 
-                name='passwordCheck'
-                id='passwordCheck'
-                type="password"
-                value={joinForm.passwordCheck}
-                onChange={changeTextField}
-                placeholder="비밀번호를 다시 입력하세요" />
+              name='passwordCheck'
+              id='passwordCheck'
+              type="password"
+              value={joinForm.passwordCheck}
+              onChange={changeTextField}
+              placeholder="비밀번호를 다시 입력하세요" 
+            />
           </DefaultDiv>
           <PopupDiv>
             <p
@@ -720,12 +814,13 @@ export const Join = () => {
           </CoverTextGuide>
           <DefaultDiv>
             <JoinInput
-                name='email'
-                id='email'
-                value={joinForm.email}
-                onChange={changeTextField} 
-                type="email" 
-                placeholder="이메일주소를 입력하세요" />
+              name='email'
+              id='email'
+              value={joinForm.email}
+              onChange={changeTextField} 
+              type="email" 
+              placeholder="이메일주소를 입력하세요" 
+            />
           </DefaultDiv>
 
           <HiddenDiv visible={isCounselor}>
@@ -733,7 +828,21 @@ export const Join = () => {
               <TextGuide>상담사 인증번호</TextGuide>
             </CoverTextGuide>
             <CounselorDiv>
-              <JoinInput type="password" placeholder="인증번호를 입력하세요" />
+              <JoinInput 
+                name='counselNum'
+                id='counselNum'
+                value={counselNum}
+                onChange={counselNumChange} 
+                type="text" 
+                placeholder="인증번호를 입력하세요" 
+              />
+              <DuplicationBtn 
+                name='counseler-num-btn' 
+                id='counseler-num-btn'
+                type='button'
+                onClick={counselNumCheck}>
+                인증하기
+              </DuplicationBtn>
             </CounselorDiv>
           </HiddenDiv>
 
@@ -743,6 +852,7 @@ export const Join = () => {
             </SubmitBtn>
           </AuthDiv>
         </MainContainer>
+
         <ModalContainer visible={isModalOpen}>
             <ModalContent>
               <CloseButton onClick={closeModal} type='button'>×</CloseButton>
@@ -788,8 +898,13 @@ export const Join = () => {
                   onChange={handlePhoneNumberChange}
                   placeholder="휴대전화번호 입력"
                 />
-                <SmsButton type='button' onClick={handleSendSms}>
-                  인증번호 전송
+                <SmsButton 
+                  type='button' 
+                  onClick={handleSendSms}
+                  disabled={isButtonDisabled} 
+                  style={{ backgroundColor: isButtonDisabled ? 'gray' : '#ffd651' }}
+                >
+                  {isButtonDisabled ? `${timeLeft}초 후 다시 시도` : "인증번호 전송"}
                 </SmsButton>
               </PhoneNumberDiv>
               <PhoneNumberDiv>

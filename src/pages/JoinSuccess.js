@@ -82,7 +82,7 @@ const SelectButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: background-color 0.5s ease;
 
   &:hover {
