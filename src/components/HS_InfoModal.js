@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import hospitalData from '../JSON/hospitalData.json';
 
 import departIcon from '../svg/출발.svg';
 import arriveIcon from '../svg/도착.svg';
@@ -13,7 +14,7 @@ import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
 import locationIcon from '../svg/장소위치.svg';
 import distanceIcon from '../svg/인근역.svg';
 import phoneIcon from '../svg/전화번호.svg';
-import websiteIcon from '../svg/웹사이트.svg';
+import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -170,9 +171,8 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
 
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
-            <ModalContent onClick={(e) => {e.stopPropagation();}}>
-
-                <ImagesContainer onClick={(e) => {e.stopPropagation(); openPhotoPopUp();}}>
+            <ModalContent onClick={(e) => { e.stopPropagation(); }}>
+                <ImagesContainer onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>
                     <MainImage>
                         <img src={mainImage1} alt="병원 예시 이미지 1" />
                     </MainImage>
@@ -191,24 +191,22 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         id="depart-icon" 
                         onMouseEnter={() => setHoveredTab('depart')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'depart' ? departHoverIcon : departIcon} 
                             alt="출발" 
-                            className="tab-image" 
                         />
                     </Tab>
                     <Tab 
                         id="arrive-icon" 
                         onMouseEnter={() => setHoveredTab('arrive')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => {e.stopPropagation(); openFindRoadPopUp();}}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'arrive' ? arriveHoverIcon : arriveIcon} 
                             alt="도착" 
-                            className="tab-image" 
                         />
                     </Tab>
                     <Tab 
@@ -219,24 +217,23 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         <TabImage 
                             src={hoveredTab === 'share' ? shareHoverIcon : shareIcon} 
                             alt="공유" 
-                            className="tab-image" 
                         />
                     </Tab>
                 </Tabs>
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={(e) => {e.stopPropagation(); openPhotoPopUp();}}>사진</Tab>
+                    <Tab style={{ borderBottom: '2px solid #A1A1A1' }} onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>
-                    A 종합병원
-                    <HospitalSort>종합병원</HospitalSort>
+                    {hospitalData.dutyname}
+                    <HospitalSort>{hospitalData.dutydivnam}</HospitalSort>
                 </HospitalName>
                 <Info>
                     <InfoItem>
                         <InfoItemImg src={locationIcon} alt="Location icon" />
-                        <span>경기 수원시 영통구 법조로 25 광교SK뷰파크 A 종합병원</span>
+                        <span>{hospitalData.dutyaddr}</span>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={distanceIcon} alt="Distance icon" />
@@ -244,11 +241,14 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={phoneIcon} alt="Phone icon" />
-                        <span>0000-1234-1234</span>
+                        <span>{hospitalData.dutytel1}</span>
                     </InfoItem>
                     <InfoItem>
-                        <InfoItemImg src={websiteIcon} alt="Website icon" />
-                        <span>www.naver.com</span>
+                        <SubjectRoundedIcon 
+                            alt="Website icon"
+                            style={{ width: '20px', height: '20px', marginRight: '10px', color: '#A1A1A1' }} 
+                        />
+                        <span>{hospitalData.dutyinf}</span>
                     </InfoItem>
                 </Info>
             </ModalContent>

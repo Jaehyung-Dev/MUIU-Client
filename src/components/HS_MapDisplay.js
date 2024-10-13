@@ -8,6 +8,8 @@ import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import TrainIcon from '@mui/icons-material/Train';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import hospitalData from '../JSON/hospitalData.json';
+import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -90,25 +92,44 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             const newMap = new naver.maps.Map(mapRef.current, mapOptions);
             setMap(newMap);
 
-            // 기본 마커 추가 (테스트용)
-            const testMarkerPosition = userLocation
-                ? new naver.maps.LatLng(userLocation.latitude + 0.001, userLocation.longitude + 0.001)
-                : new naver.maps.LatLng(37.4997777, 127.0324107);
+            const addMarkersWithinBounds = () => {
+                // 현재 보이는 영역의 경계 가져오기
+                const bounds = newMap.getBounds();
+                const newMarkers = [];
 
-            const testMarker = new naver.maps.Marker({
-                position: testMarkerPosition,
-                map: newMap,
-                icon: {
-                    url: nearbyIcon,
-                    size: new naver.maps.Size(100, 100),
-                    anchor: new naver.maps.Point(11, 35)
-                },
-            });
+                // 병원 데이터에서 경계 내에 있는 병원 필터링
+                hospitalData.DATA.forEach(hospital => {
+                    const hospitalPosition = new naver.maps.LatLng(
+                        Number(hospital.wgs84lat),
+                        Number(hospital.wgs84lon)
+                    );
 
-            // 마커 클릭 이벤트 리스너 추가 
-            naver.maps.Event.addListener(testMarker, 'click', () => {
-                openInfoPopUp(); // 클릭 시 openInfoPopUp 호출
-            });
+                    if (bounds.hasLatLng(hospitalPosition)) {
+                        const hospitalMarker = new naver.maps.Marker({
+                            position: hospitalPosition,
+                            map: newMap,
+                            icon: {
+                                url: hospitalMarkerIcon,
+                                size: new naver.maps.Size(100, 100),
+                                anchor: new naver.maps.Point(11, 35),
+                            },
+                        });
+
+                        newMarkers.push(hospitalMarker);
+
+                        // 마커 클릭 이벤트 리스너 추가 
+                        naver.maps.Event.addListener(hospitalMarker, 'click', () => {
+                            openInfoPopUp();
+                        });
+                    }
+                });
+            };
+
+            // 지도 초기화 후 마커 추가
+            addMarkersWithinBounds();
+
+            // 지도 이동 시 마커 업데이트
+            naver.maps.Event.addListener(newMap, 'bounds_changed', addMarkersWithinBounds);
 
             if (userLocation) {
                 new naver.maps.Marker({
@@ -123,6 +144,8 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             }
         }
     }, [userLocation]);
+
+    
 
     useEffect(() => {
         const { naver } = window;
@@ -297,6 +320,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                         <ControlButton onClick={centerMapOnUserLocation}>
                             <GpsFixedIcon />
                         </ControlButton>
+
                         <ControlButton onClick={toggleNearbyStations}>
                             <TrainIcon />
                         </ControlButton>
