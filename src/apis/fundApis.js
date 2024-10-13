@@ -1,4 +1,3 @@
-// src/apis/fundApi.js
 import axios from 'axios';
 
 const FUND_API_URL = 'http://localhost:9090/api/fund';
