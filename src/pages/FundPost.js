@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Editor } from '@toast-ui/react-editor';
@@ -9,7 +9,7 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
-import { createFundPost } from '../apis/fundApis';
+import { createFundPost } from '../apis/fundApi';
 
 const Main = styled.main`
   width: 100%;  
@@ -134,6 +134,7 @@ const FundPost = () => {
   const [title, setTitle] = useState('');
   const [team, setTeam] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);  // 이미지 미리보기 설정
   const [fundStart, setFundStart] = useState(null);
   const [fundEnd, setFundEnd] = useState(null);
   //const [businessStart, setBusinessStart] = useState(null);
@@ -145,6 +146,18 @@ const FundPost = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setImageUrl(reader.result); // 서버에 업로드하고 나서 URL로 대체
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -152,6 +165,7 @@ const FundPost = () => {
 
     const postData = {
       title,
+      imageUrl,
       content,
       team,
       fundStart,
@@ -163,13 +177,12 @@ const FundPost = () => {
     console.log('작성된 글:', postData);
 
     try {
-      const data = await createFundPost(postData);
-      console.log('등록된 게시글:', data);
-      navigate('/fund');
+      const response = await createFundPost(postData);
+      console.log('게시글 등록 성공! :', response);
+      navigate('/fund', { state: postData });
     } catch (error) {
       console.error('API 요청 중 에러 발생:', error);
     }
-    
     setTimeout(() => {
       navigate('/fund', { state: postData });
     }, 0);
@@ -185,6 +198,14 @@ const FundPost = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+        />
+
+        {/* 대표 이미지 URL 입력 필드 */}
+        <input
+          type="file"
+          accept="image/*"
+          className="post-input"
+          onChange={handleImageChange}
         />
 
         <div className="editor-container">
