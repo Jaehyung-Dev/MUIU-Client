@@ -9,7 +9,7 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
-import { createFundPost } from '../apis/fundApi';
+import { createFundPost } from '../apis/fundApis';
 
 const Main = styled.main`
   width: 100%;  
