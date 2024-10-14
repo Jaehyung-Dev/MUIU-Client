@@ -379,54 +379,74 @@ export const Join = () => {
   const [timeLeft, setTimeLeft] = useState(0); // 타이머 초기값
   
   // Date 객체 생성 함수
-  const createBirthDate = () => {
-    if (frontRegistNum.length === 6 && backRegistNum) {
+  const createBirthDate = useCallback(() => {
+    if (frontRegistNum.length === 6 && backRegistNum.length === 1) {
       const yearPrefix = (backRegistNum === '1' || backRegistNum === '2') ? '19' : '20';
       const fullYear = yearPrefix + frontRegistNum.substring(0, 2);
       const month = parseInt(frontRegistNum.substring(2, 4), 10) - 1; // 월은 0부터 시작
       const day = parseInt(frontRegistNum.substring(4, 6), 10);
       
-      // 월, 일 유효성 검사
-      if (month < 0 || month > 11 || day < 1 || day > 31) {
-        alert("유효하지 않은 날짜입니다.");
+      if(parseInt(fullYear) > 2023) {
+        alert("유효하지 않은 날짜입니다. 다시 입력해주세요.");
+        setFrontRegistNum('');
+        setBackRegistNum('');
         setBirth(null);
-        return;
       }
 
+      // 날짜 유효성 확인
       const date = new Date(fullYear, month, day);
-      if (!isNaN(date.getTime())) {
+      if (
+        !isNaN(date.getTime()) &&
+        date.getMonth() === month &&
+        date.getDate() === day
+      ) {
         setBirth(date);
       } else {
-        alert("유효하지 않은 날짜입니다.");
+        alert("유효하지 않은 날짜입니다. 다시 입력해주세요.");
+        setFrontRegistNum('');
+        setBackRegistNum('');
         setBirth(null);
       }
     }
-  };
+  }, [frontRegistNum, backRegistNum]);
 
   // 앞자리 입력 변경 함수
   const handleFrontRegistNumChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,6}$/.test(value)) {
-      setFrontRegistNum(value);
-      // Date 객체 생성 시도
-      createBirthDate();
+      setFrontRegistNum(value); 
     }
   };
-  
+
   // 뒷자리 입력 변경 함수
   const handleBackRegistNumChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,1}$/.test(value)) {
-      setBackRegistNum(value);
+      if (/^[5-9]$/.test(value) || value === '0') {
+        alert("잘못된 값을 입력하였습니다.");
+        return;
+      }
 
-      // 성별 설정
       if (value === '1' || value === '3') {
         setGender('남');
       } else if (value === '2' || value === '4') {
         setGender('여');
       }
+      
+      setBackRegistNum(value); // 값 설정만
+    }
+  };
 
-      // Date 객체 생성 시도
+  // Blur 이벤트 핸들러 - 앞자리에서 포커스가 벗어날 때
+  const handleFrontRegistNumBlur = () => {
+    if (frontRegistNum.length === 6 && backRegistNum.length === 1) {
+      createBirthDate();
+    }
+  };
+
+  // Blur 이벤트 핸들러 - 뒷자리에서 포커스가 벗어날 때
+  const handleBackRegistNumBlur = () => {
+    if (frontRegistNum.length === 6 && backRegistNum.length === 1) {
       createBirthDate();
     }
   };
@@ -591,10 +611,10 @@ export const Join = () => {
 
   const openModal = () => {
     // 조건 확인
-    // if (!usernameChk) {
-    //   alert('아이디 중복 확인을 진행하세요.');
-    //   return;
-    // }
+    if (!usernameChk) {
+      alert('아이디 중복 확인을 진행하세요.');
+      return;
+    }
     if (!passwordValidate) {
       alert('비밀번호를 확인하세요.');
       return;
@@ -655,7 +675,7 @@ export const Join = () => {
     if (isButtonDisabled) return; // 버튼이 이미 비활성화되어 있으면 동작하지 않음
   
     setIsButtonDisabled(true);
-    setTimeLeft(10);
+    setTimeLeft(120);
 
     // 인증 번호 전송 요청
     dispatch(verifySms(tel)).then((response) => {
@@ -876,7 +896,8 @@ export const Join = () => {
                   <RegistNum 
                     type="text" 
                     value={frontRegistNum} 
-                    onChange={handleFrontRegistNumChange} 
+                    onChange={handleFrontRegistNumChange}
+                    onBlur={handleFrontRegistNumBlur} 
                     placeholder="앞 6자리"
                   />
                   <p style={{
@@ -886,6 +907,7 @@ export const Join = () => {
                     type="text" 
                     value={backRegistNum} 
                     onChange={handleBackRegistNumChange}
+                    onBlur={handleBackRegistNumBlur}
                     placeholder='뒷 1자리' 
                   />
                 </RegistNumDiv>

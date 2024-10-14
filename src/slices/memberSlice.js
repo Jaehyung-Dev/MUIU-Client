@@ -29,7 +29,6 @@ const memberSlice = createSlice({
                 isLogin: true,
                 id: action.payload.id,
                 username: action.payload.username,
-                nickname: action.payload.nickname,
             };
         });
         builder.addCase(login.rejected, (state, action) => {
