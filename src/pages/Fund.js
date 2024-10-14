@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import IconButton from '@mui/material/IconButton';
+import ShareIcon from '@mui/icons-material/Share';
 
 // Styled components
 const Main = styled.main`
@@ -38,6 +40,34 @@ const Main = styled.main`
     font-size: 1.1em;
     font-weight: 400;
     letter-spacing: -0.3px;
+  }
+
+  .share-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 1.5rem;
+    color: #fff;
+    z-index: 10; 
+    transition: color 0.3s ease, transform 0.3s ease; 
+
+    &:hover {
+      color: #FFCC00;
+      transform: scale(1.2); /* 호버 시 아이콘 크기 확대 */
+    }
+  }
+
+  .copy-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    z-index: 1000;
   }
 
   .write-button-container {
@@ -86,14 +116,31 @@ const Main = styled.main`
 
 
 const FundCard = ({ imageSrc, altText, title, date, link }) => {
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyClick = (e) => {
+    e.preventDefault(); // Link 태그 클릭 방지
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      })
+      .catch((err) => console.error('Failed to copy text: ', err));
+  };
+
   return (
-    <Link to={link}>
+    <Link to={link} style={{ position: 'relative', display: 'block' }}>
       <div className="card">
+        {/* 공유 아이콘을 카드 안에서 오른쪽 상단에 위치 */}
+        <IconButton className="share-icon" onClick={handleCopyClick}>
+          <ShareIcon />
+        </IconButton>
         <img src={imageSrc} className="card-img" alt={altText} />
         <div className="card-body">
           <p className="card-text">{title}</p>
           <p className="card-date">{date}</p>
         </div>
+        {copySuccess && <span className="copy-message">주소가 복사되었습니다!</span>}
       </div>
     </Link>
   );
