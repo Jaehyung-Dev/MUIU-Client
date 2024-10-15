@@ -130,150 +130,153 @@ const SendButton = styled.button`
 `;
 
 const ChatComponent = () => {
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([]);  // 여기에 messages와 setMessages 선언 추가
-    const [channelId, setChannelId] = useState('123');
-    const [stompClient, setStompClient] = useState(null);
-  
-    const navigate = useNavigate();
-  
-    // 로그인된 사용자 ID 가져오기
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]); // 빈 배열로 초기화
+  const [channelId, setChannelId] = useState('123');
+  const [stompClient, setStompClient] = useState(null); // null로 초기화
+
+  const navigate = useNavigate();
+
+  // 로그인된 사용자 ID 및 토큰 가져오기
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token'); // 토큰 가져오기
+
+  useEffect(() => {
     const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
   
-    useEffect(() => {
-        if (!userId) {
-          console.error("User ID is not available. Please log in first.");
-          return;
+    // userId와 token이 있는지 확인
+    console.log('User ID:', userId);
+    console.log('Token:', token);
+  
+    if (!userId || !token) {
+      console.error("User ID or token is not available. Please log in first.");
+      alert("로그인이 필요합니다."); // 사용자에게 알림
+      return;
+    }
+  
+    const socket = new SockJS('http://localhost:9090/ws-chat');
+    const client = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => {
+        console.log(str);
+      },
+      reconnectDelay: 5000, 
+      connectHeaders: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+  
+    client.onConnect = () => {
+      console.log('Connected to WebSocket');
+      client.subscribe(`/topic/messages/${channelId}`, (msg) => {
+        if (msg.body) {
+          const newMessage = JSON.parse(msg.body);
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
-      
-        const socket = new SockJS('http://localhost:9090/ws-chat');
-        const client = new Client({
-          webSocketFactory: () => socket,
-          debug: (str) => {
-            console.log(str);
-          },
-          reconnectDelay: 5000,
-          connectHeaders: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-      
-        client.onConnect = () => {
-          console.log('Connected to WebSocket');
-          client.subscribe(`/topic/messages/${channelId}`, (msg) => {
-            if (msg.body) {
-              const newMessage = JSON.parse(msg.body);
-              setMessages((prevMessages) => [...prevMessages, newMessage]);
-            }
-          });
-      
-          // stompClient가 연결된 후에야 메시지를 전송할 수 있도록 설정
-          setStompClient(client);
-        };
-      
-        client.onStompError = (frame) => {
-          console.error('Broker reported error: ' + frame.headers['message']);
-          console.error('Additional details: ' + frame.body);
-        };
-      
-        client.activate();
-      
-        return () => {
-          if (client) {
-            client.deactivate(() => {
-              console.log('Disconnected from WebSocket');
-            });
-          }
-        };
-      }, [channelId, userId]);
-      
+      });
   
-    const handleSendMessage = async () => {
-        if (message.trim() !== '' && userId) {
-          const newMessage = {
-            channelId: channelId,
-            content: message,
-            sender: userId,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          };
-      
-          try {
-            const token = localStorage.getItem('token');
-            // stompClient가 초기화되었고, 연결이 완료되었는지 확인
-            if (stompClient && stompClient.connected) {
-              console.log('Sending message via WebSocket:', newMessage);
-              stompClient.publish({
-                destination: `/app/chat/${channelId}`,
-                body: JSON.stringify(newMessage),
-              });
-      
-              // 메시지를 DB에 저장하기 위해 서버로 요청 전송
-              await axios.post('http://localhost:9090/api/chat/send', newMessage, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
-                },
-              });
-            } else {
-              throw new Error('WebSocket is not connected or token is missing');
-            }
-          } catch (error) {
-            console.error('Error sending message:', error);
-            alert('메시지를 전송하는 중 문제가 발생했습니다.');
-          }
-        } else {
-          console.error('User ID is not available or message is empty');
-        }
-      };
-      
-  
-    const handleBackClick = () => {
-      navigate(-1);
+      setStompClient(client); 
     };
   
-    return (
-      <>
-        <HeaderContainer>
-          <BackButton onClick={handleBackClick}>
-            <ArrowBackIosIcon />
-          </BackButton>
-          <Title>정다은 상담사</Title>
-        </HeaderContainer>
-        <ChatContainer>
-          <MessagesContainer>
-            {messages.length > 0 ? (
-              messages.map((msg, index) => (
-                <MessageWrapper key={index} $isUser={msg.sender === userId}>
-                  {msg.sender === userId ? (
-                    <>
-                      <Message $isUser={msg.sender === userId}>{msg.content}</Message>
-                      <Timestamp $isUser={msg.sender === userId}>{msg.timestamp}</Timestamp>
-                    </>
-                  ) : (
-                    <>
-                      <Timestamp $isUser={msg.sender !== userId}>{msg.timestamp}</Timestamp>
-                      <Message $isUser={msg.sender !== userId}>{msg.content}</Message>
-                    </>
-                  )}
-                </MessageWrapper>
-              ))
-            ) : (
-              <p></p>
-            )}
-          </MessagesContainer>
-          <MessageInputContainer>
-            <MessageInput
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="메시지를 입력하세요"
-            />
-            <SendButton onClick={handleSendMessage}>Send</SendButton>
-          </MessageInputContainer>
-        </ChatContainer>
-      </>
-    );
+    client.onStompError = (frame) => {
+      console.error('Broker reported error: ' + frame.headers['message']);
+      console.error('Additional details: ' + frame.body);
+    };
+  
+    client.activate();
+  
+    return () => {
+      if (client) {
+        client.deactivate(() => {
+          console.log('Disconnected from WebSocket');
+        });
+      }
+    };
+  }, [channelId]);
+  
+  const handleSendMessage = async () => {
+    if (message.trim() !== '' && userId && token) {
+      const newMessage = {
+        channelId: channelId,
+        content: message,
+        sender: userId,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      try {
+        if (stompClient && stompClient.connected) {
+          console.log('Sending message via WebSocket:', newMessage);
+          stompClient.publish({
+            destination: `/app/chat/${channelId}`,
+            body: JSON.stringify(newMessage),
+          });
+
+          // 메시지를 DB에 저장하기 위해 서버로 요청 전송
+          await axios.post('http://localhost:9090/api/chat/send', newMessage, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, // HTTP 요청 시 인증 헤더 추가
+            },
+          });
+        } else {
+          throw new Error('WebSocket is not connected or token is missing');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('메시지를 전송하는 중 문제가 발생했습니다.');
+      }
+    } else {
+      console.error('User ID or token is not available or message is empty');
+    }
   };
-  
-  export default ChatComponent;
-  
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  return (
+    <>
+      <HeaderContainer>
+        <BackButton onClick={handleBackClick}>
+          <ArrowBackIosIcon />
+        </BackButton>
+        <Title>정다은 상담사</Title>
+      </HeaderContainer>
+      <ChatContainer>
+        <MessagesContainer>
+          {messages.length > 0 ? (
+            messages.map((msg, index) => (
+              <MessageWrapper key={index} $isUser={msg.sender === userId}>
+                {msg.sender === userId ? (
+                  <>
+                    <Message $isUser={msg.sender === userId}>{msg.content}</Message>
+                    <Timestamp $isUser={msg.sender === userId}>{msg.timestamp}</Timestamp>
+                  </>
+                ) : (
+                  <>
+                    <Timestamp $isUser={msg.sender !== userId}>{msg.timestamp}</Timestamp>
+                    <Message $isUser={msg.sender !== userId}>{msg.content}</Message>
+                  </>
+                )}
+              </MessageWrapper>
+            ))
+          ) : (
+            <p></p>
+          )}
+        </MessagesContainer>
+        <MessageInputContainer>
+          <MessageInput
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="메시지를 입력하세요"
+          />
+          <SendButton onClick={handleSendMessage}>Send</SendButton>
+        </MessageInputContainer>
+      </ChatContainer>
+    </>
+  );
+};
+
+export default ChatComponent;
