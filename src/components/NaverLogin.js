@@ -15,18 +15,17 @@ const NaverButton = styled.button`
   }
 `;
 
-const JH_NaverLogin = () => {
-	const NAVER_CLIENT_ID = '5EoXACfzIjcnBB2VQtSy'; // 발급받은 클라이언트 아이디
-	// const REDIRECT_URI = "http://localhost:3000"; // Callback URL
-	const REDIRECT_URI = 'https://마음이음.site';
+const NaverLogin = () => {
+  const NAVER_CLIENT_ID = '5EoXACfzIjcnBB2VQtSy'; // 발급받은 클라이언트 아이디
+	const REDIRECT_URI = "http://localhost:3000/join-success"; 
 	const STATE = "false";
-	const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}`;
+	const NAVER_AUTH_URL = "http://localhost:9090/oauth2/authorization/naver";
 
 	const NaverLogin = () => {
 		window.location.href = NAVER_AUTH_URL;
 	};
   return (
-	<NaverButton onClick={NaverLogin}>
+    <NaverButton onClick={NaverLogin}>
         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="50" height="50" fill="url(#pattern0_364_497)" />
             <defs>
@@ -40,4 +39,4 @@ const JH_NaverLogin = () => {
   );
 };
 
-export default JH_NaverLogin;
+export default NaverLogin;

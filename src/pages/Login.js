@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import JH_NaverLogin from '../components/JH_NaverLogin';
+import NaverLogin from '../components/NaverLogin';
 import logo from '../svg/logo.svg';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -266,7 +266,7 @@ export const Login = () => {
             <SnsBarText>sns 계정으로 로그인</SnsBarText>
             <SnsLine></SnsLine>
           </SnsBar>
-          <JH_NaverLogin/>
+          <NaverLogin/>
         </MainContainer>
       </form>
     </Main>
