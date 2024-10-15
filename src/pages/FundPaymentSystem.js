@@ -272,7 +272,7 @@ const FundPaymentSystem = () => {
         <PostTitle>폭우가 덮친 밤, 호우피해 주민들의 악몽을 깨워주세요</PostTitle>
         <FundRecipient>사랑의열매 사회복지공동모금회</FundRecipient>
         <FlyImage 
-          src={`${process.env.PUBLIC_URL}/images/Emoji/하늘마음티콘.png`} 
+          src={`${process.env.PUBLIC_URL}/images/Emoji/flying-emoji.png`} 
           alt="감사 이미지" 
         />
 

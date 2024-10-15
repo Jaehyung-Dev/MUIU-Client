@@ -37,7 +37,7 @@ const ErrorMessage = styled.p`
 const Error = () => {
   return (
     <ErrorContainer>
-      <ErrorEmoji src={`${process.env.PUBLIC_URL}/images/Emoji/놀람티콘.png`} alt="Error icon" />
+      <ErrorEmoji src={`${process.env.PUBLIC_URL}/images/Emoji/surprise-emoji.png`} alt="Error icon" />
       <ErrorText>에러가 발생했습니다!</ErrorText>
       <ErrorMessage>페이지를 로드하는 중 문제가 발생했습니다.<br />잠시 후 다시 시도해주세요.</ErrorMessage>
     </ErrorContainer>

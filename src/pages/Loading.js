@@ -65,7 +65,7 @@ const Loading = () => {
 
   return (
     <LoadingContainer>
-      <Emoji src={`${process.env.PUBLIC_URL}/images/Emoji/하늘마음티콘.png`} alt="Loading icon" />
+      <Emoji src={`${process.env.PUBLIC_URL}/images/Emoji/flying-emoji.png`} alt="Loading icon" />
       <LoadingText>로딩 중</LoadingText>
     </LoadingContainer>
   );
