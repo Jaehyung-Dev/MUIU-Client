@@ -54,23 +54,11 @@ import NewConsultation from './pages/NewConsultation';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import StarredPlace from './pages/StarredPlace';
-import { Support } from '@mui/icons-material';
+import Support from './pages/Support';
+// import { Support } from '@mui/icons-material';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import { persistStore } from 'redux-persist';
 import { store } from './store/store';
-import DonationRecord from './pages/DonationRecord';
-import Loading from './pages/Loading';
-import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
-import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
-import MindCheck_Depression_Process from './pages/MindCheck_Depression_Process';
-import MindCheck_Physical_Process from './pages/MindCheck_Physical_Process';
-import MindCheck_Suicide_Process from './pages/MindCheck_Suicide_Process';
-import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
-import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
-import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
-import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
-import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
-import ChatComponent from './components/ChatComponent'; 
 
 function App() {
   const persiststore = persistStore(store);
