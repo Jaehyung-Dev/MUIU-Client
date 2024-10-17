@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarIcon from '@mui/icons-material/Star';
+import axios from 'axios';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
 

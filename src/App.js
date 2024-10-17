@@ -58,8 +58,11 @@ import MyDiaryWrite from './pages/MyDiaryWrite';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
 import StarredPlace from './pages/StarredPlace';
+import Support from './pages/Support';
+// import { Support } from '@mui/icons-material';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
-
+import { persistStore } from 'redux-persist';
+import { store } from './store/store';
 
 function App() {
   const persiststore = persistStore(store);
