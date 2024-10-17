@@ -1,7 +1,12 @@
+
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
 import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -189,9 +194,74 @@ const DividerButton = styled.button`
     }
 `;
 
-
 export const MyPage = () => {
+    const [userData, setUserData] = useState(null); 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+    
+                if (!persistRoot) {
+                    navigate('/login');
+                    return;
+                }
+    
+                const parsedRoot = JSON.parse(persistRoot);
+    
+                if (!parsedRoot.memberSlice) {
+                    navigate('/login');
+                    return;
+                }
+    
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+    
+                if (!memberSlice.isLogin) {
+                    navigate('/login');
+                    return;
+                }
+    
+                const token = localStorage.getItem('token');
+                const userId = memberSlice.id;
+    
+                if (!token || !userId) {
+                    navigate('/login');
+                    return;
+                }
+    
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
+    
+                try {
+                    const response = await axios.get(`http://localhost:9090/members/${userId}/name-role`, config);
+    
+                    if (response.status === 200 && response.data.item) {
+                        setUserData(response.data.item);
+                    } else {
+                        navigate('/login');
+                    }
+    
+                } catch (apiError) {
+                    navigate('/login');
+                }
+            } catch (error) {
+                navigate('/login');
+            }
+        };
+    
+        fetchUserData();
+    }, [navigate]);
+    
+    
+
+    // userData가 null이 아닌지 확인 후 렌더링
+    if (!userData) {
+        return <div>유저 정보를 불러오는 중 오류가 발생했습니다.</div>;
+    }
 
     const handleStarredPlaceClick = () => {
         navigate('/starred-place');
@@ -232,10 +302,10 @@ export const MyPage = () => {
                     <img src={userProfile} alt=""/>
                 </div>
                 <div className="profile-user">
-                    <div className="profile-type">내담자</div>
-                    <div className="profile-name">김서연 님</div>
+                    <div className="profile-type">{userData.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
+                    <div className="profile-name">{userData.name} 님</div>
                 </div>
-                <div className="change-profile-btn">프로필 변경</div>
+                <div className="change-profile-btn" onClick={handleProfilehangeClick}>프로필 변경</div>
             </Profile>
             <Menu>
                 <div className="menu-button" onClick={handleStarredPlaceClick}>
