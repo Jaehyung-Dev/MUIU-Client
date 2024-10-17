@@ -10,6 +10,8 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import hospitalData from '../JSON/hospitalData.json';
 import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
+import shelterData from '../JSON/shelterData.json';
+import shelterMarkerIcon from '../HS_images/shelterMarker.svg';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -119,6 +121,32 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
 
                         // 마커 클릭 이벤트 리스너 추가 
                         naver.maps.Event.addListener(hospitalMarker, 'click', () => {
+                            openInfoPopUp();
+                        });
+                    }
+                });
+
+                shelterData.DATA.forEach(shelter => {
+                    const shelterPosition = new naver.maps.LatLng(
+                        Number(shelter.ycord),
+                        Number(shelter.xcord)
+                    );
+
+                    if (bounds.hasLatLng(shelterPosition)) {
+                        const shelterMarker = new naver.maps.Marker({
+                            position: shelterPosition,
+                            map: newMap,
+                            icon: {
+                                url: shelterMarkerIcon,
+                                size: new naver.maps.Size(100, 100),
+                                anchor: new naver.maps.Point(11, 35),
+                            },
+                        });
+
+                        newMarkers.push(shelterMarker);
+
+                        // 마커 클릭 이벤트 리스너 추가 
+                        naver.maps.Event.addListener(shelterMarker, 'click', () => {
                             openInfoPopUp();
                         });
                     }
