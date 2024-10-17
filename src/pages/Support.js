@@ -121,13 +121,15 @@ const Support = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             // Spring Boot API 엔드포인트로 POST 요청
             const response = await axios.post('http://localhost:9090/api/support/contact', {
                 name,
                 email,
                 message,
+            }, {
+                withCredentials: true, // 추가: 쿠키와 자격 증명이 포함되도록 설정
             });
             alert(response.data); // 서버에서 보낸 응답 메시지를 alert로 표시
             // 폼 초기화
