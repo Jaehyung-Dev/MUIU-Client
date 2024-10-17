@@ -277,7 +277,7 @@ export const MyPage = () => {
     };
 
     const handlePasswordChangeClick = () => {
-        alert('비밀번호 변경');
+        navigate('/change-password');
     };
 
     const handleSocialLinkClick = () => {
