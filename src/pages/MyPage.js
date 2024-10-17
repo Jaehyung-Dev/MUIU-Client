@@ -2,14 +2,11 @@
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
-import React from 'react';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import userProfile from '../svg/user-de-profile.svg';
 
 const Content = styled.div`
