@@ -55,7 +55,7 @@ import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
 import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
 import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
 import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
-import ChatComponent from './components/ChatComponent';
+import ChatComponent from './components/ChatComponent'; 
 
 function App() {
   const persiststore = persistStore(store);
