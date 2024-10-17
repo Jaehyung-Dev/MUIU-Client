@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 const Main = styled.main`
@@ -125,6 +126,17 @@ const CheckmarkSVG = styled.svg`
 `;
 
 const JoinSuccess = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    if (token) {
+        sessionStorage.setItem('ACCESS_TOKEN', token);
+        alert('로그인이 성공적으로 완료되었습니다.');
+    }
+  }, [location]);
+
   return (
     <Main>
       <JoinComplete>

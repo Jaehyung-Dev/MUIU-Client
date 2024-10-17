@@ -1,8 +1,14 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import React, { useState } from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { store } from './store/store';
+import { Support } from '@mui/icons-material';
 
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
+import ChangePassword from './pages/ChangePassword';
 import ChatComponent from './components/ChatComponent';
 import ConsultationRecord from './pages/ConsultationRecord';
 import CounselorChart from './pages/CounselorChart';
@@ -51,8 +57,6 @@ import MyDiaryCollection from './pages/MyDiaryCollection';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
-import { PersistGate } from 'redux-persist/integration/react';
-import { Provider } from 'react-redux';
 import StarredPlace from './pages/StarredPlace';
 import Support from './pages/Support';
 // import { Support } from '@mui/icons-material';
@@ -149,6 +153,7 @@ function App() {
               <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
               <Route path="/chat" element={<ChatComponent />} />
+              <Route path="/change-password" element={<ChangePassword />} />
               <Route path='/support' element={<Support/>} />
             </Route>
           </Routes>

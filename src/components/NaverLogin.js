@@ -16,9 +16,6 @@ const NaverButton = styled.button`
 `;
 
 const NaverLogin = () => {
-  const NAVER_CLIENT_ID = '5EoXACfzIjcnBB2VQtSy'; // 발급받은 클라이언트 아이디
-	const REDIRECT_URI = "http://localhost:3000/join-success"; 
-	const STATE = "false";
 	const NAVER_AUTH_URL = "http://localhost:9090/oauth2/authorization/naver";
 
 	const NaverLogin = () => {

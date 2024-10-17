@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -9,6 +9,7 @@ import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
 import { WriteDiaryAPI } from '../apis/diaryWriteApis'; 
+import { jwtDecode } from 'jwt-decode';
 
 const Container = styled.div`
     margin-top: -10px;
@@ -173,6 +174,16 @@ const MyDiaryWrite = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mood, setMood] = useState('');
+  const [userId, setUserId] = useState(null); // 로그인한 유저의 id 값을 저장할 state
+
+  // 페이지가 로드될 때 JWT 토큰을 디코딩해서 유저 id를 가져옴
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
+    if (token) {
+      const decodedToken = jwtDecode(token); // 토큰 디코딩
+      setUserId(decodedToken.id); // 디코딩된 토큰에서 유저 id 설정
+    }
+  }, []); // 빈 배열이므로 컴포넌트가 처음 렌더링될 때만 실행
 
   // // 유저 id를 가져오는 함수
   // const getUserId = () => {
@@ -185,7 +196,7 @@ const MyDiaryWrite = () => {
 
   const handleSaveDiary = async () => {
     const diaryData = {
-      id: '3',  // 임의로 설정한 id 값
+      id: userId,  // 로그인한 유저의 id 값 사용
       title,
       content,
       mood,
