@@ -362,6 +362,7 @@ export const Join = () => {
   
   // 중복 확인 및 비밀번호 유효성 상태 관리
   const [usernameChk, setUsernameChk] = useState(false); // 아이디 중복 확인 상태
+  const [isChecking, setIsChecking] = useState(false);
   const [passwordValidate, setPasswordValidate] = useState(false); // 비밀번호 유효성 검사 상태
   const [passwordChk, setPasswordChk] = useState(false); // 비밀번호 일치 여부 상태
   const [tel, setTel] = useState(''); // 휴대전화번호 입력 상태
@@ -558,34 +559,38 @@ export const Join = () => {
 
    // 아이디 중복 체크 함수
   const usernameCheck = useCallback(async () => {
+    if (isChecking) return; // 요청이 보내진 상태이면 아래 로직이 실행되지 않게
+    setIsChecking(true);
+
     try {
-        if(joinForm.username === '') { // 아이디가 빈 값이면
-            alert('아이디를 입력하세요.'); // 경고 메시지
-            document.querySelector('#username').focus(); // 아이디 입력 필드로 포커스 이동
-            return;
-        }
+      if(joinForm.username === '') { // 아이디가 빈 값이면
+          alert('아이디를 입력하세요.'); // 경고 메시지
+          document.querySelector('#username').focus(); // 아이디 입력 필드로 포커스 이동
+          return;
+      }
 
-        // 서버에 아이디 중복 여부 요청
-        const response = await axios.post('http://localhost:9090/members/username-check', {
-            username: joinForm.username
-        });
+      // 서버에 아이디 중복 여부 요청
+      const response = await axios.post('http://localhost:9090/members/username-check', {
+          username: joinForm.username
+      });
 
-        if(response.data.item.usernameCheckMsg === 'invalid username') { // 중복된 아이디일 경우
-            alert('중복된 아이디입니다. 다른 아이디로 변경해주세요.');
-            document.querySelector('#username').focus(); // 포커스 이동
-            return;
-        } else {
-            if(window.confirm(`${joinForm.username}은 사용가능한 아이디입니다. 사용하시겠습니까?`)) {
-                document.querySelector('#username-check-btn').setAttribute('disabled', true); // 중복 확인 버튼 비활성화
-                setUsernameChk(true); // 아이디 중복 확인 성공 상태로 변경
-                return;
-            }
-        }
-    } catch(e) {
-        console.log(e);
-        alert("에러가 발생했습니다."); // 에러 처리
-    }
-  }, [joinForm.username]);
+      if(response.data.item.usernameCheckMsg === 'invalid username') { // 중복된 아이디일 경우
+          alert('중복된 아이디입니다. 다른 아이디로 변경해주세요.');
+          document.querySelector('#username').focus(); // 포커스 이동
+          return;
+      } else {
+          if(window.confirm(`${joinForm.username}은 사용가능한 아이디입니다. 사용하시겠습니까?`)) {
+              setUsernameChk(true); // 아이디 중복 확인 성공 상태로 변경
+              return;
+          }
+      }
+  } catch(e) {
+      console.log(e);
+      alert("에러가 발생했습니다."); // 에러 처리
+  } finally {
+      setIsChecking(false); // 요청 응답이 완료될 때 까지 버튼을 disable 
+  }
+}, [joinForm.username, isChecking]);
 
   // 비밀번호 유효성 검사 함수 (특수문자, 숫자, 영문자 조합 8자리 이상)
   const validatePassword = useCallback(() => {
@@ -771,9 +776,13 @@ export const Join = () => {
               type="text" 
               placeholder="아이디를 입력하세요" 
             />
-            <DuplicationBtn name='username-check-btn' id='username-check-btn'
-                type='button'
-                onClick={usernameCheck}>
+            <DuplicationBtn 
+              name='username-check-btn' 
+              id='username-check-btn'
+              type='button'
+              onClick={usernameCheck}
+              disabled={isChecking} // isChecking이 true면 버튼을 disable
+            >
             중복확인
             </DuplicationBtn>
           </UsernameDiv>

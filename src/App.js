@@ -1,9 +1,16 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import React, { useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { store } from './store/store';
-import React, { useState } from 'react';
+import { Support } from '@mui/icons-material';
+
+import C_HumanCounseling from './pages/C_HumanCounseling';
+import C_NewConsultation from './pages/C_NewConsultation';
+import ChangePassword from './pages/ChangePassword';
+import ChatComponent from './components/ChatComponent';
+import ConsultationRecord from './pages/ConsultationRecord';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
 import CounselorDiaryCheck from './pages/CounselorDiaryCheck';
@@ -13,50 +20,46 @@ import DMHMDefinition3 from './pages/DMHMDefinition3';
 import DMHMDefinition4 from './pages/DMHMDefinition4';
 import DisasterGuide from './pages/DisasterGuide';
 import DisasterMentalHealthManual from './pages/DisasterMentalHealthManual';
+import DonationRecord from './pages/DonationRecord';
+import EmotionGraph from './pages/EmotionGraph';
 import Error from './pages/Error';
 import ExistingConsultation from './pages/ExistingConsultation';
 import Fund from './pages/Fund';
 import FundDetail from './pages/FundDetail';
 import FundPayment from './pages/FundPayment';
-import FundPaymentSystem from './pages/FundPaymentSystem';
 import FundPaymentSuccess from './pages/FundPaymentSuccess';
+import FundPaymentSystem from './pages/FundPaymentSystem';
 import FundPost from './pages/FundPost';
 import HospitalShelterInfo from './pages/HospitalShelterInfo';
 import HumanCounseling from './pages/HumanCounseling';
 import Join from './pages/Join';
+import JoinAgree from './pages/JoinAgree';
 import JoinSuccess from './pages/JoinSuccess';
 import Layout from './pages/Layout';
+import Loading from './pages/Loading';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import MindCheck from './pages/MindCheck';
+import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
+import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
+import MindCheck_Depression_Process from './pages/MindCheck_Depression_Process';
+import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
+import MindCheck_Physical_Process from './pages/MindCheck_Physical_Process';
+import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
+import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
+import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
+import MindCheck_Suicide_Process from './pages/MindCheck_Suicide_Process';
+import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
 import MindColumn from './pages/MindColumn';
 import MyDiary from './pages/MyDiary';
 import MyDiaryCheck from './pages/MyDiaryCheck';
 import MyDiaryCollection from './pages/MyDiaryCollection';
+import MyDiaryWrite from './pages/MyDiaryWrite';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
-import VideoConsultationScreen from './pages/VideoConsultationScreen';
-import MyDiaryWrite from './pages/MyDiaryWrite';
-import C_HumanCounseling from './pages/C_HumanCounseling';
-import C_NewConsultation from './pages/C_NewConsultation';
-import EmotionGraph from './pages/EmotionGraph';
-import JoinAgree from './pages/JoinAgree';
-import ConsultationRecord from './pages/ConsultationRecord';
 import StarredPlace from './pages/StarredPlace';
-import DonationRecord from './pages/DonationRecord';
-import Loading from './pages/Loading';
-import MindCheck_Stress_Process from './pages/MindCheck_Stress_Process';
-import MindCheck_Anxiety_Process from './pages/MindCheck_Anxiety_Process';
-import MindCheck_Depression_Process from './pages/MindCheck_Depression_Process';
-import MindCheck_Physical_Process from './pages/MindCheck_Physical_Process';
-import MindCheck_Suicide_Process from './pages/MindCheck_Suicide_Process';
-import MindCheck_Stress_Result from './pages/MindCheck_Stress_Result';
-import MindCheck_Anxiety_Result from './pages/MindCheck_Anxiety_Result';
-import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
-import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
-import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
-import ChatComponent from './components/ChatComponent'; 
-import ChangePassword from './pages/ChangePassword';
+import VideoConsultationScreen from './pages/VideoConsultationScreen';
+
 
 function App() {
   const persiststore = persistStore(store);
@@ -148,6 +151,7 @@ function App() {
               <Route path="loading" element={<Loading />} />
               <Route path="/chat" element={<ChatComponent />} />
               <Route path="/change-password" element={<ChangePassword />} />
+              <Route path='/support' element={<Support/>} />
             </Route>
           </Routes>
         </Router>

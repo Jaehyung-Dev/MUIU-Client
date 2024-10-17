@@ -1,12 +1,13 @@
+
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PeopleIcon from '@mui/icons-material/People';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
-import PeopleIcon from '@mui/icons-material/People';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Content = styled.div`
 `;
@@ -287,6 +288,10 @@ export const MyPage = () => {
         alert('로그아웃?');
     };
 
+    const handleSupportClick = () => {
+        navigate('/support');
+    };
+
     return (
         <Content>
             <Profile>
@@ -327,7 +332,7 @@ export const MyPage = () => {
             <MenuList>
                 <div className='section'>
                     <div className="menu-item">
-                        <span className="menu-item-text">지원</span>
+                        <span className="menu-item-text" onClick={handleSupportClick}>지원</span>
                         <ArrowForwardIosIcon style={{color:"#999"}}/>
                     </div>
                     <hr style={{border: "0.5px solid #999"}}/>
