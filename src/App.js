@@ -56,6 +56,7 @@ import MindCheck_Depression_Result from './pages/MindCheck_Depression_Result';
 import MindCheck_Physical_Result from './pages/MindCheck_Physical_Result';
 import MindCheck_Suicide_Result from './pages/MindCheck_Suicide_Result';
 import ChatComponent from './components/ChatComponent'; 
+import ChangePassword from './pages/ChangePassword';
 
 function App() {
   const persiststore = persistStore(store);
@@ -146,6 +147,7 @@ function App() {
               <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
               <Route path="/chat" element={<ChatComponent />} />
+              <Route path="/change-password" element={<ChangePassword />} />
             </Route>
           </Routes>
         </Router>
