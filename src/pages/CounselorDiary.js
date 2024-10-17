@@ -3,10 +3,12 @@ import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MenuIcon from '@mui/icons-material/Menu';
+import MyDiaryCollection from './MyDiaryCollection';
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 // 전체 배경 및 레이아웃
     const Container = styled.div`
@@ -64,6 +66,10 @@ import styled from 'styled-components';
     height: 50px;
     font-size: 1rem;
     color: #333;
+    cursor: pointer;
+    &:hover {
+        background-color: #f0f0f0; // hover 효과
+    }
     `;
 
     // 하단 네비게이션 바
@@ -90,18 +96,29 @@ import styled from 'styled-components';
 
     // 메인 컴포넌트
     const DiaryApp = () => {
+        const navigate = useNavigate();
+
+        const MyDiaryCollection = () => {
+            navigate('/my-diary-collection'); 
+        };
+
+        const MyDiary = () => {
+            navigate('/my-diary'); 
+        };
+        
+    
     return (
         <Container>
         {/* 필터 섹션 */}
         <FilterSection>
             <FilterText>내담자 별 ▼</FilterText>
-            <FilterButton>모두 보기</FilterButton>
+            <FilterButton onClick={MyDiaryCollection}>모두 보기</FilterButton>
         </FilterSection>
 
         {/* 카드 그리드 */}
         <CardGrid>
             {Array.from({ length: 8 }).map((_, index) => (
-            <Card key={index}>반재형</Card>
+            <Card key={index} onClick={MyDiary}>반재형</Card>
             ))}
         </CardGrid>
 
