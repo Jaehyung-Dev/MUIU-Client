@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
+import { useDispatch } from 'react-redux';
+import { logout } from '../apis/memberApis';
 
 const Content = styled.div`
 `;
@@ -208,6 +210,7 @@ export const MyPage = () => {
     const [userData, setUserData] = useState(null); 
     const [showDeveloperInfo, setShowDeveloperInfo] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -299,11 +302,8 @@ export const MyPage = () => {
     };
 
     const handleLogoutClick = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        sessionStorage.removeItem('persist:root');
-        
-        navigate('/login');
+        dispatch(logout());
+        navigate('/');
     };
 
     const handleSupportClick = () => {
