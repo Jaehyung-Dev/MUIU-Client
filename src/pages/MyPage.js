@@ -428,7 +428,7 @@ export const MyPage = () => {
                     {showDeveloperInfo && (
                         <DeveloperInfo>
                             <p>민수정 (full stack) - soojeongmin@soongsil.ac.kr</p>
-                            <p>김대휘 (full stack) - </p>
+                            <p>김대휘 (full stack) - whee990731@naver.com</p>
                             <p>김서연 (full stack) - kimseoyeon0332@gmail.com</p>
                             <p>반재형 (full stack) - publicdev2024@gmail.com</p>
                             <p>송민교 (full stack) - alsrysong@gmail.com</p>
