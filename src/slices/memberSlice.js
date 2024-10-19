@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { join, login, logout, verifySms } from '../apis/memberApis';
+import { join, login, logout, verifySms, verifyCounselNum } from '../apis/memberApis';
 
 const memberSlice = createSlice({
     name: 'members',
@@ -71,6 +71,20 @@ const memberSlice = createSlice({
             return {
                 ...state,
                 smsSent: false,
+            };
+        });
+        builder.addCase(verifyCounselNum.fulfilled, (state, action) => {
+            alert("인증 코드 전송 성공");
+            return {
+                ...state,
+                counselVerify: true,
+            };
+        });
+        builder.addCase(verifyCounselNum.rejected, (state, action) => {
+            alert("인증 코드 전송 실패");
+            return {
+                ...state,
+                counselVerify: false,
             };
         });
     }

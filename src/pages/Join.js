@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { join } from '../apis/memberApis';
 import { useLocation } from 'react-router-dom';
-import { verifySms } from '../apis/memberApis';
+import { verifySms, verifyCounselNum } from '../apis/memberApis';
 
 const Main = styled.main`
   input:-webkit-autofill,
@@ -610,9 +610,36 @@ export const Join = () => {
       return;
   }, [validatePassword]);
 
-  const counselNumCheck = () => {
-    alert("상담사 인증!");
-  }
+
+  const handleCounselNumChk = useCallback((e) => {
+    e.preventDefault();
+
+    if(!counselNum) {
+      alert('인증번호를 입력하세요.');
+      return;
+    }
+
+    // dispatch(verifyCounselNum(counselNum))
+    //   .then((action) => {
+    //     if(action.type === 'member/counselNum/fulfilled') {
+    //       // 백엔드에서 성공적으로 처리된 경우
+    //       if (action.payload.isVerified) {
+    //         alert('상담사 인증이 완료되었습니다.');
+    //       } else {
+    //         alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
+    //       }
+    //     } else if (action.type === 'member/counselNum/rejected') {
+    //       // 요청이 실패한 경우
+    //       alert('상담사 인증에 실패했습니다. 다시 시도해주세요.');
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     // 에러 발생 시 처리
+    //     console.error('Counselor verification error:', error);
+    //     alert('인증 중 문제가 발생했습니다. 다시 시도해 주세요.');
+    //   });
+  }, [counselNum, dispatch])
+  
 
   const openModal = () => {
     // 조건 확인
@@ -706,7 +733,7 @@ export const Join = () => {
   const handleNameChange = (e) => {
     setName(e.target.value);
   }
-  const counselNumChange = (e) => {
+  const handleCounselNumChange = (e) => {
     setCounselNum(e.target.value);
   }
 
@@ -861,7 +888,7 @@ export const Join = () => {
                 name='counselNum'
                 id='counselNum'
                 value={counselNum}
-                onChange={counselNumChange} 
+                onChange={handleCounselNumChange} 
                 type="text" 
                 placeholder="인증번호를 입력하세요" 
               />
@@ -869,7 +896,7 @@ export const Join = () => {
                 name='counseler-num-btn' 
                 id='counseler-num-btn'
                 type='button'
-                onClick={counselNumCheck}>
+                onClick={handleCounselNumChk}>
                 인증하기
               </DuplicationBtn>
             </CounselorDiv>

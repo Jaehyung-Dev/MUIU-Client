@@ -13,6 +13,18 @@ export const verifySms = createAsyncThunk(
     }
 )
 
+export const verifyCounselNum = createAsyncThunk(
+    'member/counselNum',
+    async (verifyNumber, thunkApi) => {
+        try{
+            const response = await axios.post(`http://localhost:9090/member/counselNum/${verifyNumber}`);
+            return response.data;
+        } catch (e) {
+            return thunkApi.rejectWithValue(e);
+        }
+    }
+)
+
 export const join = createAsyncThunk(
     'members/join',
     async (member, thunkApi) => {

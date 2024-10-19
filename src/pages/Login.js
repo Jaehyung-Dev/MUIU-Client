@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NaverLogin from '../components/NaverLogin';
 import logo from '../svg/logo.svg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../apis/memberApis';
 
@@ -199,6 +199,13 @@ export const Login = () => {
 
   const dispatch = useDispatch();
   const navi = useNavigate();
+  const isLoginChk = useSelector((state) => state.memberSlice.isLogin);
+
+  useEffect(() => {
+    if(isLoginChk) {
+      navi('/');
+    }
+  }, [isLoginChk, navi]);
 
   const changeTextField = useCallback((e) => {
       setLoginForm({
