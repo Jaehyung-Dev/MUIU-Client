@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
+import axios from 'axios';
 
 // Styled components
 const Main = styled.main`
@@ -113,8 +114,6 @@ const Main = styled.main`
 `;
 
 
-
-
 const FundCard = ({ imageSrc, altText, title, date, link }) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -151,9 +150,34 @@ const Fund = () => {
   const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     if (location.state && location.state.postData) {
       setPosts((prevPosts) => [...prevPosts, location.state.postData]); // postData가 있을 때만 추가
     }
+
+    // 서버에서 post 데이터를 가져오는 API 호출
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get('http://localhost:9090/api/fund/posts', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+          },
+        });
+        
+        // 이미지 URL 생성 및 설정
+        const postsWithImages = await Promise.all(response.data.map(async (post) => {
+          const imageUrl = `http://localhost:9090/api/fund/image?image=${post.mainImage}`;
+          return { ...post, imageUrl };
+        }));
+        
+        setPosts(postsWithImages);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchPosts();
   }, [location.state]); // location.state가 변경될 때마다 실행
 
   return (
@@ -180,15 +204,18 @@ const Fund = () => {
         link="/fund-detail"
       />
 
-      {/* 새로 작성된 글들을 표시하는 카드들 */}
+      {/* 서버에서 불러온 글들을 표시하는 카드들 */}
       {posts.map((post, index) => (
-        <div className="card" key={index}>
-          <div className="card-body">
-            <p className="card-text">{post.title}</p>
-            <p className="card-date">{post.fundPeriod}</p>
-          </div>
-        </div>
+        <FundCard
+          key={index}
+          imageSrc={post.imageUrl} // 불러온 이미지 URL을 사용
+          altText={post.title}
+          title={post.title}
+          date={`${post.fundStartDate} ~ ${post.fundEndDate}`}
+          link="/fund-detail"
+        />
       ))}
+
 
       <div className="write-button-container">
         <Link to="/fund-post" className="write-button">글 작성하기</Link>

@@ -133,6 +133,7 @@ const FundPost = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [team, setTeam] = useState('');
+  const [file, setFile] = useState(null); // 파일 상태 정의 추가
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState(null);  // 이미지 미리보기 설정
   const [fundStart, setFundStart] = useState(null);
@@ -146,17 +147,60 @@ const FundPost = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setImageUrl(reader.result); // 서버에 업로드하고 나서 URL로 대체
+  // 이미지 리사이즈 함수
+const resizeImage = (file, maxWidth, maxHeight) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = img.width;
+        let height = img.height;
+
+        // 이미지가 maxWidth, maxHeight보다 크면 비율 유지하여 리사이즈
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.floor((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.floor((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // canvas 데이터를 base64로 변환
+        const resizedImage = canvas.toDataURL('image/jpeg', 0.2); // 이미지 품질 조정 (0.7)
+        resolve(resizedImage);
       };
-      reader.readAsDataURL(file);
-    }
-  };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+const handleImageChange = (e) => {
+  setFile(e.target.files[0]); // 파일을 상태에 저장
+};
+
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImagePreview(reader.result);
+  //       setImageUrl(reader.result); // 서버에 업로드하고 나서 URL로 대체
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -164,25 +208,33 @@ const FundPost = () => {
     const content = editorRef.current?.getInstance().getHTML();
 
     const postData = {
+      // username: 'bitcamp10',  // 임시로 설정할 username 값
       title,
-      imageUrl,
-      content,
-      team,
-      fundStart,
-      fundEnd,
-      //businessPeriod: `${businessStart?.toLocaleDateString()} - ${businessEnd?.toLocaleDateString()}`,
+      description: content,
+      teamName: team, 
+      fundStartDate: fundStart,
+      fundEndDate: fundEnd,
       targetAmount,
     };
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('post', JSON.stringify(postData)); // JSON으로 변환하여 문자열로 전송
 
     console.log('작성된 글:', postData);
 
     try {
-      const response = await createFundPost(postData);
-      console.log('게시글 등록 성공! :', response);
-      navigate('/fund', { state: postData });
+      const response = await createFundPost(formData, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+        }
+      });
+      console.log('게시글 등록 성공!', response);
+      navigate('/fund');
     } catch (error) {
-      console.error('API 요청 중 에러 발생:', error);
+      console.error('게시글 등록 실패:', error);
     }
+
     setTimeout(() => {
       navigate('/fund', { state: postData });
     }, 0);
@@ -193,6 +245,7 @@ const FundPost = () => {
       <form className="post-form" onSubmit={handleSubmit}>
         <input
           type="text"
+          name="title"
           className="post-input"
           placeholder="제목을 입력하세요"
           value={title}
