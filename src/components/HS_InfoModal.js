@@ -5,9 +5,11 @@ import hospitalData from '../JSON/hospitalData.json';
 import departIcon from '../svg/출발.svg';
 import arriveIcon from '../svg/도착.svg';
 import shareIcon from '../svg/공유.svg';
+import bookmarkIcon from '../svg/저장.svg';
 import departHoverIcon from '../svg/출발-hover.svg';
 import arriveHoverIcon from '../svg/도착-hover.svg';
 import shareHoverIcon from '../svg/공유-hover.svg';
+import bookmarkHoverIcon from '../svg/저장-hover.svg';
 import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
 import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
 import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
@@ -35,7 +37,7 @@ const ModalContent = styled.div`
     width: 90%;
     max-width: 600px;
     height: 85%;
-    overflow: hidden;
+    overflow-y: auto;
 `;
 
 const HospitalName = styled.div`
@@ -111,6 +113,7 @@ const SmallImagesEle = styled.div`
 `;
 
 const Tabs = styled.div`
+    margin-top: 10px;
     display: flex;
 `;
 
@@ -159,12 +162,14 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
         depart: departIcon,
         arrive: arriveIcon,
         share: shareIcon,
+        bookmark: bookmarkIcon,
     };
 
     const hoverImages = {
         depart: departHoverIcon,
         arrive: arriveHoverIcon,
         share: shareHoverIcon,
+        bookmark: bookmarkHoverIcon,
     };
 
     if (!isOpen) return null;
@@ -217,6 +222,16 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
                         <TabImage 
                             src={hoveredTab === 'share' ? shareHoverIcon : shareIcon} 
                             alt="공유" 
+                        />
+                    </Tab>
+                    <Tab 
+                        id="bookmark-icon" 
+                        onMouseEnter={() => setHoveredTab('bookmark')} 
+                        onMouseLeave={() => setHoveredTab(null)}
+                    >
+                        <TabImage 
+                            src={hoveredTab === 'bookmark' ? bookmarkHoverIcon : bookmarkIcon} 
+                            alt="북마크" 
                         />
                     </Tab>
                 </Tabs>
