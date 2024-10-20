@@ -151,7 +151,7 @@ const TabsInfoPicture = styled.div`
     }
 `;
 
-const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) => {
+const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hospitalData, nearestStation, nearestDistance }) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -237,7 +237,11 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={distanceIcon} alt="Distance icon" />
-                        <span>광교중앙역 5번 출구에서 311m</span>
+                        <span>
+                            {nearestStation 
+                                ? `${nearestStation}역 약 ${nearestDistance.toFixed(1)}m` 
+                                : '가까운 역이 없습니다.'}
+                        </span>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={phoneIcon} alt="Phone icon" />

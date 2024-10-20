@@ -12,6 +12,7 @@ import hospitalData from '../JSON/hospitalData.json';
 import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
 import shelterData from '../JSON/shelterData.json';
 import shelterMarkerIcon from '../HS_images/shelterMarker.svg';
+import HS_InfoModal from './HS_InfoModal'; // 모달 컴포넌트 import
 
 const MapContainer = styled.div`
     width: 100%;
@@ -56,6 +57,12 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
     const [zoomLevel, setZoomLevel] = useState(15);
     const [results, setResults] = useState([]);
     const [error, setError] = useState(null);
+    
+    // 모달 상태 및 데이터 추가
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedHospital, setSelectedHospital] = useState(null);
+    const [nearestStation, setNearestStation] = useState(null); // 가까운 역 이름
+    const [nearestDistance, setNearestDistance] = useState(null); // 가까운 역 거리
 
     /* 사용자 위치를 실시간으로 받아오는 기능 */
     const getUserLocation = () => {
@@ -95,11 +102,10 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             setMap(newMap);
 
             const addMarkersWithinBounds = () => {
-                // 현재 보이는 영역의 경계 가져오기
                 const bounds = newMap.getBounds();
                 const newMarkers = [];
 
-                // 병원 데이터에서 경계 내에 있는 병원 필터링
+                // 병원 마커 추가
                 hospitalData.DATA.forEach(hospital => {
                     const hospitalPosition = new naver.maps.LatLng(
                         Number(hospital.wgs84lat),
@@ -119,13 +125,16 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
 
                         newMarkers.push(hospitalMarker);
 
-                        // 마커 클릭 이벤트 리스너 추가 
+                        // 마커 클릭 이벤트 리스너 추가
                         naver.maps.Event.addListener(hospitalMarker, 'click', () => {
-                            openInfoPopUp();
+                            setSelectedHospital(hospital); // 클릭한 병원 데이터 설정
+                            findNearestStation(hospital); // 가까운 역 찾기 호출
+                            setModalOpen(true); // 모달 열기
                         });
                     }
                 });
 
+                // 쉘터 마커 추가 생략...
                 shelterData.DATA.forEach(shelter => {
                     const shelterPosition = new naver.maps.LatLng(
                         Number(shelter.ycord),
@@ -172,8 +181,6 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             }
         }
     }, [userLocation]);
-
-    
 
     useEffect(() => {
         const { naver } = window;
@@ -223,10 +230,6 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         }
     }, [searchQuery, map]);
 
-
-
-
-    /* 【 ControlPanel에 들어갈 버튼들의 기능 구현 】 */
     /* 사용자 위치를 중심으로 지도 중심 이동 기능 구현 */
     const centerMapOnUserLocation = () => {
         if (userLocation && map) {
@@ -240,7 +243,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
         if (userLocation && stations) {
             const userLat = userLocation.latitude;
             const userLon = userLocation.longitude;
-    
+
             const stationsWithDistance = stations.map(station => {
                 const stationLat = parseFloat(station.lat);
                 const stationLon = parseFloat(station.lot);
@@ -302,9 +305,10 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             }, 3000);
         }
     };
+
     /* 인근 지하철역과 사용자 위치 간 거리 계산 */
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371;
+        const R = 6371; // 지구 반지름 (킬로미터)
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
         const a =
@@ -312,7 +316,39 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; 
+        return R * c * 1000; // 미터 단위로 변환
+    };
+
+    const findNearestStation = (hospital) => {
+        if (stations) {
+            const hospitalLat = Number(hospital.wgs84lat);
+            const hospitalLon = Number(hospital.wgs84lon);
+    
+            let closestStation = null;
+            let closestDistance = Infinity;
+    
+            stations.forEach(station => {
+                const stationLat = parseFloat(station.lat);
+                const stationLon = parseFloat(station.lot);
+                const distance = calculateDistance(hospitalLat, hospitalLon, stationLat, stationLon);
+    
+                console.log(`병원: (${hospitalLat}, ${hospitalLon}), 역: (${stationLat}, ${stationLon}), 거리: ${distance}`);
+    
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestStation = station.bldn_nm; // 역 이름
+                }
+            });
+    
+            // 가까운 역이 있는 경우
+            if (closestStation) {
+                setNearestStation(closestStation);
+                setNearestDistance(closestDistance);
+            } else {
+                setNearestStation(null);
+                setNearestDistance(null);
+            }
+        }
     };
 
     /* zoomIn 기능 구현 */
@@ -326,6 +362,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             }
         }
     };
+
     /* zoomOut 기능 구현 */
     const zoomOut = () => {
         if (map) {
@@ -337,6 +374,7 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
             }
         }
     };
+
     return (
         <MapContainer>
             <MapDisplay>
@@ -348,7 +386,6 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                         <ControlButton onClick={centerMapOnUserLocation}>
                             <GpsFixedIcon />
                         </ControlButton>
-
                         <ControlButton onClick={toggleNearbyStations}>
                             <TrainIcon />
                         </ControlButton>
@@ -371,6 +408,23 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                     ))}
                 </ul>
             </div>
+            {/* 모달 컴포넌트 추가 */}
+            {selectedHospital && (
+                <HS_InfoModal
+                    isOpen={modalOpen}
+                    onClose={() => {
+                        setModalOpen(false);
+                        setSelectedHospital(null); // 선택된 병원 초기화
+                        setNearestStation(null); // 가까운 역 초기화
+                        setNearestDistance(null); // 거리 초기화
+                    }}
+                    openPhotoPopUp={() => {/* 사진 팝업 열기 */}}
+                    openFindRoadPopUp={() => {/* 길 찾기 팝업 열기 */}}
+                    hospitalData={selectedHospital} // 선택한 병원 데이터 전달
+                    nearestStation={nearestStation} // 가까운 역 이름 전달
+                    nearestDistance={nearestDistance} // 가까운 역 거리 전달
+                />
+            )}
         </MapContainer>
     );
 };
