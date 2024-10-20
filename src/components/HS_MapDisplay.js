@@ -50,7 +50,7 @@ const ControlButton = styled.button`
     height: 30px;
 `;
 
-const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
+const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searchQuery, stations }) => {
     const mapRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
     const [map, setMap] = useState(null);
@@ -418,8 +418,8 @@ const HS_MapDisplay = ({ openInfoPopUp, searchQuery, stations }) => {
                         setNearestStation(null); // 가까운 역 초기화
                         setNearestDistance(null); // 거리 초기화
                     }}
-                    openPhotoPopUp={() => {/* 사진 팝업 열기 */}}
-                    openFindRoadPopUp={() => {/* 길 찾기 팝업 열기 */}}
+                    openPhotoPopUp={openPhotoPopUp}
+                    openFindRoadPopUp={openFindRoadPopUp}
                     hospitalData={selectedHospital} // 선택한 병원 데이터 전달
                     nearestStation={nearestStation} // 가까운 역 이름 전달
                     nearestDistance={nearestDistance} // 가까운 역 거리 전달

@@ -134,7 +134,13 @@ const Tab = styled.div`
 `;
 
 const TabImage = styled.img`
-    transition: opacity 0.3s;
+    width: 45px;
+    height: 45px;
+    transition: transform 0.3s;
+    
+    ${Tab}:hover & {
+        transform: scale(1.15);
+    }
 `;
 
 const TabsInfoPicture = styled.div`
@@ -142,6 +148,7 @@ const TabsInfoPicture = styled.div`
 
     .tab {
         border-bottom: 2px solid #A1A1A1;
+        transition: border-bottom 0.2s; /* 부드러운 전환 효과 추가 */
     }
 
     .active {
@@ -151,6 +158,7 @@ const TabsInfoPicture = styled.div`
 
     .tab:hover {
         color: #FFD700;
+        border-bottom: 5px solid #FFD700;
     }
 `;
 
@@ -238,7 +246,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab style={{ borderBottom: '2px solid #A1A1A1' }} onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
+                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>
