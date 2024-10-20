@@ -180,6 +180,22 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
         bookmark: bookmarkHoverIcon,
     };
 
+    /* 네이버지도 검색창에 해당 링크 보내주기 */
+    const copyToClipboard = () => {
+        const textToCopy = `https://map.naver.com/p/search/${hospitalData.dutyname}`;
+        
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                console.log("클립보드 복사 성공:");
+                alert("해당 병원 주소를 클립보드에 복사했습니다.");
+            })
+            .catch((err) => {
+                console.error("클립보드 복사 실패:", err);
+                alert("해당 병원 주소를 클립보드에 복사하지 못했습니다.");
+            });
+    };
+
+
     if (!isOpen) return null;
 
     return (
@@ -229,7 +245,11 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
                     >
                         <TabImage 
                             src={hoveredTab === 'share' ? shareHoverIcon : shareIcon} 
-                            alt="공유" 
+                            alt="공유"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard();
+                            }}
                         />
                     </Tab>
                     <Tab 

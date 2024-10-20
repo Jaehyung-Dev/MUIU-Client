@@ -87,7 +87,7 @@ const BackButton = styled.button`
     font-weight: bold;
     color: #A1A1A1;
     cursor: pointer;
-    padding: 5px 10px 0;
+    padding: 10px 15px 0;
     align-items: center;
 `;
 

@@ -14,6 +14,8 @@ import arriveIcon from '../svg/도착-icon.svg';
 import changeIcon from '../svg/변경.svg';
 import findIcon from '../svg/길찾기-hover.svg';
 import optimalIcon from '../svg/최적.svg';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -47,7 +49,9 @@ const BackBtn = styled.button`
     font-weight: bold;
     color: #A1A1A1;
     cursor: pointer;
-    padding-left: 15px;
+    padding: 10px 15px 0;
+    align-items: center;
+    margin: 0;
 `;
 
 const SelectVehicle = styled.div`
@@ -212,7 +216,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
             <ModalContent style={{ backgroundColor: '#F3F3F3' }} onClick={(e) => { e.stopPropagation(); }}>
-                <BackBtn onClick={onClose}>&lt; </BackBtn>
+                <BackBtn onClick={onClose}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackBtn>
                 
                 <SelectVehicle>
                     <VehicleTab 
