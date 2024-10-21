@@ -220,7 +220,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
                         id="depart-icon" 
                         onMouseEnter={() => setHoveredTab('depart')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'depart'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'depart' ? departHoverIcon : departIcon} 
@@ -231,7 +231,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
                         id="arrive-icon" 
                         onMouseEnter={() => setHoveredTab('arrive')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'arrive'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'arrive' ? arriveHoverIcon : arriveIcon} 

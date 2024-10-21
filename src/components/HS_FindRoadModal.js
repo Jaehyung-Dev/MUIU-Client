@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import trafficIcon from '../svg/대중교통.svg';
@@ -208,8 +208,26 @@ const TimeText = styled.p`
     font-size: 15px;
 `;
 
-const HS_FindRoadModal = ({ isOpen, onClose }) => {
+const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
+    const [departValue, setDepartValue] = useState('');
+    const [arriveValue, setArriveValue] = useState('');
+
+    useEffect(() => {
+        if (mode === 'depart') {
+            setDepartValue(hospitalName); // 출발지에 병원 이름 설정
+            setArriveValue(''); // 도착지는 초기화
+        } else if (mode === 'arrive') {
+            setArriveValue(hospitalName); // 도착지에 병원 이름 설정
+            setDepartValue(''); // 출발지는 초기화
+        }
+    }, [hospitalName, mode]);
+
+    const swapValues = () => {
+        const temp = departValue;
+        setDepartValue(arriveValue);
+        setArriveValue(temp);
+    };
 
     if (!isOpen) return null;
 
@@ -274,9 +292,15 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                             name="depart-input"
                             placeholder="출발지"
                             spellCheck="false"
+                            value={departValue || ""}
                         />
                     </SearchingDepart>
-                    <ChangeIcon src={changeIcon} alt="변경" id="changeDeAr" />
+                    <ChangeIcon 
+                        src={changeIcon} 
+                        alt="변경" 
+                        id="changeDeAr" 
+                        onClick={swapValues} // 클릭 시 값 교환
+                    />
                     <SearchingArrive>
                         <SearchingImage src={arriveIcon} alt="도착" />
                         <SearchingInput
@@ -285,6 +309,7 @@ const HS_FindRoadModal = ({ isOpen, onClose }) => {
                             name="arrive-input"
                             placeholder="도착지"
                             spellCheck="false"
+                            value={arriveValue || ""}
                         />
                     </SearchingArrive>
                     <Finding>

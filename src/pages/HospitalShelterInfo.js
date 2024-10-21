@@ -21,6 +21,8 @@ export const HospitalShelterInfo = () => {
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const [isFindRoadOpen, setIsFindRoadOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedHospital, setSelectedHospital] = useState(null);
+    const [mode, setMode] = useState(null);
 
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
@@ -28,8 +30,18 @@ export const HospitalShelterInfo = () => {
     const openPhotoPopUp = () => setIsPhotoOpen(true);
     const closePhotoPopUp = () => setIsPhotoOpen(false);
 
-    const openFindRoadPopUp = () => setIsFindRoadOpen(true);
-    const closeFindRoadPopUp = () => setIsFindRoadOpen(false);
+    const openFindRoadPopUp = (hospitalName, mode) => {
+        setSelectedHospital(hospitalName); // 병원 이름 설정
+        setIsFindRoadOpen(true); // 모달 열기
+        setMode(mode); // 모드 설정
+    };
+    
+    const closeFindRoadPopUp = () => {
+        setIsFindRoadOpen(false);
+        setSelectedHospital(null); // 모달 닫을 때 선택된 병원 초기화
+        setMode(null);
+
+    };
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -843,6 +855,8 @@ export const HospitalShelterInfo = () => {
                 openFindRoadPopUp={openFindRoadPopUp}
                 searchQuery={searchQuery}
                 stations={stations.DATA}
+                setSelectedHospital={setSelectedHospital} // 병원 선택 상태 전달
+                mode = {mode}
             />
             <HS_InfoModal
                 isOpen={isInfoOpen}
@@ -852,7 +866,12 @@ export const HospitalShelterInfo = () => {
                 stations={stations.DATA}
             />
             <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
-            <HS_FindRoadModal isOpen={isFindRoadOpen} onClose={closeFindRoadPopUp} />
+            <HS_FindRoadModal
+                isOpen={isFindRoadOpen}
+                onClose={closeFindRoadPopUp}
+                hospitalName={selectedHospital} // 병원 이름 전달
+                mode={mode}
+            />
         </Main>
     );
 };
