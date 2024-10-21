@@ -92,8 +92,7 @@ const DetailDiv = styled.div`
   overflow-y: scroll;
   white-space: pre-wrap;
   word-wrap: break-word;
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-  width: 95%;
+  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
 `;
 
 const CenterDiv = styled.div`
@@ -244,7 +243,7 @@ const JoinAgree = () => {
             </StartDiv>
 
             <CoverAgreeDiv>
-                <AgreeDiv border>
+                <AgreeDiv $border>
                 <InnerAgreeDiv>
                     <AgreeSpace onClick={allCheckClicked}>
                         {allCheck ? (
@@ -271,13 +270,13 @@ const JoinAgree = () => {
                         이용약관 동의(필수)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={termsRotated}
+                    <RotateImageDiv $rotated={termsRotated}
                         onClick={termsDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={termsRotated}>
+                <DetailDiv $isVisible={termsRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>
@@ -295,13 +294,13 @@ const JoinAgree = () => {
                         개인정보 수집 및 이용동의(필수)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={personalRotated}
+                    <RotateImageDiv $rotated={personalRotated}
                         onClick={personalDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={personalRotated}>
+                <DetailDiv $isVisible={personalRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>
@@ -319,13 +318,13 @@ const JoinAgree = () => {
                         채점 프로그램 동의(필수)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={gradingRotated}
+                    <RotateImageDiv $rotated={gradingRotated}
                         onClick={gradingDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={gradingRotated}>
+                <DetailDiv $isVisible={gradingRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>
@@ -343,13 +342,13 @@ const JoinAgree = () => {
                         수검자의 개인정보 수집 및 처리에 관한 정책 동의(필수)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={examineeRotated}
+                    <RotateImageDiv $rotated={examineeRotated}
                         onClick={examineeDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={examineeRotated}>
+                <DetailDiv $isVisible={examineeRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>
@@ -367,13 +366,13 @@ const JoinAgree = () => {
                         상담 기록 보관 동의(선택)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={recordRotated}
+                    <RotateImageDiv $rotated={recordRotated}
                         onClick={recordDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={recordRotated}>
+                <DetailDiv $isVisible={recordRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>
@@ -391,13 +390,13 @@ const JoinAgree = () => {
                         위치기반 서비스 동의(선택)
                     </SpanLeftMargin>
                     </AgreeSpace>
-                    <RotateImageDiv rotated={locRotated}
+                    <RotateImageDiv $rotated={locRotated}
                         onClick={locationDetailClick}>
                     <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
                     </RotateImageDiv>
                 </InnerAgreeDiv>
                 </AgreeDiv>
-                <DetailDiv isVisible={locRotated}>
+                <DetailDiv $isVisible={locRotated}>
                     <DetailFontsize>
                         {termsText}
                     </DetailFontsize>

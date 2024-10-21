@@ -203,7 +203,7 @@ const Header = () => {
     return (
         <>
             {location.pathname !== ('/existing-consultation' && '/consultation-record' && '/chat') && (
-                <HeaderContainer searchOpen={searchOpen}>
+                <HeaderContainer $searchOpen={searchOpen}>
                     {(location.pathname === '/my-diary-check' 
                         || location.pathname === '/my-diary-write' 
                         || location.pathname === '/emotion-graph'
@@ -221,14 +221,14 @@ const Header = () => {
                     ) : 
                     (
                         <>
-                            <Title searchOpen={searchOpen}>
+                            <Title $searchOpen={searchOpen}>
                                 <StyledLink to="/main">마음이음</StyledLink>
                             </Title>
                             <IconContainer>
-                                <SearchIconWrapper searchOpen={searchOpen}>
+                                <SearchIconWrapper $searchOpen={searchOpen}>
                                     <SearchIcon className="icon" onClick={toggleSearch} />
                                     {searchOpen && (
-                                        <SearchInputWrapper searchOpen={searchOpen}>
+                                        <SearchInputWrapper $searchOpen={searchOpen}>
                                             <SearchInput
                                                 type="text"
                                                 placeholder="검색어를 입력하세요"

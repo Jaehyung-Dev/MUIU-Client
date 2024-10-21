@@ -187,8 +187,9 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
                     icon: {
                         url: userMarkerIcon,
                         size: new naver.maps.Size(100, 100),
-                        anchor: new naver.maps.Point(11, 35)
+                        anchor: new naver.maps.Point(11, 35),
                     },
+                    zIndex: 15
                 });
             }
         }
@@ -403,13 +404,13 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
                         </ControlButton>
                         <ControlButton 
                             onClick={toggleShowHospital} 
-                            style={{ border: showHospitalOnly? '2px solid green' : '1px solid #666' }}
+                            style={{ border: showHospitalOnly? '2.5px solid green' : '1px solid #666' }}
                         >
                             <img src={hospitalMarkerIcon} alt="Hospital Marker" style={{ width: '20px', height: '20px' }} />
                         </ControlButton>
                         <ControlButton 
                             onClick={toggleShowShelter} 
-                            style={{ border: showShelterOnly? '2px solid red' : '1px solid #666' }}
+                            style={{ border: showShelterOnly? '2.5px solid red' : '1px solid #666' }}
                         >
                             <img src={shelterMarkerIcon} alt="Shelter Marker" style={{ width: '20px', height: '20px' }} />
                         </ControlButton>
