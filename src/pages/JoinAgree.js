@@ -67,10 +67,10 @@ const AgreeDiv = styled.div`
   align-items: center;
   margin: 1rem;
   width: 100%;
-  border-top: ${({ border }) => (border ? 'solid 1px black' : 'none')};
-  border-bottom: ${({ border }) => (border ? 'solid 1px rgb(201, 200, 200)' : 'none')};
-  padding-top: ${({ border }) => (border ? '2rem' : '0')};
-  padding-bottom: ${({ border }) => (border ? '2rem' : '0')};
+  border-top: ${({ $border }) => ($border ? 'solid 1px black' : 'none')};
+  border-bottom: ${({ $border }) => ($border ? 'solid 1px rgb(201, 200, 200)' : 'none')};
+  padding-top: ${({ $border }) => ($border ? '2rem' : '0')};
+  padding-bottom: ${({ $border }) => ($border ? '2rem' : '0')};
 `;
 
 const InnerAgreeDiv = styled.div`
@@ -243,38 +243,38 @@ const JoinAgree = () => {
             </StartDiv>
 
             <CoverAgreeDiv>
-                <AgreeDiv $border>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={allCheckClicked}>
-                        {allCheck ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                        <SpanLeftMargin>
-                        아래의 약관 및 동의사항에 모두 동의
-                        </SpanLeftMargin>
-                    </AgreeSpace>
-                </InnerAgreeDiv>
+                <AgreeDiv $border={true}>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={allCheckClicked}>
+                            {allCheck ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                            <SpanLeftMargin>
+                            아래의 약관 및 동의사항에 모두 동의
+                            </SpanLeftMargin>
+                        </AgreeSpace>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={termsOfUseCheckClicked}>
-                        {termsOfUseCheck ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        이용약관 동의(필수)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={termsRotated}
-                        onClick={termsDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={termsOfUseCheckClicked}>
+                            {termsOfUseCheck ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            이용약관 동의(필수)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={termsRotated}
+                            onClick={termsDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={termsRotated}>
                     <DetailFontsize>
@@ -283,22 +283,22 @@ const JoinAgree = () => {
                 </DetailDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={personalCheckClicked}>
-                        {personalCheck ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        개인정보 수집 및 이용동의(필수)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={personalRotated}
-                        onClick={personalDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={personalCheckClicked}>
+                            {personalCheck ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            개인정보 수집 및 이용동의(필수)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={personalRotated}
+                            onClick={personalDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={personalRotated}>
                     <DetailFontsize>
@@ -307,22 +307,22 @@ const JoinAgree = () => {
                 </DetailDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={gradingCheckClicked}>
-                        {gradingCheck ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        채점 프로그램 동의(필수)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={gradingRotated}
-                        onClick={gradingDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={gradingCheckClicked}>
+                            {gradingCheck ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            채점 프로그램 동의(필수)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={gradingRotated}
+                            onClick={gradingDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={gradingRotated}>
                     <DetailFontsize>
@@ -331,22 +331,22 @@ const JoinAgree = () => {
                 </DetailDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={examineeCheckClicked}>
-                        {examineeCheck ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        수검자의 개인정보 수집 및 처리에 관한 정책 동의(필수)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={examineeRotated}
-                        onClick={examineeDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={examineeCheckClicked}>
+                            {examineeCheck ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            수검자의 개인정보 수집 및 처리에 관한 정책 동의(필수)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={examineeRotated}
+                            onClick={examineeDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={examineeRotated}>
                     <DetailFontsize>
@@ -355,22 +355,22 @@ const JoinAgree = () => {
                 </DetailDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={recordCheckClicked}>
-                        {recordConsent ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        상담 기록 보관 동의(선택)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={recordRotated}
-                        onClick={recordDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={recordCheckClicked}>
+                            {recordConsent ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            상담 기록 보관 동의(선택)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={recordRotated}
+                            onClick={recordDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={recordRotated}>
                     <DetailFontsize>
@@ -379,22 +379,22 @@ const JoinAgree = () => {
                 </DetailDiv>
 
                 <AgreeDiv>
-                <InnerAgreeDiv>
-                    <AgreeSpace onClick={locationCheckClicked}>
-                        {locationAgree ? (
-                        <CheckCircleIcon style={{ color: '#FFCB2A' }} />
-                        ) : (
-                        <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
-                        )}
-                    <SpanLeftMargin>
-                        위치기반 서비스 동의(선택)
-                    </SpanLeftMargin>
-                    </AgreeSpace>
-                    <RotateImageDiv $rotated={locRotated}
-                        onClick={locationDetailClick}>
-                    <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
-                    </RotateImageDiv>
-                </InnerAgreeDiv>
+                    <InnerAgreeDiv>
+                        <AgreeSpace onClick={locationCheckClicked}>
+                            {locationAgree ? (
+                            <CheckCircleIcon style={{ color: '#FFCB2A' }} />
+                            ) : (
+                            <CheckCircleOutlineIcon style={{ color: '#A1A1A1'}} />
+                            )}
+                        <SpanLeftMargin>
+                            위치기반 서비스 동의(선택)
+                        </SpanLeftMargin>
+                        </AgreeSpace>
+                        <RotateImageDiv $rotated={locRotated}
+                            onClick={locationDetailClick}>
+                        <KeyboardArrowRightIcon style={{fontSize: '2rem', color: '#A1A1A1'}}/>
+                        </RotateImageDiv>
+                    </InnerAgreeDiv>
                 </AgreeDiv>
                 <DetailDiv $isVisible={locRotated}>
                     <DetailFontsize>
