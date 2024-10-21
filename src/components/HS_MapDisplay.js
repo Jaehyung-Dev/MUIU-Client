@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import userMarkerIcon from '../svg/userMarker.svg';
 import nearbyIcon from '../svg/nearby.svg';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -12,7 +11,7 @@ import hospitalData from '../JSON/hospitalData.json';
 import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
 import shelterData from '../JSON/shelterData.json';
 import shelterMarkerIcon from '../HS_images/shelterMarker.svg';
-import HS_InfoModal from './HS_InfoModal'; // 모달 컴포넌트 import
+import HS_InfoModal from './HS_InfoModal';
 
 const MapContainer = styled.div`
     width: 100%;
@@ -48,6 +47,11 @@ const ControlButton = styled.button`
     padding: 10px;
     width: 30px;
     height: 30px;
+
+    /* 동적 스타일 추가 */
+    ${({ active }) => active && `
+        border: 1px solid red; /* 병원 활성화 시 */
+    `}
 `;
 
 const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searchQuery, stations }) => {
@@ -64,7 +68,11 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
     const [nearestStation, setNearestStation] = useState(null); // 가까운 역 이름
     const [nearestDistance, setNearestDistance] = useState(null); // 가까운 역 거리
 
-    /* 사용자 위치를 실시간으로 받아오는 기능 */
+    // 병원 및 쉘터 표시 여부 상태 추가
+    const [showHospitalOnly, setShowHospitalOnly] = useState(false); // 초기 상태: false
+    const [showShelterOnly, setShowShelterOnly] = useState(false); // 초기 상태: false    
+
+    // 사용자 위치를 실시간으로 받아오는 기능
     const getUserLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -104,62 +112,66 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
             const addMarkersWithinBounds = () => {
                 const bounds = newMap.getBounds();
                 const newMarkers = [];
-
-                // 병원 마커 추가
-                hospitalData.DATA.forEach(hospital => {
-                    const hospitalPosition = new naver.maps.LatLng(
-                        Number(hospital.wgs84lat),
-                        Number(hospital.wgs84lon)
-                    );
-
-                    if (bounds.hasLatLng(hospitalPosition)) {
-                        const hospitalMarker = new naver.maps.Marker({
-                            position: hospitalPosition,
-                            map: newMap,
-                            icon: {
-                                url: hospitalMarkerIcon,
-                                size: new naver.maps.Size(100, 100),
-                                anchor: new naver.maps.Point(11, 35),
-                            },
-                        });
-
-                        newMarkers.push(hospitalMarker);
-
-                        // 마커 클릭 이벤트 리스너 추가
-                        naver.maps.Event.addListener(hospitalMarker, 'click', () => {
-                            setSelectedHospital(hospital); // 클릭한 병원 데이터 설정
-                            findNearestStation(hospital); // 가까운 역 찾기 호출
-                            setModalOpen(true); // 모달 열기
-                        });
-                    }
-                });
-
-                // 쉘터 마커 추가 생략...
-                shelterData.DATA.forEach(shelter => {
-                    const shelterPosition = new naver.maps.LatLng(
-                        Number(shelter.ycord),
-                        Number(shelter.xcord)
-                    );
-
-                    if (bounds.hasLatLng(shelterPosition)) {
-                        const shelterMarker = new naver.maps.Marker({
-                            position: shelterPosition,
-                            map: newMap,
-                            icon: {
-                                url: shelterMarkerIcon,
-                                size: new naver.maps.Size(100, 100),
-                                anchor: new naver.maps.Point(11, 35),
-                            },
-                        });
-
-                        newMarkers.push(shelterMarker);
-
-                        // 마커 클릭 이벤트 리스너 추가 
-                        naver.maps.Event.addListener(shelterMarker, 'click', () => {
-                            openInfoPopUp();
-                        });
-                    }
-                });
+            
+                // 병원 마커 추가 (showHospitalOnly가 true일 때만 추가)
+                if (showHospitalOnly) {
+                    hospitalData.DATA.forEach(hospital => {
+                        const hospitalPosition = new naver.maps.LatLng(
+                            Number(hospital.wgs84lat),
+                            Number(hospital.wgs84lon)
+                        );
+            
+                        if (bounds.hasLatLng(hospitalPosition)) {
+                            const hospitalMarker = new naver.maps.Marker({
+                                position: hospitalPosition,
+                                map: newMap,
+                                icon: {
+                                    url: hospitalMarkerIcon,
+                                    size: new naver.maps.Size(100, 100),
+                                    anchor: new naver.maps.Point(11, 35),
+                                },
+                            });
+            
+                            newMarkers.push(hospitalMarker);
+            
+                            // 마커 클릭 이벤트 리스너 추가
+                            naver.maps.Event.addListener(hospitalMarker, 'click', () => {
+                                setSelectedHospital(hospital);
+                                findNearestStation(hospital);
+                                setModalOpen(true);
+                            });
+                        }
+                    });
+                }
+            
+                // 대피소 마커 추가 (showShelterOnly가 true일 때만 추가)
+                if (showShelterOnly) {
+                    shelterData.DATA.forEach(shelter => {
+                        const shelterPosition = new naver.maps.LatLng(
+                            Number(shelter.ycord),
+                            Number(shelter.xcord)
+                        );
+            
+                        if (bounds.hasLatLng(shelterPosition)) {
+                            const shelterMarker = new naver.maps.Marker({
+                                position: shelterPosition,
+                                map: newMap,
+                                icon: {
+                                    url: shelterMarkerIcon,
+                                    size: new naver.maps.Size(100, 100),
+                                    anchor: new naver.maps.Point(11, 35),
+                                },
+                            });
+            
+                            newMarkers.push(shelterMarker);
+            
+                            // 마커 클릭 이벤트 리스너 추가 
+                            naver.maps.Event.addListener(shelterMarker, 'click', () => {
+                                openInfoPopUp();
+                            });
+                        }
+                    });
+                }
             };
 
             // 지도 초기화 후 마커 추가
@@ -180,18 +192,76 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
                 });
             }
         }
-    }, [userLocation]);
+    }, [userLocation, showHospitalOnly, showShelterOnly]);
 
-    useEffect(() => {
-        const { naver } = window;
+    // 병원 표시 토글
+    const toggleShowHospital = () => {
+        setShowHospitalOnly(!showHospitalOnly);
+    };
 
-        if (map && userLocation) {
-            const newLocation = new naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
+    // 쉘터 표시 토글
+    const toggleShowShelter = () => {
+        setShowShelterOnly(!showShelterOnly);
+    };
+
+    /* 사용자 위치를 중심으로 지도 중심 이동 기능 구현 */
+    const centerMapOnUserLocation = () => {
+        if (userLocation && map) {
+            const newLocation = new window.naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
             map.setCenter(newLocation);
         }
-    }, [userLocation, map]);
-    
-    // 역명으로 검색
+    };
+
+    /* 인근역 표시 기능 구현 */
+    const toggleNearbyStations = () => {
+        // 인근 역 표시하는 로직
+    };
+
+    /* 가까운 역 찾기 함수 */
+    const findNearestStation = (hospital) => {
+        if (stations) {
+            const hospitalLat = Number(hospital.wgs84lat);
+            const hospitalLon = Number(hospital.wgs84lon);
+
+            let closestStation = null;
+            let closestDistance = Infinity;
+
+            stations.forEach(station => {
+                const stationLat = parseFloat(station.lat);
+                const stationLon = parseFloat(station.lot);
+                const distance = calculateDistance(hospitalLat, hospitalLon, stationLat, stationLon);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestStation = station.bldn_nm; // 역 이름
+                }
+            });
+
+            // 가까운 역이 있는 경우
+            if (closestStation) {
+                setNearestStation(closestStation);
+                setNearestDistance(closestDistance);
+            } else {
+                setNearestStation(null);
+                setNearestDistance(null);
+            }
+        }
+    };
+
+    /* 거리 계산 함수 */
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // 지구 반지름 (킬로미터)
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c * 1000; // 미터 단위로 변환
+    };
+
+    /* 역명으로 검색 */ 
     useEffect(() => {
         setResults([]); 
     
@@ -200,7 +270,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
                 ? searchQuery.slice(0, -1)
                 : searchQuery;
     
-            
             const matchedStation = stations.find(station => station.bldn_nm.startsWith(sanitizedQuery));
     
             if (matchedStation) {
@@ -216,127 +285,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
             }
         }
     }, [searchQuery, map]);
-
-    /* 사용자 위치를 중심으로 지도 중심 이동 기능 구현 */
-    const centerMapOnUserLocation = () => {
-        if (userLocation && map) {
-            const newLocation = new window.naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
-            map.setCenter(newLocation);
-        }
-    };
-
-    /* 사용자 위치 기준 인근역 표시 기능 구현*/
-    const toggleNearbyStations = () => {
-        if (userLocation && stations) {
-            const userLat = userLocation.latitude;
-            const userLon = userLocation.longitude;
-
-            const stationsWithDistance = stations.map(station => {
-                const stationLat = parseFloat(station.lat);
-                const stationLon = parseFloat(station.lot);
-                const distance = calculateDistance(userLat, userLon, stationLat, stationLon);
-                return { ...station, distance };
-            });
-    
-            /* 1km 이내의 역만 필터링 */ 
-            const nearbyStations = stationsWithDistance.filter(station => station.distance <= 1);
-    
-            /* 거리순 정렬 */
-            const sortedStations = nearbyStations.sort((a, b) => a.distance - b.distance);
-    
-            /* 같은 역사명을 가진 지하철역 그룹화 */
-            const groupedStations = {};
-    
-            sortedStations.forEach(station => {
-                if (!groupedStations[station.bldn_nm]) {
-                    groupedStations[station.bldn_nm] = {
-                        routes: [],
-                        minDistance: station.distance
-                    };
-                }
-                groupedStations[station.bldn_nm].routes.push(station.route); // route 추가
-                groupedStations[station.bldn_nm].minDistance = Math.min(groupedStations[station.bldn_nm].minDistance, station.distance);
-            });
-    
-            /* 최종 리스트 생성 */
-            const stationList = Object.entries(groupedStations).map(([name, data]) => {
-                const routes = [...new Set(data.routes)];
-                return `${name} (${routes.join(', ')}) ${data.minDistance.toFixed(1)} km`;
-            }).join('\n');
-    
-            alert(`인근 역 목록(반경 1km 이내):\n${stationList}`);
-            
-            /* 인근역 Marker 생성 및 Marker 삭제(3초 후) */ 
-            const { naver } = window;
-            const markers = []; 
-
-            sortedStations.forEach(station => {
-                const position = new naver.maps.LatLng(station.lat, station.lot);
-                const marker = new naver.maps.Marker({
-                    position,
-                    map: map,
-                    title: station.bldn_nm,
-                    icon: {
-                        url: nearbyIcon,
-                        size: new naver.maps.Size(100, 100),
-                        anchor: new naver.maps.Point(0, 0)
-                    },
-                });
-                markers.push(marker);
-            });
-
-            setTimeout(() => {
-                markers.forEach(marker => {
-                    marker.setMap(null);
-                });
-            }, 3000);
-        }
-    };
-
-    /* 인근 지하철역과 사용자 위치 간 거리 계산 */
-    const calculateDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // 지구 반지름 (킬로미터)
-        const dLat = (lat2 - lat1) * (Math.PI / 180);
-        const dLon = (lon2 - lon1) * (Math.PI / 180);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c * 1000; // 미터 단위로 변환
-    };
-
-    const findNearestStation = (hospital) => {
-        if (stations) {
-            const hospitalLat = Number(hospital.wgs84lat);
-            const hospitalLon = Number(hospital.wgs84lon);
-    
-            let closestStation = null;
-            let closestDistance = Infinity;
-    
-            stations.forEach(station => {
-                const stationLat = parseFloat(station.lat);
-                const stationLon = parseFloat(station.lot);
-                const distance = calculateDistance(hospitalLat, hospitalLon, stationLat, stationLon);
-    
-                console.log(`병원: (${hospitalLat}, ${hospitalLon}), 역: (${stationLat}, ${stationLon}), 거리: ${distance}`);
-    
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestStation = station.bldn_nm; // 역 이름
-                }
-            });
-    
-            // 가까운 역이 있는 경우
-            if (closestStation) {
-                setNearestStation(closestStation);
-                setNearestDistance(closestDistance);
-            } else {
-                setNearestStation(null);
-                setNearestDistance(null);
-            }
-        }
-    };
 
     /* zoomIn 기능 구현 */
     const zoomIn = () => {
@@ -354,7 +302,7 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
     const zoomOut = () => {
         if (map) {
             const newZoomLevel = map.getZoom() - 1;
-            if (newZoomLevel < 10) {
+            if (newZoomLevel < 15) {
                 alert('최소 줌아웃입니다.');
             } else {
                 map.setZoom(newZoomLevel);
@@ -381,6 +329,18 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
                         </ControlButton>
                         <ControlButton onClick={zoomOut}>
                             <ZoomOutIcon />
+                        </ControlButton>
+                        <ControlButton 
+                            onClick={toggleShowHospital} 
+                            style={{ border: showHospitalOnly? '2px solid green' : '1px solid #666' }}
+                        >
+                            <img src={hospitalMarkerIcon} alt="Hospital Marker" style={{ width: '20px', height: '20px' }} />
+                        </ControlButton>
+                        <ControlButton 
+                            onClick={toggleShowShelter} 
+                            style={{ border: showShelterOnly? '2px solid red' : '1px solid #666' }}
+                        >
+                            <img src={shelterMarkerIcon} alt="Shelter Marker" style={{ width: '20px', height: '20px' }} />
                         </ControlButton>
                     </ControlPanel>
                 </div>
