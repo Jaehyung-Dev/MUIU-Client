@@ -16,7 +16,7 @@ const Card = styled.div`
     width: 100%;
     padding-top: 100%; /* 1:1 비율 유지 */
     position: relative;
-    border: 1px solid black;
+    // border: 1px solid black;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -133,9 +133,15 @@ const PageNumber = styled.div`
     position: absolute;
     bottom: 1rem;
     font-size: 1rem;
-    color: #555;
+    color: #bbb;
     width: 100%;
     text-align: center;
+    margin-bottom: 1rem;
+`;
+
+const Upload = styled.button`
+    margin: 0.5rem auto 0.5rem 0;
+    width: 5rem;
 `;
 
 export const MindColumn = () => {
@@ -169,6 +175,7 @@ export const MindColumn = () => {
 
     return (
         <>
+            {/* <Upload>업로드</Upload> */}
             <Cards>
                 {Object.keys(imageLists).map((key, index) => (
                     <Card key={index} onClick={() => openModal(imageLists[key])}>
