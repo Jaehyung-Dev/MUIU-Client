@@ -16,7 +16,7 @@ const Container = styled.div`
     padding-bottom: 100px;
     box-sizing: border-box;
     box-sizing: content-box;
-    background-color: ${(props) => props.bgColor};
+    background-color: ${(props) => props.$bgColor};
 
     // @media (max-width: 600px) {
     //     padding: 0 15px 100px;
@@ -44,7 +44,7 @@ function Layout() {
   const bgColor = getBackgroundColor();
 
   return (
-    <Container bgColor={bgColor}>
+    <Container $bgColor={bgColor}>
       <Header />
       <Outlet />
       <BottomNav />

@@ -59,6 +59,7 @@ import Support from './pages/Support';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import { persistStore } from 'redux-persist';
 import { store } from './store/store';
+import MindColumnPost from './pages/MindColumnPost';
 
 function App() {
   const persiststore = persistStore(store);
@@ -114,6 +115,7 @@ function App() {
               <Route path="human-counseling" element={<HumanCounseling />} />
               <Route path="my-diary" element={<MyDiary />} />
               <Route path="mind-column" element={<MindColumn />} />
+              <Route path="mind-column/post" element={<MindColumnPost />} />
               <Route path="disaster-mental-health-manual" element={<DisasterMentalHealthManual />} />
               <Route path="DMHMDefinition" element={<DMHMDefinition/>} />
               <Route path="DMHMDefinition2" element={<DMHMDefinition2/>} />

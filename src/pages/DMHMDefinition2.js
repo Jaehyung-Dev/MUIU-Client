@@ -72,7 +72,7 @@ const SubButton = styled.button`
   background: none;
   border: none;
   font-size: 1rem;
-  color: ${(props) => (props.isActive ? '#0066cc' : '#656565')};
+  color: ${(props) => (props.$isActive ? '#0066cc' : '#656565')};
   cursor: pointer;
   font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
   margin-right: 20px;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -173,9 +173,11 @@ export const MindColumn = () => {
     const showNextImage = () => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % selectedImages.length);
     const showPrevImage = () => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + selectedImages.length) % selectedImages.length);
 
+    const navi = useNavigate();
+
     return (
         <>
-            {/* <Upload>업로드</Upload> */}
+            <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
             <Cards>
                 {Object.keys(imageLists).map((key, index) => (
                     <Card key={index} onClick={() => openModal(imageLists[key])}>

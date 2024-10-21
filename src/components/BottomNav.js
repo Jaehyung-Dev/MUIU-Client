@@ -154,7 +154,7 @@ const BottomNav = () => {
                     <span>비대면 상담</span>
                 </NavItem>
                 {/* 중앙 원형 버튼 */}
-                <CenterNavItem className="nav-center" isActive={isActive} onClick={handleCircleClick}>
+                <CenterNavItem className="nav-center" $isActive={isActive} onClick={handleCircleClick}>
                     <img src={redCall} alt="중앙 아이콘" />
                 </CenterNavItem>
                 <NavItem to="/my-diary" active={location.pathname === '/my-diary'}>
