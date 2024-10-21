@@ -1,8 +1,9 @@
-import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import Header from '../components/Header';
+
 import BottomNav from '../components/BottomNav';
+import Header from '../components/Header';
+import React from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
     min-height: 100vh;
@@ -16,7 +17,7 @@ const Container = styled.div`
     padding-bottom: 100px;
     box-sizing: border-box;
     box-sizing: content-box;
-    background-color: ${(props) => props.bgColor};
+    background-color: ${(props) => props.$bgColor};
 
     // @media (max-width: 600px) {
     //     padding: 0 15px 100px;
