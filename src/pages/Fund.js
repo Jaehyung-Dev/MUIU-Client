@@ -163,6 +163,7 @@ const Fund = () => {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
           },
+          withCredentials: true // 쿠키 또는 세션 ID를 함께 보내기 위해 필요
         });
         
         // 이미지 URL 생성 및 설정
@@ -171,11 +172,14 @@ const Fund = () => {
           return { ...post, imageUrl };
         }));
         
+        console.log(`response.data:`, response.data); // 데이터를 콘솔에 출력하여 구조 확인
         setPosts(postsWithImages);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
     };
+
+    console.log(posts); // 서버로부터 받아온 모든 posts 데이터를 확인
 
     fetchPosts();
   }, [location.state]); // location.state가 변경될 때마다 실행
@@ -208,11 +212,11 @@ const Fund = () => {
       {posts.map((post, index) => (
         <FundCard
           key={index}
-          imageSrc={post.imageUrl} // 불러온 이미지 URL을 사용
+          imageSrc={post.imageUrl} 
           altText={post.title}
           title={post.title}
           date={`${post.fundStartDate} ~ ${post.fundEndDate}`}
-          link="/fund-detail"
+          link={`/fund-detail/${post.postId}`} // 게시글 postId를 링크에 포함시킴
         />
       ))}
 
