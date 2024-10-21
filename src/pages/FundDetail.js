@@ -123,7 +123,7 @@ const FundDetail = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
   const [percentage, setPercentage] = useState(0);
   const [targetAmount] = useState(1000000);
-  const [currentAmount] = useState(0);
+  const [currentAmount, setCurrentAmount] = useState(0); 
   const [post, setPost] = useState(null); // 서버에서 받아온 데이터를 저장
   const [copyMessage, setCopyMessage] = useState('');
   const navigate = useNavigate();
