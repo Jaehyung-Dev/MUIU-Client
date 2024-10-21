@@ -58,7 +58,7 @@ const SuggestionItem = styled.li`
     }
 `;
 
-const HS_SearchBar = ({ stations, onSearch }) => {
+const HS_SearchBar = ({ stations, onSearch, setSearchQuery  }) => {
     const [searchValue, setSearchValue] = useState('');
     const [filteredStations, setFilteredStations] = useState([]);
 
@@ -97,9 +97,10 @@ const HS_SearchBar = ({ stations, onSearch }) => {
     
 
     const handleStationClick = (station) => {
-        onSearch(station.BLDN_NM);
-        setSearchValue('');
+        setSearchValue(station.bldn_nm); 
         setFilteredStations([]);
+        setSearchQuery(station.bldn_nm);
+        setSearchValue('');
     };
 
     return (

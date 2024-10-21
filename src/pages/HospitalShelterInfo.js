@@ -114,7 +114,6 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"4505","route":"에버라인선","lot":"127.152716","bldn_nm":"동백","lat":"37.269043"},
             {"bldn_id":"4504","route":"에버라인선","lot":"127.143714","bldn_nm":"어정","lat":"37.274917"},
             {"bldn_id":"4503","route":"에버라인선","lot":"127.136515","bldn_nm":"지석","lat":"37.269606"},
-            {"bldn_id":"4502","route":"에버라인선","lot":"127.126033","bldn_nm":"강남대","lat":"37.270161"},
             {"bldn_id":"4501","route":"에버라인선","lot":"127.116665","bldn_nm":"기흥","lat":"37.275449"},
             {"bldn_id":"4411","route":"신림선","lot":"126.9450639","bldn_nm":"관악산(서울대)","lat":"37.4691018"},
             {"bldn_id":"4410","route":"신림선","lot":"126.9339351","bldn_nm":"서울대벤처타운","lat":"37.4720019"},
@@ -796,6 +795,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"0224","route":"2호선","lot":"127.007917","bldn_nm":"서초","lat":"37.491897"},
             {"bldn_id":"0223","route":"2호선","lot":"127.014667","bldn_nm":"교대(법원.검찰청)","lat":"37.493961"},
             {"bldn_id":"0222","route":"2호선","lot":"127.027912","bldn_nm":"강남","lat":"37.49799"},
+            {"bldn_id":"4502","route":"에버라인선","lot":"127.126033","bldn_nm":"강남대","lat":"37.270161"},
             {"bldn_id":"0221","route":"2호선","lot":"127.036456","bldn_nm":"역삼","lat":"37.500622"},
             {"bldn_id":"0220","route":"2호선","lot":"127.048203","bldn_nm":"선릉","lat":"37.504286"},
             {"bldn_id":"0219","route":"2호선","lot":"127.06316","bldn_nm":"삼성(무역센터)","lat":"37.508844"},
@@ -835,6 +835,7 @@ export const HospitalShelterInfo = () => {
             <HS_SearchBar
                 onSearch={handleSearch}
                 stations={stations.DATA}
+                setSearchQuery={setSearchQuery}
             />
             <HS_MapDisplay
                 openInfoPopUp={openInfoPopUp}
