@@ -871,6 +871,7 @@ export const HospitalShelterInfo = () => {
                 onClose={closeFindRoadPopUp}
                 hospitalName={selectedHospital} // 병원 이름 전달
                 mode={mode}
+                stations={stations.DATA}
             />
         </Main>
     );

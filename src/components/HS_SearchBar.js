@@ -42,7 +42,7 @@ const SuggestionsList = styled.ul`
     margin-top: 210px;
     background-color: white;
     position: absolute;
-    z-index: 1000;
+    z-index: 10;
     width: 100%;
     height: 140px;
     overflow-y: auto;
