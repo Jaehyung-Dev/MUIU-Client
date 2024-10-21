@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -12,6 +12,7 @@ const SearchBarContainer = styled.div`
     align-items: center;
     margin: 10px auto 0;
     border-bottom: 1px solid #666;
+    position: relative;
 `;
 
 const SearchInput = styled.input`
@@ -31,11 +32,35 @@ const SearchInput = styled.input`
 
     &:focus {
         outline: none;
+        background: none;
     }
 `;
 
-const HS_SearchBar = ({ onSearch }) => {
+const SuggestionsList = styled.ul`
+    list-style-type: none;
+    padding: 0;
+    margin-top: 210px;
+    background-color: white;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 140px;
+    overflow-y: auto;
+    border-radius: 5px;
+`;
+
+const SuggestionItem = styled.li`
+    cursor: pointer;
+    padding: 8px;
+
+    &:hover {
+        background-color: #e0e0e0;
+    }
+`;
+
+const HS_SearchBar = ({ stations, onSearch, setSearchQuery  }) => {
     const [searchValue, setSearchValue] = useState('');
+    const [filteredStations, setFilteredStations] = useState([]);
 
     const handleInputChange = (event) => {
         setSearchValue(event.target.value);
@@ -54,6 +79,30 @@ const HS_SearchBar = ({ onSearch }) => {
         }
     };
 
+    useEffect(() => {
+        if (searchValue) {
+            const filtered = stations.filter(station =>
+                station && station.bldn_nm && station.bldn_nm.toLowerCase().startsWith(searchValue.toLowerCase())
+            );
+    
+            const uniqueFiltered = Array.from(new Set(filtered.map(station => station.bldn_nm)))
+                .map(bldn_nm => {
+                    return filtered.find(station => station.bldn_nm === bldn_nm);
+                });
+            setFilteredStations(uniqueFiltered);
+        } else {
+            setFilteredStations([]);
+        }
+    }, [searchValue, stations]);
+    
+
+    const handleStationClick = (station) => {
+        setSearchValue(station.bldn_nm); 
+        setFilteredStations([]);
+        setSearchQuery(station.bldn_nm);
+        setSearchValue('');
+    };
+
     return (
         <SearchBarContainer>
             <SearchIcon 
@@ -63,12 +112,24 @@ const HS_SearchBar = ({ onSearch }) => {
             <SearchInput
                 name="search-location"
                 id="search-location"
-                placeholder="Search"
+                placeholder="인근 역을 검색하세요."
                 spellCheck="false"
                 value={searchValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
             />
+            {filteredStations.length > 0 && (
+                <SuggestionsList>
+                    {filteredStations.map((station, index) => (
+                        <SuggestionItem 
+                            key={index} 
+                            onClick={() => handleStationClick(station)}
+                        >
+                            {station.bldn_nm}역
+                        </SuggestionItem>
+                    ))}
+                </SuggestionsList>
+            )}  
         </SearchBarContainer>
     );
 };

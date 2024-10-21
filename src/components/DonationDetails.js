@@ -55,13 +55,13 @@ const TargetText = styled.p`
 `;
 
 // DonationDetails component
-const DonationDetails = ({ percentage, targetAmount }) => {
+const DonationDetails = ({ imageSrc, title, recipient, percentage, targetAmount }) => {
   return (
     <>
-      <PostImg src={fundPostImg} alt="호우피해 이미지" />
+      <PostImg src={imageSrc} alt="기부 메인 이미지" />
       <PostBox>
-        <PostTitle>폭우가 덮친 밤, 호우피해 주민들의 악몽을 깨워주세요</PostTitle>
-        <FundRecipient>사랑의열매 사회복지공동모금회</FundRecipient>
+        <PostTitle>{title}</PostTitle>
+        <FundRecipient>{recipient}</FundRecipient>
 
         <ProgressContainer>
           <ProgressBar style={{ width: `${percentage}%` }} />
