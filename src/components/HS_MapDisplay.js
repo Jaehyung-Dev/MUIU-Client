@@ -191,42 +191,29 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
         }
     }, [userLocation, map]);
     
+    // 역명으로 검색
     useEffect(() => {
         setResults([]); 
-
+    
         if (searchQuery) {
-            const fetchLocalData = async () => {
-                const client_id = process.env.REACT_APP_CLIENT_ID;
-                const client_secret = process.env.REACT_APP_CLIENT_SECRET;
-                const api_url = `/map-geocode/v2/geocode?query=${encodeURI(searchQuery)}`;
-        
-                try {
-                    const response = await axios.get(api_url, {
-                        headers: {
-                            'X-NCP-APIGW-API-KEY-ID': client_id,
-                            'X-NCP-APIGW-API-KEY': client_secret
-                        }
-                    });
-        
-                    if (response.data && response.data.addresses) {
-                        setResults(response.data.addresses);
-                        const { x, y } = response.data.addresses[0]; 
-                        const newLocation = new window.naver.maps.LatLng(y, x);
-        
-                        if (map) {
-                            map.setCenter(newLocation);
-                        }
-                    } else {
-                        setResults([]);
-                        setError('검색 결과가 없습니다.');
-                    }
-                } catch (err) {
-                    setError(err.response ? err.response.status : 'Error occurred');
-                    setResults([]);
+            const sanitizedQuery = searchQuery.endsWith('역')
+                ? searchQuery.slice(0, -1)
+                : searchQuery;
+    
+            
+            const matchedStation = stations.find(station => station.bldn_nm.startsWith(sanitizedQuery));
+    
+            if (matchedStation) {
+                setResults([matchedStation]);
+    
+                const newLocation = new window.naver.maps.LatLng(matchedStation.lat, matchedStation.lot);
+                if (map) {
+                    map.setCenter(newLocation);
                 }
-            };
-        
-            fetchLocalData();
+            } else {
+                alert('해당 역이 존재하지 않습니다.');
+                setResults([]);
+            }
         }
     }, [searchQuery, map]);
 

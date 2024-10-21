@@ -20,7 +20,7 @@ export const HospitalShelterInfo = () => {
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const [isFindRoadOpen, setIsFindRoadOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태 추가
+    const [searchQuery, setSearchQuery] = useState('');
 
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
@@ -156,7 +156,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"4204","route":"공항철도1호선","lot":"126.898609","bldn_nm":"디지털미디어시티","lat":"37.576958"},
             {"bldn_id":"4203","route":"공항철도1호선","lot":"126.926715","bldn_nm":"홍대입구","lat":"37.557438"},
             {"bldn_id":"4202","route":"공항철도1호선","lot":"126.952024","bldn_nm":"공덕","lat":"37.54253"},
-            {"bldn_id":"4201","route":"공항철도1호선","lot":"126.969769","bldn_nm":"서울역","lat":"37.553247"},
+            {"bldn_id":"4201","route":"공항철도1호선","lot":"126.969769","bldn_nm":"서울","lat":"37.553247"},
             {"bldn_id":"4138","route":"9호선(연장)","lot":"127.148739","bldn_nm":"중앙보훈병원","lat":"37.529191"},
             {"bldn_id":"4137","route":"9호선(연장)","lot":"127.137989","bldn_nm":"둔촌오륜","lat":"37.519683"},
             {"bldn_id":"4136","route":"9호선(연장)","lot":"127.130288","bldn_nm":"올림픽공원(한국체대)","lat":"37.516269"},
@@ -625,7 +625,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"1294","route":"경의중앙선","lot":"126.900453","bldn_nm":"디지털미디어시티","lat":"37.577475"},
             {"bldn_id":"1293","route":"경의중앙선","lot":"126.926683","bldn_nm":"홍대입구","lat":"37.557641"},
             {"bldn_id":"1292","route":"경의중앙선","lot":"126.952099","bldn_nm":"공덕","lat":"37.542596"},
-            {"bldn_id":"1291","route":"경의중앙선","lot":"126.97103","bldn_nm":"서울역","lat":"37.557231"},
+            {"bldn_id":"1291","route":"경의중앙선","lot":"126.97103","bldn_nm":"서울","lat":"37.557231"},
             {"bldn_id":"1286","route":"경의중앙선","lot":"126.769999","bldn_nm":"운천","lat":"37.879942"},
             {"bldn_id":"1285","route":"경의중앙선","lot":"126.746765","bldn_nm":"임진강","lat":"37.888421"},
             {"bldn_id":"1284","route":"경의중앙선","lot":"126.788047","bldn_nm":"문산","lat":"37.854619"},
@@ -652,7 +652,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"1262","route":"경의중앙선","lot":"126.952099","bldn_nm":"공덕","lat":"37.542596"},
             {"bldn_id":"1261","route":"경의중앙선","lot":"126.96221","bldn_nm":"효창공원앞","lat":"37.538579"},
             {"bldn_id":"1252","route":"경의중앙선","lot":"126.942597","bldn_nm":"신촌","lat":"37.559733"},
-            {"bldn_id":"1251","route":"경의중앙선","lot":"126.97103","bldn_nm":"서울역","lat":"37.557231"},
+            {"bldn_id":"1251","route":"경의중앙선","lot":"126.97103","bldn_nm":"서울","lat":"37.557231"},
             {"bldn_id":"1220","route":"중앙선","lot":"127.629874","bldn_nm":"지평","lat":"37.476393"},
             {"bldn_id":"1219","route":"중앙선","lot":"127.594647","bldn_nm":"용문","lat":"37.48223"},
             {"bldn_id":"1218","route":"중앙선","lot":"127.547076","bldn_nm":"원덕","lat":"37.468672"},
@@ -703,7 +703,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"1004","route":"경부선","lot":"126.94271","bldn_nm":"노량진","lat":"37.514149"},
             {"bldn_id":"1003","route":"경부선","lot":"126.964561","bldn_nm":"용산","lat":"37.529849"},
             {"bldn_id":"1002","route":"경부선","lot":"126.9713","bldn_nm":"남영","lat":"37.541021"},
-            {"bldn_id":"1001","route":"경부선","lot":"126.971134","bldn_nm":"서울역","lat":"37.554337"},
+            {"bldn_id":"1001","route":"경부선","lot":"126.971134","bldn_nm":"서울","lat":"37.554337"},
             {"bldn_id":"0434","route":"4호선","lot":"126.989134","bldn_nm":"남태령","lat":"37.463873"},
             {"bldn_id":"0433","route":"4호선","lot":"126.981651","bldn_nm":"사당","lat":"37.476955"},
             {"bldn_id":"0432","route":"4호선","lot":"126.981989","bldn_nm":"총신대입구(이수)","lat":"37.486263"},
@@ -712,7 +712,7 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"0429","route":"4호선","lot":"126.967894","bldn_nm":"신용산","lat":"37.52917"},
             {"bldn_id":"0428","route":"4호선","lot":"126.9726","bldn_nm":"삼각지","lat":"37.534075"},
             {"bldn_id":"0427","route":"4호선","lot":"126.972106","bldn_nm":"숙대입구(갈월)","lat":"37.54456"},
-            {"bldn_id":"0426","route":"4호선","lot":"126.972556","bldn_nm":"서울역","lat":"37.55281"},
+            {"bldn_id":"0426","route":"4호선","lot":"126.972556","bldn_nm":"서울","lat":"37.55281"},
             {"bldn_id":"0425","route":"4호선","lot":"126.978246","bldn_nm":"회현(남대문시장)","lat":"37.558514"},
             {"bldn_id":"0424","route":"4호선","lot":"126.986325","bldn_nm":"명동","lat":"37.560989"},
             {"bldn_id":"0423","route":"4호선","lot":"126.99408","bldn_nm":"충무로","lat":"37.561207"},
@@ -826,13 +826,16 @@ export const HospitalShelterInfo = () => {
             {"bldn_id":"0153","route":"1호선","lot":"126.991847","bldn_nm":"종로3가","lat":"37.570406"},
             {"bldn_id":"0152","route":"1호선","lot":"126.982923","bldn_nm":"종각","lat":"37.570161"},
             {"bldn_id":"0151","route":"1호선","lot":"126.977088","bldn_nm":"시청","lat":"37.565715"},
-            {"bldn_id":"0150","route":"1호선","lot":"126.972135","bldn_nm":"서울역","lat":"37.556228"}
+            {"bldn_id":"0150","route":"1호선","lot":"126.972135","bldn_nm":"서울","lat":"37.556228"}
         ]
     }
 
     return (
         <Main>
-            <HS_SearchBar onSearch={handleSearch} />
+            <HS_SearchBar
+                onSearch={handleSearch}
+                stations={stations.DATA}
+            />
             <HS_MapDisplay
                 openInfoPopUp={openInfoPopUp}
                 openPhotoPopUp={openPhotoPopUp}
