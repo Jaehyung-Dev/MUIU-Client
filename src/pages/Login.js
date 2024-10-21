@@ -220,21 +220,14 @@ export const Login = () => {
     // dispatch의 비동기 처리가 제대로 완료됐을 때, then 메소드에서 결과 처리
     dispatch(login(loginForm)).then((action) => {
       if (action.type === 'members/login/fulfilled') {
-        const { userId, token } = action.payload; // 로그인 성공 시 payload에서 토큰과 userId 가져오기
-        localStorage.setItem('userId', userId); // userId 저장
-        localStorage.setItem('token', token);   // token 저장
         navi("/"); // 로그인 성공 후 페이지 이동
-      } else {
-          // 로그인 실패 시 사용자에게 알림
-          alert('로그인에 실패했습니다. 아이디 또는 비밀번호를 확인하세요.');
-        }
+      } 
     }).catch((error) => {
         // API 요청 실패 시 에러 처리
         console.error('Login error:', error);
         alert('로그인 중 문제가 발생했습니다. 다시 시도해 주세요.');
     });
-
-}, [loginForm, dispatch, navi]);
+  }, [loginForm, dispatch, navi]);
 
   return (
     <Main>

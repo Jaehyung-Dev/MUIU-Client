@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { join, login, logout, verifySms, verifyCounselNum } from '../apis/memberApis';
+import { join, login, logout, verifySms, verifyCounselNum, fetchUser } from '../apis/memberApis';
 
 const memberSlice = createSlice({
     name: 'members',
@@ -7,9 +7,14 @@ const memberSlice = createSlice({
         isLogin: false,
         id: 0,
         username: '',
+        role: '',
+        naverLogin: false,
     },
     reducers: {
-
+        // 네이버 로그인 상태를 변경하는 reducer 추가
+        setNaverLogin: (state, action) => {
+            state.naverLogin = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(join.fulfilled, (state, action) => {
@@ -29,6 +34,7 @@ const memberSlice = createSlice({
                 isLogin: true,
                 id: action.payload.id,
                 username: action.payload.username,
+                role: action.payload.role,
             };
         });
         builder.addCase(login.rejected, (state, action) => {
@@ -53,6 +59,7 @@ const memberSlice = createSlice({
                 isLogin: false,
                 id: 0,
                 username: '',
+                role: '',
             }
         });
         builder.addCase(logout.rejected, (state, action) => {
@@ -87,7 +94,23 @@ const memberSlice = createSlice({
                 counselVerify: false,
             };
         });
+        builder.addCase(fetchUser.fulfilled, (state, action) => {
+            return {
+                ...state,
+                isLogin: true,
+                id: action.payload.id,
+                username: action.payload.username,
+                role: action.payload.role,
+            };
+        });
+        builder.addCase(fetchUser.rejected, (state, action) => {
+            alert("사용자 정보를 가져오는 데 실패했습니다.");
+            return state;
+        });
     }
 });
+
+// `setNaverLogin` 액션을 export
+export const { setNaverLogin } = memberSlice.actions;
 
 export default memberSlice.reducer;
