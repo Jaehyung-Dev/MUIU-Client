@@ -89,7 +89,7 @@ const Main = styled.main`
     text-decoration: none;
     z-index: 10;
   }
- 
+
 
   @media (max-width: 600px) {
   // 카드 이미지 안넘치게 조정
