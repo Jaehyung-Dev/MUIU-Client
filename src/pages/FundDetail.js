@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import DonationDetails from '../components/DonationDetails';
 import ShareIcon from '@mui/icons-material/Share';
+import Loading from '../pages/Loading'; 
+import axios from 'axios';
+
 
 // Styled components
 const Main = styled.main`
@@ -117,17 +120,43 @@ const Main = styled.main`
 `;
 
 const FundDetail = () => {
+  const { postId } = useParams(); // URL에서 postId를 가져옴
   const [percentage, setPercentage] = useState(0);
   const [targetAmount] = useState(1000000);
-  const [currentAmount] = useState(400000);
+  const [currentAmount] = useState(0);
+  const [post, setPost] = useState(null); // 서버에서 받아온 데이터를 저장
   const [copyMessage, setCopyMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 페이지 로드 시 스크롤을 맨 위로 이동
     window.scrollTo(0, 0);
-    const calculatedPercentage = (currentAmount / targetAmount) * 100;
-    setPercentage(calculatedPercentage);
-  }, [currentAmount, targetAmount]);
+
+    // 게시글 데이터를 서버에서 가져오는 함수
+    const fetchPostDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` // 토큰을 헤더에 포함
+          }
+        });
+        const post = response.data;
+        
+        // 서버에서 받은 데이터를 상태로 저장
+        setPost(post);
+
+        setCurrentAmount(post.currentAmount || 0);  // currentAmount가 null인 경우 0으로 설정
+
+        // 목표 금액과 현재 금액을 기반으로 퍼센트 계산
+        const calculatedPercentage = (currentAmount / post.targetAmount) * 100;
+        setPercentage(calculatedPercentage);
+      } catch (error) {
+        console.error('Error fetching post details:', error);
+      }
+    };
+
+    fetchPostDetail();
+  }, [postId]); // postId가 변경될 때마다 실행되도록 postId를 배열에 추가
 
   const handleShareClick = () => {
     const link = window.location.href;
@@ -142,9 +171,13 @@ const FundDetail = () => {
       });
   };
 
+  if (!post) {
+    return <Loading />; // 로딩 중일 때 로딩 페이지 표시
+  }  
+
   return (
     <Main>
-      <ShareIcon className="share-icon" onClick={handleShareClick} />
+      {/* <ShareIcon className="share-icon" onClick={handleShareClick} />
       
       {copyMessage && <div className="copy-message">{copyMessage}</div>}
       
@@ -191,6 +224,54 @@ const FundDetail = () => {
         <div className="detail-content">
           <span>사업기간</span>
           <span>2024.11.07 - 2024.11.28</span>
+        </div>
+        <div className="detail-content">
+          <span>영수증 발급기간</span>
+          <span>한국사회복지관협회</span>
+        </div>
+        <div className="separator-thin"></div>
+        <div className="detail-info-description">
+          본 모금은 한국사회복지관협회에서 가업 검토 및 기부금 집행, 사후관리를 담당하고 있습니다.
+        </div>
+      </div> */}
+
+      <ShareIcon className="share-icon" onClick={handleShareClick} />
+      
+      {copyMessage && <div className="copy-message">{copyMessage}</div>}
+      
+      {/* DonationDetails 컴포넌트에 post 데이터에서 필요한 값들을 전달 */}
+      <DonationDetails
+        imageSrc={`http://localhost:9090/api/fund/image?image=${post.mainImage}`}
+        title={post.title}
+        recipient={post.teamName}
+        percentage={percentage}
+        targetAmount={targetAmount}
+      />
+      
+      <button className="fund-btn" onClick={() => navigate('/fund-payment')}>
+        기부하기
+      </button>
+  
+      <div className="separator"></div>
+  
+      <div className="post-detail">
+        {/* <p className="post-detail-title"></p> */}
+        {/* description을 HTML로 렌더링 */}
+        <div className="post-detail-content" dangerouslySetInnerHTML={{ __html: post.description }} />
+      </div>
+  
+      <div className="separator"></div>
+  
+      <div className='detail-info-box'>
+        <div className="detail-info">모금함 상세정보</div>
+        <div className="separator-thin"></div>
+        <div className="detail-content">
+          <span>프로젝트팀</span>
+          <span>{post.teamName}</span>
+        </div>
+        <div className="detail-content">
+          <span>모금기간</span>
+          <span>{post.fundStartDate} - {post.fundEndDate}</span>
         </div>
         <div className="detail-content">
           <span>영수증 발급기간</span>
