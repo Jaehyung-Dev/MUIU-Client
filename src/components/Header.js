@@ -79,7 +79,7 @@ const IconContainer = styled.div`
 
 const SearchIconWrapper = styled.div`
     transition: transform 0.5s ease;
-    transform: ${({ searchOpen }) => (searchOpen ? 'translateX(-210px)' : 'translateX(0)')};
+    transform: ${({ $searchOpen }) => ($searchOpen ? 'translateX(-210px)' : 'translateX(0)')};
     position: relative;
 `;
 
@@ -88,7 +88,7 @@ const SearchInputWrapper = styled.div`
     top: 45%;
     transform: translateY(-50%);
     left: calc(100% + 10px);
-    width: ${({ searchOpen }) => (searchOpen ? '200px' : '0')};
+    width: ${({ $searchOpen }) => ($searchOpen ? '200px' : '0')};
     overflow: hidden;
     transition: width 0.5s ease;
     display: flex;

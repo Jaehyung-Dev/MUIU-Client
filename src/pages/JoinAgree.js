@@ -121,7 +121,7 @@ const RotateImageDiv = styled.div`
   display: flex;
   align-items: center;
   transition: transform 0.2s ease;
-  transform: ${({ rotated }) => (rotated ? 'rotate(90deg)' : 'none')};
+  transform: ${({ $rotated }) => ($rotated ? 'rotate(90deg)' : 'none')};
 `;
 
 const SpanLeftMargin = styled.span`
