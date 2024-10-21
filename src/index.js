@@ -1,13 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
-import GlobalStyle from './GlobalStyle';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
-ReactDOM.render(
+// 여기서 'react-dom'이 아니라 'react-dom/client'를 가져와야 해
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
     <React.StrictMode>
-        <GlobalStyle />
         <App />
-    </React.StrictMode>,
-    document.getElementById('root')
-    
+    </React.StrictMode>   
 );
