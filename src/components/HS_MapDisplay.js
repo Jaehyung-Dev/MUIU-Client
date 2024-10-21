@@ -212,10 +212,81 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
         }
     };
 
-    /* 인근역 표시 기능 구현 */
+    /* 사용자 위치 기준 인근역 표시 기능 구현*/
     const toggleNearbyStations = () => {
-        // 인근 역 표시하는 로직
+        if (userLocation && stations) {
+            const userLat = userLocation.latitude;
+            const userLon = userLocation.longitude;
+    
+            const stationsWithDistance = stations.map(station => {
+                const stationLat = parseFloat(station.lat);
+                const stationLon = parseFloat(station.lot);
+                const distance = calculateDistance(userLat, userLon, stationLat, stationLon);
+                return { ...station, distance };
+            });
+    
+            // 1km 이내의 역만 필터링 
+            const nearbyStations = stationsWithDistance.filter(station => station.distance <= 1000); // 1km = 1000m
+    
+            if (nearbyStations.length === 0) {
+                alert('1km 이내에 인근역이 없습니다.');
+                return; // 인근역이 없을 경우 함수 종료
+            }
+    
+            // 거리순 정렬
+            const sortedStations = nearbyStations.sort((a, b) => a.distance - b.distance);
+    
+            // 같은 역사명을 가진 지하철역 그룹화
+            const groupedStations = {};
+    
+            sortedStations.forEach(station => {
+                if (!groupedStations[station.bldn_nm]) {
+                    groupedStations[station.bldn_nm] = {
+                        routes: [],
+                        minDistance: station.distance
+                    };
+                }
+                groupedStations[station.bldn_nm].routes.push(station.route); // route 추가
+                groupedStations[station.bldn_nm].minDistance = Math.min(groupedStations[station.bldn_nm].minDistance, station.distance);
+            });
+    
+            // 최종 리스트 생성
+            const stationList = Object.entries(groupedStations).map(([name, data]) => {
+                const routes = [...new Set(data.routes)];
+                return `${name} (${routes.join(', ')}) ${data.minDistance.toFixed(1)} km`;
+            }).join('\n');
+    
+            alert(`인근 역 목록(반경 1km 이내):\n${stationList}`);
+    
+            // 인근역 Marker 생성 및 Marker 삭제(3초 후) 
+            const { naver } = window;
+            const markers = []; 
+    
+            sortedStations.forEach(station => {
+                const position = new naver.maps.LatLng(station.lat, station.lot);
+                const marker = new naver.maps.Marker({
+                    position,
+                    map: map,
+                    title: station.bldn_nm,
+                    icon: {
+                        url: nearbyIcon,
+                        size: new naver.maps.Size(100, 100),
+                        anchor: new naver.maps.Point(0, 0)
+                    },
+                });
+                markers.push(marker);
+            });
+    
+            setTimeout(() => {
+                markers.forEach(marker => {
+                    marker.setMap(null);
+                });
+            }, 3000);
+        } else {
+            alert('사용자 위치를 확인할 수 없습니다.');
+        }
     };
+    
 
     /* 가까운 역 찾기 함수 */
     const findNearestStation = (hospital) => {
