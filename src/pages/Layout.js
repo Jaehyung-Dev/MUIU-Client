@@ -44,7 +44,7 @@ function Layout() {
   const bgColor = getBackgroundColor();
 
   return (
-    <Container bgColor={bgColor}>
+    <Container $bgColor={bgColor}>
       <Header />
       <Outlet />
       <BottomNav />
