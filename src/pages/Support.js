@@ -6,6 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import axios from 'axios'; // axios 추가
+import { sendSupportMessage } from '../apis/supportApi'; // API 함수 임포트
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -121,14 +122,11 @@ const Support = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formData = { name, email, message };
 
         try {
-            const response = await axios.post('http://localhost:9090/api/support/contact', {
-                name,
-                email,
-                message,
-            });
-            alert(response.data); 
+            const response = await sendSupportMessage(formData); // API 함수 호출
+            alert(response); 
         } catch (error) {
             console.error('이메일 전송 오류:', error.response ? error.response.data : error.message);
             alert('이메일 전송에 실패했습니다.');
