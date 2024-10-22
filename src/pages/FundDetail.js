@@ -241,11 +241,11 @@ const FundDetail = () => {
       
       {/* DonationDetails 컴포넌트에 post 데이터에서 필요한 값들을 전달 */}
       <DonationDetails
-        imageSrc={`http://localhost:9090/api/fund/image?image=${post.mainImage}`}
+        imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
         title={post.title}
         recipient={post.teamName}
         percentage={percentage}
-        targetAmount={targetAmount}
+        targetAmount={post.targetAmount}
       />
       
       <button className="fund-btn" onClick={() => navigate('/fund-payment')}>

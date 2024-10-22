@@ -9,47 +9,47 @@ import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
 import { WriteDiaryAPI } from '../apis/diaryWriteApis'; 
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // 잘못된 import 해결
 
 const Container = styled.div`
-    margin-top: -10px;
-    height: 100vh;
-    width: 100vw;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin-top: -10px;
+  height: 100vh;
+  width: 100vw;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    @media (min-width: 393px) {
-        height: 92vh;
-    }
+  @media (min-width: 393px) {
+    height: 92vh;
+  }
 `;
 
 const DatePicker = styled.div`
-    margin-top: 20px;
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  margin-top: 20px;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
 `;
 
 const DiaryEntry = styled.div`
-    width: 80%;
-    min-height: 230px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-    position: relative;
+  width: 80%;
+  min-height: 230px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  position: relative;
 `;
 
-const DiartTitle = styled.div`
+const DiaryTitle = styled.div`
   width: 100%;
   height: 15%;
   padding-bottom: 5px;
@@ -60,8 +60,8 @@ const DiartTitle = styled.div`
     border: 0;
     font-size: 1.3rem;
     padding: 0 8px;
-    font-family: inherit; 
-    box-sizing: border-box; 
+    font-family: inherit;
+    box-sizing: border-box;
   }
 
   input:focus {
@@ -91,131 +91,139 @@ const DiaryContent = styled.div`
 `;
 
 const EmotionSection = styled.div`
-    width: 80%; 
-    padding: 20px;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-    display: flex;
-    justify-content: space-between;
+  width: 80%;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
 `;
 
 const EmotionDiv = styled.div`
-    margin: 0.2rem;
-    width: 25%;
-    height: 15vh;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0.2rem;
+  width: 25%;
+  height: 15vh;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ mood, selectedMood }) => (mood === selectedMood ? 
+    (mood === 'dissatisfied' ? '#e32d26' :
+    mood === 'bad' ? '#e68400' :
+    mood === 'soso' ? '#e6b800' :
+    mood === 'good' ? '#2ea448' :
+    mood === 'happy' ? '#00a39e' : 'gray')
+    :
+    (mood === 'dissatisfied' ? '#FF3B30' :
+    mood === 'bad' ? '#FF9500' :
+    mood === 'soso' ? '#FFCC00' :
+    mood === 'good' ? '#34C759' :
+    mood === 'happy' ? '#00C7BE' : 'gray'))};
+  transition: background-color 0.3s ease;
+
+  &:hover {
     background-color: ${({ mood }) => {
-    switch(mood) {
+    switch (mood) {
       case 'dissatisfied':
-        return '#FF3B30';
+        return '#e32d26';
       case 'bad':
-        return '#FF9500';
+        return '#e68400';
       case 'soso':
-        return '#FFCC00';
+        return '#e6b800';
       case 'good':
-        return '#34C759';
+        return '#2ea448';
       case 'happy':
-        return '#00C7BE';
+        return '#00a39e';
       default:
         return 'gray';
-        }
+    }
     }};
-    transition: background-color 0.3s ease; 
+  }
 
-    &:hover {
-        background-color: ${({ mood }) => {
-        switch(mood) {
-          case 'dissatisfied':
-            return '#e32d26';  
-          case 'bad':
-            return '#e68400';  
-          case 'soso':
-            return '#e6b800';  
-          case 'good':
-            return '#2ea448';  
-          case 'happy':
-            return '#00a39e';  
-          default:
-            return 'gray';
-          }
-        }};
-    }
-    @media screen and (max-width: 600px) {
-        width: 40%;
-        height: 10vh;
-    }
+  @media screen and (max-width: 600px) {
+    width: 40%;
+    height: 10vh;
+  }
 
-    img {
-        width: 100%;
-        height: 8vh;
-        margin-top: 0.5rem;
-    }
+  img {
+    width: 100%;
+    height: 8vh;
+    margin-top: 0.5rem;
+  }
 `;
 
 const SaveBtn = styled.button`
-    margin-top: 20px;
-    width: 85%; 
-    height: 5rem;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: black;
-    color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-    border: 0;
-    font-weight: bold;
-    font-size: large;
+  margin-top: 20px;
+  width: 85%;
+  height: 5rem;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: black;
+  color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  border: 0;
+  font-weight: bold;
+  font-size: large;
 `;
 
 const MyDiaryWrite = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mood, setMood] = useState('');
-  const [userId, setUserId] = useState(null); // 로그인한 유저의 id 값을 저장할 state
+  const [selectedMood, setSelectedMood] = useState('');
+  const [userId, setUserId] = useState(null);
 
-  // 페이지가 로드될 때 JWT 토큰을 디코딩해서 유저 id를 가져옴
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
+    const token = sessionStorage.getItem('ACCESS_TOKEN'); // 세션 스토리지에서 JWT 토큰 가져오기
     if (token) {
-      const decodedToken = jwtDecode(token); // 토큰 디코딩
-      setUserId(decodedToken.id); // 디코딩된 토큰에서 유저 id 설정
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
     }
-  }, []); // 빈 배열이므로 컴포넌트가 처음 렌더링될 때만 실행
-
-  // // 유저 id를 가져오는 함수
-  // const getUserId = () => {
-  //   return sessionStorage.getItem('userId'); // 예시로 sessionStorage에서 가져옴
-  // };
+  }, []);
 
   const handleMoodClick = (selectedMood) => {
     setMood(selectedMood);
+    setSelectedMood(selectedMood);
   };
 
   const handleSaveDiary = async () => {
+    // 유효성 검사
+    if (!title) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    if (!content) {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
+    if (!mood) {
+      alert('기분을 선택해주세요.');
+      return;
+    }
+
     const diaryData = {
-      id: userId,  // 로그인한 유저의 id 값 사용
+      id: userId,
       title,
       content,
       mood,
     };
-  
+
     try {
-      const response = await WriteDiaryAPI(diaryData); // 백엔드로 데이터 전송
-      console.log('Diary saved successfully:', response); // 성공 시 결과 출력
+      const response = await WriteDiaryAPI(diaryData);
+      console.log('Diary saved successfully:', response);
     } catch (error) {
-      console.error('Error saving diary:', error); // 오류 시 출력
+      console.error('Error saving diary:', error);
     }
   };
-  
 
   return (
     <Container>
       <DatePicker>
         <KeyboardArrowLeftIcon style={{ cursor: 'pointer' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer'}}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
           <CalendarTodayIcon style={{ width: '18px' }} />
           <span>Today</span>
         </div>
@@ -223,7 +231,7 @@ const MyDiaryWrite = () => {
       </DatePicker>
       <DiaryEntry>
         <div>
-          <DiartTitle>
+          <DiaryTitle>
             <input
               type='text'
               name='title'
@@ -231,8 +239,8 @@ const MyDiaryWrite = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-          </DiartTitle>
-          <hr></hr>
+          </DiaryTitle>
+          <hr />
           <DiaryContent>
             <textarea
               name='content'
@@ -244,19 +252,44 @@ const MyDiaryWrite = () => {
         </div>
       </DiaryEntry>
       <EmotionSection>
-        <EmotionDiv style={{ cursor: 'pointer' }} mood='dissatisfied' onClick={() => handleMoodClick('dissatisfied')}>
+        <EmotionDiv
+          style={{ cursor: 'pointer' }}
+          mood='dissatisfied'
+          selectedMood={selectedMood}
+          onClick={() => handleMoodClick('dissatisfied')}
+        >
           <img src={angry} alt='angry' />
         </EmotionDiv>
-        <EmotionDiv style={{ cursor: 'pointer' }} mood='bad' onClick={() => handleMoodClick('bad')}>
+        <EmotionDiv
+          style={{ cursor: 'pointer' }}
+          mood='bad'
+          selectedMood={selectedMood}
+          onClick={() => handleMoodClick('bad')}
+        >
           <img src={depress} alt='depress' />
         </EmotionDiv>
-        <EmotionDiv style={{ cursor: 'pointer' }} mood='soso' onClick={() => handleMoodClick('soso')}>
+        <EmotionDiv
+          style={{ cursor: 'pointer' }}
+          mood='soso'
+          selectedMood={selectedMood}
+          onClick={() => handleMoodClick('soso')}
+        >
           <img src={normal} alt='normal' />
         </EmotionDiv>
-        <EmotionDiv style={{ cursor: 'pointer' }} mood='good' onClick={() => handleMoodClick('good')}>
+        <EmotionDiv
+          style={{ cursor: 'pointer' }}
+          mood='good'
+          selectedMood={selectedMood}
+          onClick={() => handleMoodClick('good')}
+        >
           <img src={good} alt='good' />
         </EmotionDiv>
-        <EmotionDiv style={{ cursor: 'pointer' }} mood='happy' onClick={() => handleMoodClick('happy')}>
+        <EmotionDiv
+          style={{ cursor: 'pointer' }}
+          mood='happy'
+          selectedMood={selectedMood}
+          onClick={() => handleMoodClick('happy')}
+        >
           <img src={happy} alt='happy' />
         </EmotionDiv>
       </EmotionSection>
