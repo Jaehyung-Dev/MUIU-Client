@@ -39,7 +39,7 @@ const DropdownMenu = styled.div`
 
             a {
                 text-decoration: none;
-                color: ${({ isActive }) => (isActive ? '#fbbf24' : '#333')};
+                color: ${({ $isActive }) => ($isActive ? '#fbbf24' : '#333')};
                 transition: color 0.3s ease;
                 display: flex;
                 align-items: center;
@@ -50,10 +50,24 @@ const DropdownMenu = styled.div`
 
                 svg {
                     margin-right: 10px;
-                    color: ${({ isActive }) => (isActive ? '#fbbf24' : '#666')};
+                    color: ${({ $isActive }) => ($isActive ? '#fbbf24' : '#666')};
                 }
             }
         }
+    }
+`;
+
+const StyledLink = styled(Link)`
+    color: ${({ $isActive }) => ($isActive ? '#fbbf24' : '#333')};
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: #fbbf24;
+    }
+
+    svg {
+        margin-right: 10px;
+        color: ${({ $isActive }) => ($isActive ? '#fbbf24' : '#666')};
     }
 `;
 
@@ -63,18 +77,116 @@ const MenuDropdown = ({ activeMenuItem, handleMenuClick }) => {
     return (
         <DropdownMenu>
             <ul>
-                <li><Link to="/main" isActive={activeMenuItem === 'main'} onClick={() => handleMenuClick('main')}><HomeOutlinedIcon />홈</Link></li>
-                {!isLoginChk && (<li><Link to="/login" isActive={activeMenuItem === 'login'} onClick={() => handleMenuClick('login')}><LoginOutlinedIcon />로그인</Link></li>)}
-                <li><Link to="/join-agree" isActive={activeMenuItem === 'join'} onClick={() => handleMenuClick('join')}><PersonAddOutlinedIcon />회원가입</Link></li>
-                <li><Link to="/mypage" isActive={activeMenuItem === 'mypage'} onClick={() => handleMenuClick('mypage')}><AccountCircleOutlinedIcon />내 정보</Link></li>
-                <li><Link to="/mind-check" isActive={activeMenuItem === 'mind-check'} onClick={() => handleMenuClick('mind-check')}><CheckCircleOutlinedIcon />내 마음 알아보기</Link></li>
-                <li><Link to="/human-counseling" isActive={activeMenuItem === 'human-counseling'} onClick={() => handleMenuClick('human-counseling')}><PeopleOutlinedIcon />상담하기</Link></li>
-                <li><Link to="/my-diary" isActive={activeMenuItem === 'my-diary'} onClick={() => handleMenuClick('my-diary')}><BookOutlinedIcon />나의 일기장</Link></li>
-                <li><Link to="/mind-column" isActive={activeMenuItem === 'mind-column'} onClick={() => handleMenuClick('mind-column')}><ArticleOutlinedIcon />마음칼럼</Link></li>
-                <li><Link to="/disaster-mental-health-manual" isActive={activeMenuItem === 'disaster-mental-health-manual'} onClick={() => handleMenuClick('disaster-mental-health-manual')}><ManualOutlinedIcon />재난 정신건강 매뉴얼</Link></li>
-                <li><Link to="/disaster-guide" isActive={activeMenuItem === 'disaster-guide'} onClick={() => handleMenuClick('disaster-guide')}><ArticleOutlinedIcon />재난 안내</Link></li>
-                <li><Link to="/fund" isActive={activeMenuItem === 'fund'} onClick={() => handleMenuClick('fund')}><StoreOutlinedIcon />마음 나누기</Link></li>
-                <li><Link to="/hospital-shelter-info" isActive={activeMenuItem === 'hospital-shelter-info'} onClick={() => handleMenuClick('hospital-shelter-info')}><LocalHospitalOutlinedIcon />병의원·대피소 정보</Link></li>
+                <li>
+                    <StyledLink 
+                        to="/main" 
+                        $isActive={activeMenuItem === 'main'} 
+                        onClick={() => handleMenuClick('main')}
+                    >
+                        <HomeOutlinedIcon />홈
+                    </StyledLink>
+                </li>
+                {!isLoginChk && (
+                    <li>
+                        <StyledLink 
+                            to="/login" 
+                            $isActive={activeMenuItem === 'login'} 
+                            onClick={() => handleMenuClick('login')}
+                        >
+                            <LoginOutlinedIcon />로그인
+                        </StyledLink>
+                    </li>
+                )}
+                <li>
+                    <StyledLink 
+                        to="/join-agree" 
+                        $isActive={activeMenuItem === 'join'} 
+                        onClick={() => handleMenuClick('join')}
+                    >
+                        <PersonAddOutlinedIcon />회원가입
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/mypage" 
+                        $isActive={activeMenuItem === 'mypage'} 
+                        onClick={() => handleMenuClick('mypage')}
+                    >
+                        <AccountCircleOutlinedIcon />내 정보
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/mind-check" 
+                        $isActive={activeMenuItem === 'mind-check'} 
+                        onClick={() => handleMenuClick('mind-check')}
+                    >
+                        <CheckCircleOutlinedIcon />내 마음 알아보기
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/human-counseling" 
+                        $isActive={activeMenuItem === 'human-counseling'} 
+                        onClick={() => handleMenuClick('human-counseling')}
+                    >
+                        <PeopleOutlinedIcon />상담하기
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/my-diary" 
+                        $isActive={activeMenuItem === 'my-diary'} 
+                        onClick={() => handleMenuClick('my-diary')}
+                    >
+                        <BookOutlinedIcon />나의 일기장
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/mind-column" 
+                        $isActive={activeMenuItem === 'mind-column'} 
+                        onClick={() => handleMenuClick('mind-column')}
+                    >
+                        <ArticleOutlinedIcon />마음칼럼
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/disaster-mental-health-manual" 
+                        $isActive={activeMenuItem === 'disaster-mental-health-manual'} 
+                        onClick={() => handleMenuClick('disaster-mental-health-manual')}
+                    >
+                        <ManualOutlinedIcon />재난 정신건강 매뉴얼
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/disaster-guide" 
+                        $isActive={activeMenuItem === 'disaster-guide'} 
+                        onClick={() => handleMenuClick('disaster-guide')}
+                    >
+                        <ArticleOutlinedIcon />재난 안내
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/fund" 
+                        $isActive={activeMenuItem === 'fund'} 
+                        onClick={() => handleMenuClick('fund')}
+                    >
+                        <StoreOutlinedIcon />마음 나누기
+                    </StyledLink>
+                </li>
+                <li>
+                    <StyledLink 
+                        to="/hospital-shelter-info" 
+                        $isActive={activeMenuItem === 'hospital-shelter-info'} 
+                        onClick={() => handleMenuClick('hospital-shelter-info')}
+                    >
+                        <LocalHospitalOutlinedIcon />병의원·대피소 정보
+                    </StyledLink>
+                </li>
             </ul>
         </DropdownMenu>
     );
