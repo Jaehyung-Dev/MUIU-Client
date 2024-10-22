@@ -405,14 +405,14 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                             placeholder="도착지"
                             spellCheck="false"
                             value={arriveValue || ""}
-                            onChange={handleArriveInputChange} // 도착지 입력 핸들러 호출
-                            onKeyDown={handleArriveInputKeyDown} // Enter 키 핸들러 추가
+                            onChange={handleArriveInputChange}
+                            onKeyDown={handleArriveInputKeyDown}
                         />
                         {filteredArriveStations.length > 0 && (
                             <SuggestionsList>
                                 {filteredArriveStations.map((station, index) => (
                                     <SuggestionItem key={index} onClick={() => handleStationSelect(station, 'arrive')}>
-                                        {station.bldn_nm}역 {/* 역 이름 표시 */}
+                                        {station.bldn_nm}역
                                     </SuggestionItem>
                                 ))}
                             </SuggestionsList>
