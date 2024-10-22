@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
+import axios from 'axios';
 
 // Styled components
 const Main = styled.main`
@@ -88,7 +89,7 @@ const Main = styled.main`
     text-decoration: none;
     z-index: 10;
   }
- 
+
 
   @media (max-width: 600px) {
   // 카드 이미지 안넘치게 조정
@@ -111,8 +112,6 @@ const Main = styled.main`
     }
   }
 `;
-
-
 
 
 const FundCard = ({ imageSrc, altText, title, date, link }) => {
@@ -151,9 +150,38 @@ const Fund = () => {
   const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     if (location.state && location.state.postData) {
       setPosts((prevPosts) => [...prevPosts, location.state.postData]); // postData가 있을 때만 추가
     }
+
+    // 서버에서 post 데이터를 가져오는 API 호출
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get('http://localhost:9090/api/fund/posts', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+          },
+          withCredentials: true // 쿠키 또는 세션 ID를 함께 보내기 위해 필요
+        });
+        
+        // 이미지 URL 생성 및 설정
+        const postsWithImages = await Promise.all(response.data.map(async (post) => {
+          const imageUrl = `http://localhost:9090/api/fund/image?image=${post.mainImage}`;
+          return { ...post, imageUrl };
+        }));
+        
+        console.log(`response.data:`, response.data); // 데이터를 콘솔에 출력하여 구조 확인
+        setPosts(postsWithImages);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    console.log(posts); // 서버로부터 받아온 모든 posts 데이터를 확인
+
+    fetchPosts();
   }, [location.state]); // location.state가 변경될 때마다 실행
 
   return (
@@ -180,15 +208,18 @@ const Fund = () => {
         link="/fund-detail"
       />
 
-      {/* 새로 작성된 글들을 표시하는 카드들 */}
+      {/* 서버에서 불러온 글들을 표시하는 카드들 */}
       {posts.map((post, index) => (
-        <div className="card" key={index}>
-          <div className="card-body">
-            <p className="card-text">{post.title}</p>
-            <p className="card-date">{post.fundPeriod}</p>
-          </div>
-        </div>
+        <FundCard
+          key={index}
+          imageSrc={post.imageUrl} 
+          altText={post.title}
+          title={post.title}
+          date={`${post.fundStartDate} ~ ${post.fundEndDate}`}
+          link={`/fund-detail/${post.postId}`} // 게시글 postId를 링크에 포함시킴
+        />
       ))}
+
 
       <div className="write-button-container">
         <Link to="/fund-post" className="write-button">글 작성하기</Link>

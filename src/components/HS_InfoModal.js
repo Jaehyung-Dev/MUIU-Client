@@ -5,9 +5,11 @@ import hospitalData from '../JSON/hospitalData.json';
 import departIcon from '../svg/출발.svg';
 import arriveIcon from '../svg/도착.svg';
 import shareIcon from '../svg/공유.svg';
+import bookmarkIcon from '../svg/저장.svg';
 import departHoverIcon from '../svg/출발-hover.svg';
 import arriveHoverIcon from '../svg/도착-hover.svg';
 import shareHoverIcon from '../svg/공유-hover.svg';
+import bookmarkHoverIcon from '../svg/저장-hover.svg';
 import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
 import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
 import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
@@ -35,7 +37,7 @@ const ModalContent = styled.div`
     width: 90%;
     max-width: 600px;
     height: 85%;
-    overflow: hidden;
+    overflow-y: auto;
 `;
 
 const HospitalName = styled.div`
@@ -111,6 +113,7 @@ const SmallImagesEle = styled.div`
 `;
 
 const Tabs = styled.div`
+    margin-top: 10px;
     display: flex;
 `;
 
@@ -131,7 +134,13 @@ const Tab = styled.div`
 `;
 
 const TabImage = styled.img`
-    transition: opacity 0.3s;
+    width: 45px;
+    height: 45px;
+    transition: transform 0.3s;
+    
+    ${Tab}:hover & {
+        transform: scale(1.15);
+    }
 `;
 
 const TabsInfoPicture = styled.div`
@@ -139,6 +148,7 @@ const TabsInfoPicture = styled.div`
 
     .tab {
         border-bottom: 2px solid #A1A1A1;
+        transition: border-bottom 0.2s; /* 부드러운 전환 효과 추가 */
     }
 
     .active {
@@ -148,10 +158,11 @@ const TabsInfoPicture = styled.div`
 
     .tab:hover {
         color: #FFD700;
+        border-bottom: 5px solid #FFD700;
     }
 `;
 
-const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) => {
+const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hospitalData, nearestStation, nearestDistance }) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -159,13 +170,31 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
         depart: departIcon,
         arrive: arriveIcon,
         share: shareIcon,
+        bookmark: bookmarkIcon,
     };
 
     const hoverImages = {
         depart: departHoverIcon,
         arrive: arriveHoverIcon,
         share: shareHoverIcon,
+        bookmark: bookmarkHoverIcon,
     };
+
+    /* 네이버지도 검색창에 해당 링크 보내주기 */
+    const copyToClipboard = () => {
+        const textToCopy = `https://map.naver.com/p/search/${hospitalData.dutyname}`;
+        
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                console.log("클립보드 복사 성공:");
+                alert("해당 병원 주소를 클립보드에 복사했습니다.");
+            })
+            .catch((err) => {
+                console.error("클립보드 복사 실패:", err);
+                alert("해당 병원 주소를 클립보드에 복사하지 못했습니다.");
+            });
+    };
+
 
     if (!isOpen) return null;
 
@@ -191,7 +220,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         id="depart-icon" 
                         onMouseEnter={() => setHoveredTab('depart')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'depart'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'depart' ? departHoverIcon : departIcon} 
@@ -202,7 +231,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                         id="arrive-icon" 
                         onMouseEnter={() => setHoveredTab('arrive')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(); }}
+                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'arrive'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'arrive' ? arriveHoverIcon : arriveIcon} 
@@ -216,14 +245,28 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                     >
                         <TabImage 
                             src={hoveredTab === 'share' ? shareHoverIcon : shareIcon} 
-                            alt="공유" 
+                            alt="공유"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard();
+                            }}
+                        />
+                    </Tab>
+                    <Tab 
+                        id="bookmark-icon" 
+                        onMouseEnter={() => setHoveredTab('bookmark')} 
+                        onMouseLeave={() => setHoveredTab(null)}
+                    >
+                        <TabImage 
+                            src={hoveredTab === 'bookmark' ? bookmarkHoverIcon : bookmarkIcon} 
+                            alt="북마크" 
                         />
                     </Tab>
                 </Tabs>
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab style={{ borderBottom: '2px solid #A1A1A1' }} onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
+                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>
@@ -237,7 +280,11 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp }) =>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={distanceIcon} alt="Distance icon" />
-                        <span>광교중앙역 5번 출구에서 311m</span>
+                        <span>
+                            {nearestStation 
+                                ? `${nearestStation}역 약 ${nearestDistance.toFixed(1)}m` 
+                                : '가까운 역이 없습니다.'}
+                        </span>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={phoneIcon} alt="Phone icon" />

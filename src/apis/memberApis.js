@@ -13,6 +13,18 @@ export const verifySms = createAsyncThunk(
     }
 )
 
+export const verifyCounselNum = createAsyncThunk(
+    'member/counselNum',
+    async (verifyNumber, thunkApi) => {
+        try{
+            const response = await axios.post(`http://localhost:9090/members/counselNum/${verifyNumber}`);
+            return response.data;
+        } catch (e) {
+            return thunkApi.rejectWithValue(e);
+        }
+    }
+)
+
 export const join = createAsyncThunk(
     'members/join',
     async (member, thunkApi) => {
@@ -56,6 +68,23 @@ export const logout = createAsyncThunk(
             return response.data.item;
         } catch(e) {
             return thunkApi.rejectWithValue(e);
+        }
+    }
+);
+
+export const fetchUser = createAsyncThunk(
+    'members/fetchUser', 
+    async (token, thunkAPI) => {
+        try {
+            const response = await axios.get('http://localhost:9090/members/naveruser', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            return response.data; 
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.response.data);
         }
     }
 );

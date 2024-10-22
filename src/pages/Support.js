@@ -1,49 +1,28 @@
 import React, { useState } from 'react';
 
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
+import axios from 'axios'; // axios 추가
+import { sendSupportMessage } from '../apis/supportApi'; // API 함수 임포트
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // 전체 페이지 레이아웃 및 스타일
-    const Container = styled.div`
+const Container = styled.div`
     width: 100%;
     min-height: 100vh;
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 60px;
-    padding-bottom: 60px;
-    overflow-y: auto;
-    `;
+    padding-top: 2rem;
+`;
 
-    // 상단바 스타일
-    const TopNav = styled.div`
-    width: 100%;
-    max-width: 600px;
-    height: 60px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    `;
-
-    const TopNavTitle = styled.h2`
-    font-size: 1.5rem;
-    margin: 0;
-    color: #333;
-    `;
-
-    // 입력 폼 섹션 스타일
-    const FormSection = styled.div`
+// 입력 폼 섹션 스타일
+const FormSection = styled.div`
     width: 90%;
     max-width: 600px;
     background-color: white;
@@ -53,33 +32,33 @@ import { useNavigate } from 'react-router-dom';
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    `;
+`;
 
-    const FormTitle = styled.h2`
+const FormTitle = styled.h2`
     font-size: 1.2rem;
     color: #333;
     text-align: center;
     margin-bottom: 1rem;
-    `;
+`;
 
-    const Input = styled.input`
+const Input = styled.input`
     padding: 0.8rem;
     margin: 0.5rem 0;
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 100%;
-    `;
+`;
 
-    const Textarea = styled.textarea`
+const Textarea = styled.textarea`
     padding: 0.8rem;
     margin: 0.5rem 0;
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 100%;
     height: 100px;
-    `;
+`;
 
-    const SubmitButton = styled.button`
+const SubmitButton = styled.button`
     background-color: #fbb03b;
     color: white;
     padding: 0.8rem;
@@ -91,10 +70,10 @@ import { useNavigate } from 'react-router-dom';
     &:hover {
         background-color: #e69b27;
     }
-    `;
+`;
 
-    // 하단 네비게이션 바 스타일
-    const BottomNav = styled.div`
+// 하단 네비게이션 바 스타일
+const BottomNav = styled.div`
     width: 100%;
     max-width: 600px;
     height: 60px;
@@ -105,85 +84,111 @@ import { useNavigate } from 'react-router-dom';
     justify-content: space-around;
     align-items: center;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    `;
+`;
 
-    const NavItem = styled.div`
+const NavItem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 0.8rem;
-    color: ${(props) => (props.active ? '#fbb03b' : '#999')};
-    `;
+    color: ${(props) => (props.$active ? '#fbb03b' : '#999')};
+`;
 
-    const Support = () => {
-    // 입력 필드 상태 관리
+const TopNav = styled.div`
+    width: 100%;
+    max-width: 600px;
+    height: 60px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+`;
+
+const TopNavTitle = styled.h2`
+    font-size: 1.5rem;
+    margin: 0;
+    color: #333;
+`;
+
+const Support = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ name, email, message });
-        alert('지원서가 제출되었습니다.');
+        const formData = { name, email, message };
+
+        try {
+            const response = await sendSupportMessage(formData); // API 함수 호출
+            alert(response); 
+        } catch (error) {
+            console.error('이메일 전송 오류:', error.response ? error.response.data : error.message);
+            alert('이메일 전송에 실패했습니다.');
+        }
     };
 
     return (
         <Container>
-        {/* 상단 네비게이션 */}
-        <TopNav>
-            <TopNavTitle>문의하기</TopNavTitle>
-        </TopNav>
+            {/* 상단 네비게이션 */}
+            <TopNav>
+                <TopNavTitle>문의하기</TopNavTitle>
+            </TopNav>
 
-        {/* 지원 폼 섹션 */}
-        <FormSection>
-            <FormTitle>문의사항을 작성해주세요</FormTitle>
-            <form onSubmit={handleSubmit}>
-            <Input
-                type="text"
-                placeholder="이름"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-                type="email"
-                placeholder="이메일"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <Textarea
-                placeholder="문의사항"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <SubmitButton type="submit">문의하기</SubmitButton>
-            </form>
-        </FormSection>
+            {/* 지원 폼 섹션 */}
+            <FormSection>
+                <FormTitle>문의사항을 작성해주세요</FormTitle>
+                <form onSubmit={handleSubmit}>
+                    <Input
+                        type="text"
+                        placeholder="이름"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <Input
+                        type="email"
+                        placeholder="이메일"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Textarea
+                        placeholder="문의사항"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <SubmitButton type="submit">문의하기</SubmitButton>
+                </form>
+            </FormSection>
 
-        {/* 하단 네비게이션 */}
-        <BottomNav>
-            <NavItem>
-            <HomeIcon style={{ fontSize: '1.5rem' }} onClick={() => navigate('/')} />
-            홈
-            </NavItem>
-            <NavItem>
-            <VideoCallIcon style={{ fontSize: '1.5rem' }} />
-            비대면 상담
-            </NavItem>
-            <NavItem active>
-            <AddCircleIcon style={{ fontSize: '2rem', color: '#fbb03b' }} />
-            </NavItem>
-            <NavItem>
-            <BookIcon style={{ fontSize: '1.5rem' }} />
-            일기
-            </NavItem>
-            <NavItem>
-            <LocationOnIcon style={{ fontSize: '1.5rem' }} />
-            내 정보
-            </NavItem>
-        </BottomNav>
+            {/* 하단 네비게이션 */}
+            <BottomNav>
+                <NavItem>
+                    <HomeIcon style={{ fontSize: '1.5rem' }} onClick={() => navigate('/')} />
+                    홈
+                </NavItem>
+                <NavItem>
+                    <VideoCallIcon style={{ fontSize: '1.5rem' }} />
+                    비대면 상담
+                </NavItem>
+                <NavItem active>
+                    {/* <AddCircleIcon style={{ fontSize: '2rem', color: '#fbb03b' }} /> */}
+                </NavItem>
+                <NavItem>
+                    <BookIcon style={{ fontSize: '1.5rem' }} />
+                    일기
+                </NavItem>
+                <NavItem>
+                    <LocationOnIcon style={{ fontSize: '1.5rem' }} />
+                    내 정보
+                </NavItem>
+            </BottomNav>
         </Container>
     );
-    };
+};
 
-    export default Support;
+export default Support;

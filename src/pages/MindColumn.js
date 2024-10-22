@@ -16,7 +16,7 @@ const Card = styled.div`
     width: 100%;
     padding-top: 100%; /* 1:1 비율 유지 */
     position: relative;
-    border: 1px solid black;
+    // border: 1px solid black;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@ const Card = styled.div`
 `;
 
 const ModalOverlay = styled.div`
-    display: ${(props) => (props.visible ? 'flex' : 'none')};
+    display: ${(props) => (props.$visible ? 'flex' : 'none')};
     position: fixed;
     top: 0;
     left: 0;
@@ -99,7 +99,7 @@ const NavButton = styled.button`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 
-    ${(props) => (props.right ? 'right: 1rem;' : 'left: 1rem;')}
+    ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
 
     // &:hover {
     //     transform: scale(1.1);
@@ -133,9 +133,15 @@ const PageNumber = styled.div`
     position: absolute;
     bottom: 1rem;
     font-size: 1rem;
-    color: #555;
+    color: #bbb;
     width: 100%;
     text-align: center;
+    margin-bottom: 1rem;
+`;
+
+const Upload = styled.button`
+    margin: 0.5rem auto 0.5rem 0;
+    width: 5rem;
 `;
 
 export const MindColumn = () => {
@@ -169,6 +175,7 @@ export const MindColumn = () => {
 
     return (
         <>
+            {/* <Upload>업로드</Upload> */}
             <Cards>
                 {Object.keys(imageLists).map((key, index) => (
                     <Card key={index} onClick={() => openModal(imageLists[key])}>
@@ -177,12 +184,12 @@ export const MindColumn = () => {
                 ))}
             </Cards>
 
-            <ModalOverlay visible={isModalOpen}>
+            <ModalOverlay $visible={isModalOpen}>
                 <ModalContent>
                     <CloseButton onClick={closeModal}><ClearIcon fontSize="large" /></CloseButton>
                     <img src={selectedImages[currentImageIndex]} alt="모달 이미지" />
                     {currentImageIndex > 0 && <NavButton onClick={showPrevImage}><NavigateBeforeIcon fontSize="large" /></NavButton>}
-                    {currentImageIndex < selectedImages.length - 1 && <NavButton right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
+                    {currentImageIndex < selectedImages.length - 1 && <NavButton $right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
                     <PageNumber>{`${currentImageIndex + 1} / ${selectedImages.length}`}</PageNumber>
                 </ModalContent>
             </ModalOverlay>

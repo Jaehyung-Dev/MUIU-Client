@@ -1,5 +1,7 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { setNaverLogin } from '../slices/memberSlice';
 
 const NaverButton = styled.button`
   cursor: pointer;
@@ -17,12 +19,16 @@ const NaverButton = styled.button`
 
 const NaverLogin = () => {
 	const NAVER_AUTH_URL = "http://localhost:9090/oauth2/authorization/naver";
+  const dispatch = useDispatch();
 
-	const NaverLogin = () => {
+	const handleNaverLogin = () => {
+		// 네이버 로그인 요청 전에 naverLogin 상태를 true로 변경
+		dispatch(setNaverLogin(true));
+		// 네이버 로그인 URL로 이동
 		window.location.href = NAVER_AUTH_URL;
 	};
   return (
-    <NaverButton onClick={NaverLogin}>
+    <NaverButton onClick={handleNaverLogin}>
         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="50" height="50" fill="url(#pattern0_364_497)" />
             <defs>

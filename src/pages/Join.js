@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { join } from '../apis/memberApis';
 import { useLocation } from 'react-router-dom';
-import { verifySms } from '../apis/memberApis';
+import { verifySms, verifyCounselNum } from '../apis/memberApis';
 
 const Main = styled.main`
   input:-webkit-autofill,
@@ -204,13 +204,13 @@ const CounselorDiv = styled.div`
 const DuplicationBtn = styled.button`
   width: 10rem;
   height: 100%;
-  background-color: #ffd651;
+  background-color: ${(props) => (props.disabled ? 'gray' : '#ffd651')};
   border-radius: 5px;
   padding: 0.6rem;
   transition: background-color 0.5s ease;  
   font-size: 1.1rem;
   &:hover {
-    background-color: #f8cb37;
+    background-color: ${(props) => (props.disabled ? 'gray' : '#f8cb37')};
   }
 
   @media screen and (max-width: 600px) {
@@ -378,7 +378,8 @@ export const Join = () => {
   const [counselNum, setCounselNum] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
   const [timeLeft, setTimeLeft] = useState(0); // 타이머 초기값
-  
+  const [isVerified, setIsVerified] = useState(false); // 상담사 인증 상태
+
   // Date 객체 생성 함수
   const createBirthDate = useCallback(() => {
     if (frontRegistNum.length === 6 && backRegistNum.length === 1) {
@@ -610,10 +611,6 @@ export const Join = () => {
       return;
   }, [validatePassword]);
 
-  const counselNumCheck = () => {
-    alert("상담사 인증!");
-  }
-
   const openModal = () => {
     // 조건 확인
     if (!usernameChk) {
@@ -634,6 +631,12 @@ export const Join = () => {
     }
     if (isCounselor && !counselNum) {
       alert('상담사 인증번호를 입력하세요.');
+      return;
+    }
+
+    // 상담사일 경우 인증이 완료되어야 가입 가능
+    if (isCounselor && !isVerified) {
+      alert('상담사 인증을 완료해야 회원가입이 가능합니다.');
       return;
     }
 
@@ -706,9 +709,41 @@ export const Join = () => {
   const handleNameChange = (e) => {
     setName(e.target.value);
   }
-  const counselNumChange = (e) => {
+
+  const handleCounselNumChange = (e) => {
     setCounselNum(e.target.value);
   }
+
+  const handleCounselNumChk = useCallback((e) => {
+    e.preventDefault();
+
+    if(!counselNum) {
+      alert('인증번호를 입력하세요.');
+      return;
+    }
+
+    // 이미 인증된 상태라면 더 이상 요청을 보내지 않음
+    if (isVerified) return;
+
+    dispatch(verifyCounselNum(counselNum))
+      .then((action) => {
+        if (action.type === 'member/counselNum/fulfilled') {
+          if (action.payload) {
+            setIsVerified(true); // 인증이 완료되면 상태 업데이트
+          } else {
+            alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
+          }
+        } else if (action.type === 'member/counselNum/rejected') {
+          // 요청이 실패한 경우
+          alert('상담사 인증에 실패했습니다. 다시 시도해주세요.');
+        }
+      })
+      .catch((error) => {
+        // 에러 발생 시 처리
+        console.error('Counselor verification error:', error);
+        alert('인증 중 문제가 발생했습니다. 다시 시도해 주세요.');
+      });
+  }, [counselNum, dispatch, isVerified])
 
   const handleJoin = useCallback((e) => {
     if(e) {
@@ -861,7 +896,7 @@ export const Join = () => {
                 name='counselNum'
                 id='counselNum'
                 value={counselNum}
-                onChange={counselNumChange} 
+                onChange={handleCounselNumChange} 
                 type="text" 
                 placeholder="인증번호를 입력하세요" 
               />
@@ -869,8 +904,10 @@ export const Join = () => {
                 name='counseler-num-btn' 
                 id='counseler-num-btn'
                 type='button'
-                onClick={counselNumCheck}>
-                인증하기
+                onClick={handleCounselNumChk}
+                disabled={isVerified} // 인증 완료 시 버튼 비활성화
+              >
+                {isVerified ? '인증완료' : '인증하기'}
               </DuplicationBtn>
             </CounselorDiv>
           </HiddenDiv>

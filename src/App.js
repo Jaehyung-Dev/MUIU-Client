@@ -1,10 +1,5 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import React, { useState } from 'react';
-import { PersistGate } from 'redux-persist/integration/react';
-import { Provider } from 'react-redux';
-import { persistStore } from 'redux-persist';
-import { store } from './store/store';
-import { Support } from '@mui/icons-material';
 
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
@@ -57,9 +52,13 @@ import MyDiaryCollection from './pages/MyDiaryCollection';
 import MyDiaryWrite from './pages/MyDiaryWrite';
 import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
 import StarredPlace from './pages/StarredPlace';
+import Support from './pages/Support';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
-
+import { persistStore } from 'redux-persist';
+import { store } from './store/store';
 
 function App() {
   const persiststore = persistStore(store);
@@ -123,7 +122,7 @@ function App() {
               <Route path="disaster-guide" element={<DisasterGuide />} />
               <Route path="error" element={<Error />} />
               <Route path="fund" element={<Fund />} />
-              <Route path="fund-detail" element={<FundDetail />} />
+              <Route path="/fund-detail/:postId" element={<FundDetail />} /> {/* 동적 라우트 */}
               <Route path="fund-payment" element={<FundPayment />} />
               <Route path="fund-payment-system" element={<FundPaymentSystem />} />
               <Route path="fund-payment-success" element={<FundPaymentSuccess />} />
