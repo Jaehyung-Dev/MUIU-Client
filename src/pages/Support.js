@@ -123,13 +123,13 @@ const Support = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = { name, email, message };
-
+    
         try {
-            const response = await sendSupportMessage(formData); // API 함수 호출
-            alert(response); 
+            await sendSupportMessage(formData);  // response 할당 제거
+            alert('문의사항이 성공적으로 접수되었습니다. 곧 답변을 받으실 수 있습니다.');
         } catch (error) {
             console.error('이메일 전송 오류:', error.response ? error.response.data : error.message);
-            alert('이메일 전송에 실패했습니다.');
+            alert('이메일 전송에 실패했습니다. 잠시 후 다시 시도해주세요.');
         }
     };
 
