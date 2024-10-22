@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+
 import BottomNav from '../components/BottomNav'; // 공용 Footer 컴포넌트
+import styled from 'styled-components';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -72,15 +73,15 @@ const SubButton = styled.button`
   background: none;
   border: none;
   font-size: 1rem;
-  color: ${(props) => (props.isActive ? '#0066cc' : '#656565')};
+  color: ${(props) => (props.$isActive ? '#0066cc' : '#656565')};
   cursor: pointer;
-  font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
+  font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
   margin-right: 20px;
   position: relative;
 
   &::after {
     content: '';
-    width: ${(props) => (props.isActive ? '100%' : '0')};
+    width: ${(props) => (props.$isActive ? '100%' : '0')};
     height: 3px;
     background-color: #FFD651;
     position: absolute;

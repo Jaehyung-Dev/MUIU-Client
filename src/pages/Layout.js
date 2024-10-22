@@ -1,8 +1,9 @@
-import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import Header from '../components/Header';
+
 import BottomNav from '../components/BottomNav';
+import Header from '../components/Header';
+import React from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
     min-height: 100vh;

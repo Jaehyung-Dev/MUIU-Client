@@ -40,7 +40,7 @@ const Card = styled.div`
 `;
 
 const ModalOverlay = styled.div`
-    display: ${(props) => (props.visible ? 'flex' : 'none')};
+    display: ${(props) => (props.$visible ? 'flex' : 'none')};
     position: fixed;
     top: 0;
     left: 0;
@@ -99,7 +99,7 @@ const NavButton = styled.button`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 
-    ${(props) => (props.right ? 'right: 1rem;' : 'left: 1rem;')}
+    ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
 
     // &:hover {
     //     transform: scale(1.1);
@@ -186,12 +186,12 @@ export const MindColumn = () => {
                 ))}
             </Cards>
 
-            <ModalOverlay visible={isModalOpen}>
+            <ModalOverlay $visible={isModalOpen}>
                 <ModalContent>
                     <CloseButton onClick={closeModal}><ClearIcon fontSize="large" /></CloseButton>
                     <img src={selectedImages[currentImageIndex]} alt="모달 이미지" />
                     {currentImageIndex > 0 && <NavButton onClick={showPrevImage}><NavigateBeforeIcon fontSize="large" /></NavButton>}
-                    {currentImageIndex < selectedImages.length - 1 && <NavButton right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
+                    {currentImageIndex < selectedImages.length - 1 && <NavButton $right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
                     <PageNumber>{`${currentImageIndex + 1} / ${selectedImages.length}`}</PageNumber>
                 </ModalContent>
             </ModalOverlay>

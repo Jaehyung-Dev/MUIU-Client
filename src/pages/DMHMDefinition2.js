@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+
 import BottomNav from '../components/BottomNav'; // 공용 Footer 컴포넌트
+import styled from 'styled-components';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -74,13 +75,13 @@ const SubButton = styled.button`
   font-size: 1rem;
   color: ${(props) => (props.$isActive ? '#0066cc' : '#656565')};
   cursor: pointer;
-  font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
+  font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
   margin-right: 20px;
   position: relative;
 
   &::after {
     content: '';
-    width: ${(props) => (props.isActive ? '100%' : '0')};
+    width: ${(props) => (props.$isActive ? '100%' : '0')};
     height: 3px;
     background-color: #FFD651;
     position: absolute;
@@ -105,8 +106,8 @@ const StageButtonBox = styled.div`
 const StageButton = styled.button`
   flex: 1;
   padding: 10px;
-  background-color: ${(props) => (props.isActive ? '#FFD651' : 'white')};
-  color: ${(props) => (props.isActive ? 'white' : '#656565')};
+  background-color: ${(props) => (props.$isActive ? '#FFD651' : 'white')};
+  color: ${(props) => (props.$isActive ? 'white' : '#656565')};
   border: 1px solid #FFD651;
   text-align: center;
   cursor: pointer;
