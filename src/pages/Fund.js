@@ -89,7 +89,7 @@ const Main = styled.main`
     text-decoration: none;
     z-index: 10;
   }
-
+ 
 
   @media (max-width: 600px) {
   // 카드 이미지 안넘치게 조정
@@ -114,18 +114,18 @@ const Main = styled.main`
 `;
 
 
-const FundCard = ({ imageSrc, altText, title, date, link }) => {
+const FundCard = ({ imageSrc, altText, title, date, link, postId }) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
-  const handleCopyClick = (e) => {
+  const handleCopyClick = (e, postId) => {
     e.preventDefault(); // Link 태그 클릭 방지
-    navigator.clipboard.writeText(window.location.href)
+    navigator.clipboard.writeText(`${window.location.origin}${link}`)
       .then(() => {
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
       })
       .catch((err) => console.error('Failed to copy text: ', err));
-  };
+  };  
 
   return (
     <Link to={link} style={{ position: 'relative', display: 'block' }}>
@@ -212,11 +212,12 @@ const Fund = () => {
       {posts.map((post, index) => (
         <FundCard
           key={index}
-          imageSrc={post.imageUrl} 
+          imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
           altText={post.title}
           title={post.title}
           date={`${post.fundStartDate} ~ ${post.fundEndDate}`}
           link={`/fund-detail/${post.postId}`} // 게시글 postId를 링크에 포함시킴
+          postId={post.postId} // postId 전달
         />
       ))}
 
