@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CreateIcon from '@mui/icons-material/Create';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import angry from '../svg/angry.svg';
 import { useNavigate } from 'react-router-dom';
+import MD_Block from '../components/MD_Block';
 
 const CoverDiv = styled.div`
     width: 100%;
@@ -22,7 +20,7 @@ const CoverDiv = styled.div`
 
 const SearchDiv = styled.div`
     width: 85%;
-    min-height: 7vh;
+    min-height: 5vh;
     background-color: white;
     margin-top: 1rem;
     border-radius: 10px;
@@ -31,7 +29,7 @@ const SearchDiv = styled.div`
 
     input {
         padding: 0;
-        font-size: 1.1rem;
+        font-size: 1rem;
         width: 80%;
         border: none;
         outline: none;
@@ -39,7 +37,7 @@ const SearchDiv = styled.div`
 
     ::placeholder {
         color: black;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 `;
 
@@ -56,77 +54,6 @@ const CalendarDiv = styled.div`
 
     @media screen and (max-width: 600px) {
         min-height: 20vh;
-    }
-`;
-
-const DiaryContainer = styled.div`
-    width: 85%;
-    min-height: 40vh;
-    margin: 1rem 2rem 4rem 2rem ;
-    background-color: white;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media screen and (max-width: 600px) {
-        min-height: 35vh;
-    }
-`;
-
-const DiaryDiv = styled.div`
-    width: 85%;
-    height: 35vh;
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-`;
-
-const DiarySpaceBetween = styled.div`
-    width: 100%;
-    height: 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const DiaryButton = styled.button`
-    border: none;
-    background: none;
-    color: black;
-    display: flex;
-    align-items: center;
-`;
-
-const DiaryCalendar = styled.div`
-    width: 30%;
-    min-height: 2rem;
-    background-color: #FF3B30;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1.5rem;   
-    border-radius: 5px;
-    @media screen and (max-width: 600px) {
-        width: 43%;
-    }
-`;
-
-const DiaryTitle = styled.p`
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    @media screen and (max-width: 600px) {
-        font-size: 1.3rem;
-    }
-`;
-
-const DiaryContent = styled.p`
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 1rem;
-    @media screen and (max-width: 600px) {
-        font-size: 1rem;
     }
 `;
 
@@ -159,9 +86,9 @@ const CalendarHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.3rem;
-    font-size: 1.3rem;
-    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    margin-top: 0.3rem;
     width: 100%;
 `;
 
@@ -207,6 +134,7 @@ const WeekDaysHeader = styled.div`
     margin-bottom: 0.5rem;
     text-align: center;
     color: gray;
+    // font-size: 0.95rem;
 
     @media (max-width: 600px) {
         gap: 1.8rem;
@@ -328,26 +256,7 @@ const MyDiaryCollection = () => {
                     <TimelineIcon onClick={handleChartClick} className='click'/>
                     <CreateIcon onClick={handleWriteClick} className='click'/>
                 </ButtonBar>
-                <DiaryContainer>
-                    <DiaryDiv>
-                        <DiarySpaceBetween>
-                            <img src={angry} style={{
-                                width: '3rem', height: '3rem'
-                            }} />
-                            <DiaryButton>
-                                <MoreVertIcon style={{
-                                    height: '2rem', width: '2rem'
-                                }} />
-                            </DiaryButton>
-                        </DiarySpaceBetween>
-                        <DiaryCalendar>
-                            <ScheduleIcon style={{ marginRight: '0.1rem' }} />
-                            <span>28 May 21</span>
-                        </DiaryCalendar>
-                        <DiaryTitle>비트캠프 데브옵스 첫 날</DiaryTitle>
-                        <DiaryContent>인터넷이 끊켰다<br />나는 너무 슬프다.</DiaryContent>
-                    </DiaryDiv>
-                </DiaryContainer>
+                <MD_Block/>
             </CoverDiv>
         </>
     );
