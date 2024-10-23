@@ -15,6 +15,7 @@ import changeIcon from '../svg/변경.svg';
 import findIcon from '../svg/길찾기-hover.svg';
 import optimalIcon from '../svg/최적.svg';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import hospitalData from '../JSON/hospitalData.json';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -236,18 +237,69 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     const [hoveredTab, setHoveredTab] = useState(null);
     const [departValue, setDepartValue] = useState('');
     const [arriveValue, setArriveValue] = useState('');
-    const [filteredDepartStations, setFilteredDepartStations] = useState([]); // 출발지 필터링
-    const [filteredArriveStations, setFilteredArriveStations] = useState([]); // 도착지 필터링
+    const [filteredDepartStations, setFilteredDepartStations] = useState([]);
+    const [filteredArriveStations, setFilteredArriveStations] = useState([]);
+
+    const [hospitalCoordinates, setHospitalCoordinates] = useState(null);
+
+    useEffect(() => {
+        if (hospitalName) {
+            const coordinates = getHospitalCoordinates(hospitalName);
+            setHospitalCoordinates(coordinates);
+        }
+    }, [hospitalName]);
+
+    const getHospitalCoordinates = (hospitalName) => {
+        const hospital = hospitalData.DATA.find(hospital => hospital.dutyname.trim() === hospitalName.trim());
+        if (hospital) {
+            return { lat: parseFloat(hospital.wgs84lat), lng: parseFloat(hospital.wgs84lon) }; // 병원의 위도와 경도
+        }
+        return null; // 병원을 찾지 못한 경우
+    };
+
+    const getDepartCoordinates = () => {
+        if (departValue) {
+            // 병원 이름이 출발지일 경우
+            if (departValue === hospitalName) {
+                return getHospitalCoordinates(hospitalName); // 병원 좌표 반환
+            }
+    
+            const station = stations.find(station => station.bldn_nm === departValue);
+            if (station) {
+                return { lat: parseFloat(station.lat), lng: parseFloat(station.lot) }; // 역 좌표
+            } else {
+                console.log("해당 역을 찾을 수 없습니다:", departValue);
+            }
+        }
+        return null; // 좌표가 없을 경우
+    };
+    
+    const getArriveCoordinates = () => {
+        if (arriveValue) {
+            // 병원 이름이 도착지일 경우
+            if (arriveValue === hospitalName) {
+                return getHospitalCoordinates(hospitalName); // 병원 좌표 반환
+            }
+    
+            const station = stations.find(station => station.bldn_nm === arriveValue);
+            if (station) {
+                return { lat: parseFloat(station.lat), lng: parseFloat(station.lot) }; // 역 좌표
+            }
+        }
+        return null; // 좌표가 없을 경우
+    };
+    
 
     useEffect(() => {
         if (mode === 'depart') {
             setDepartValue(hospitalName); // 출발지에 병원 이름 설정
-            setArriveValue(''); // 도착지는 초기화
+            setArriveValue('');
         } else if (mode === 'arrive') {
-            setArriveValue(hospitalName); // 도착지에 병원 이름 설정
-            setDepartValue(''); // 출발지는 초기화
+            setArriveValue(hospitalName);
+            setDepartValue('');
         }
     }, [hospitalName, mode]);
+    
 
     // 출발지 입력 핸들러
     const handleDepartInputChange = (event) => {
@@ -258,7 +310,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             station.bldn_nm.includes(value)
         );
     
-        // 중복된 역 이름 제거
         const uniqueStations = Array.from(new Set(filtered.map(station => station.bldn_nm)))
                                     .map(name => filtered.find(station => station.bldn_nm === name));
     
@@ -267,7 +318,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     
     const handleDepartInputKeyDown = (event) => {
         if (event.key === 'Enter') {
-            setFilteredDepartStations([]); // 추천 목록 숨기기
+            setFilteredDepartStations([]);
         }
     };    
 
@@ -280,7 +331,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             station.bldn_nm.includes(value)
         );
     
-        // 중복된 역 이름 제거
         const uniqueStations = Array.from(new Set(filtered.map(station => station.bldn_nm)))
                                     .map(name => filtered.find(station => station.bldn_nm === name));
     
@@ -289,7 +339,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     
     const handleArriveInputKeyDown = (event) => {
         if (event.key === 'Enter') {
-            setFilteredArriveStations([]); // 추천 목록 숨기기
+            setFilteredArriveStations([]);
         }
     };
     
@@ -299,7 +349,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         } else {
             setArriveValue(station.bldn_nm);
         }
-        // 선택 후 목록 초기화
         if (type === 'depart') {
             setFilteredDepartStations([]);
         } else {
@@ -308,10 +357,23 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     };
 
     const swapValues = () => {
-        const temp = departValue;
-        setDepartValue(arriveValue);
-        setArriveValue(temp);
+        const tempDepart = departValue;
+        const tempArrive = arriveValue;
+        setDepartValue(tempArrive);
+        setArriveValue(tempDepart);
+        
+        console.log("스왑 후 출발지:", tempArrive);
+        console.log("스왑 후 도착지:", tempDepart);
     };
+    
+    useEffect(() => {
+        const departCoords = getDepartCoordinates();
+        const arriveCoords = getArriveCoordinates();
+    
+        console.log("출발지 좌표:", departCoords);
+        console.log("도착지 좌표:", arriveCoords);
+    }, [departValue, arriveValue, hospitalCoordinates, stations]);
+    
 
     if (!isOpen) return null;
 
@@ -377,14 +439,14 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                             placeholder="출발지"
                             spellCheck="false"
                             value={departValue || ""}
-                            onChange={handleDepartInputChange} // 출발지 입력 핸들러 호출
-                            onKeyDown={handleDepartInputKeyDown} // Enter 키 핸들러 추가
+                            onChange={handleDepartInputChange}
+                            onKeyDown={handleDepartInputKeyDown}
                         />
                         {filteredDepartStations.length > 0 && (
                             <SuggestionsList>
                                 {filteredDepartStations.map((station, index) => (
                                     <SuggestionItem key={index} onClick={() => handleStationSelect(station, 'depart')}>
-                                        {station.bldn_nm} {/* 역 이름 표시 */}
+                                        {station.bldn_nm}역
                                     </SuggestionItem>
                                 ))}
                             </SuggestionsList>
@@ -394,7 +456,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                         src={changeIcon} 
                         alt="변경" 
                         id="changeDeAr" 
-                        onClick={swapValues} // 클릭 시 값 교환 
+                        onClick={swapValues}
                     />
                     <SearchingArrive>
                         <SearchingImage src={arriveIcon} alt="도착" />
