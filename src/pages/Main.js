@@ -155,16 +155,51 @@ const Section = styled.div`
     }
 `;
 
-const Banner = styled.div`
-    padding: 20px;
-    width: 90%;
+const CarouselWrapper = styled.div`
+    width: 100%;
     height: 200px;
-    background-image: url(${process.env.PUBLIC_URL}/images/test-img.png);
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
+    overflow: hidden;
     border-radius: 10px;
     margin: 0 auto;
+    position: relative;
+`;
+
+const Banner = styled.div`
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    transform: ${({ currentIndex }) => `translateX(-${currentIndex * 100}%)`};
+    width: ${({ imageCount }) => `${imageCount * 100}%`};
+`;
+
+const ImageSlide = styled.div`
+    min-width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const SlideImage = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
+const DotsWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+`;
+
+const Dot = styled.div`
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.active ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)')};
+    margin: 0 5px;
+    cursor: pointer;
 `;
 
 const Blocks = styled.div`
@@ -265,7 +300,7 @@ const NavButton = styled.button`
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    ${(props) => (props.right ? 'right: 1rem;' : 'left: 1rem;')}
+    ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
 `;
 
 const CloseButton = styled.button`
@@ -345,10 +380,44 @@ export const Main = () => {
     const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
     const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
 
+    const carouselImages = [
+        `${process.env.PUBLIC_URL}/images/test-img1.png`,
+        `${process.env.PUBLIC_URL}/images/test-img2.png`,
+        `${process.env.PUBLIC_URL}/images/test-img3.png`,
+    ];
+
+    const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveSlideIndex((prevIndex) => (prevIndex + 1) % carouselImages.length);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
     return (
         <>
             <Content>
-                <Banner />
+            <CarouselWrapper>
+            <Banner imageCount={carouselImages.length} currentIndex={activeSlideIndex}>
+                {carouselImages.map((image, index) => (
+                    <ImageSlide key={index}>
+                        <SlideImage src={image} alt={`slide-${index}`} />
+                    </ImageSlide>
+                ))}
+            </Banner>
+            <DotsWrapper>
+                {carouselImages.map((_, index) => (
+                    <Dot
+                        key={index}
+                        active={activeSlideIndex === index}
+                        onClick={() => setActiveSlideIndex(index)}
+                    />
+                ))}
+            </DotsWrapper>
+        </CarouselWrapper>
                 <Section>
                     <h2>서울시 관악구&nbsp;&nbsp;
                         <MdGpsFixed size="1.2rem" />
@@ -404,7 +473,7 @@ export const Main = () => {
                             </NavButton>
                         )}
                         {currentImageIndex < imageList[randomImageKey].length - 1 && (
-                            <NavButton right onClick={showNextImage}>
+                            <NavButton $right onClick={showNextImage}>
                                 <NavigateNextIcon fontSize="large" />
                             </NavButton>
                         )}

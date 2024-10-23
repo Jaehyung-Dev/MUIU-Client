@@ -5,6 +5,9 @@ import DonationDetails from '../components/DonationDetails';
 import ShareIcon from '@mui/icons-material/Share';
 import Loading from '../pages/Loading'; 
 import axios from 'axios';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 // Styled components
@@ -119,14 +122,61 @@ const Main = styled.main`
   }
 `;
 
+
+const MenuContainer = styled.div`
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 120px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 10px;
+`;
+
+const StyledMoreVertIcon = styled(MoreVertIcon)`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    color: #FFCC00;
+  }
+`;
+
+const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  &:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.1);
+      // color: #FFCC00;
+  }
+`;
+
 const FundDetail = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
   const [percentage, setPercentage] = useState(0);
-  const [targetAmount] = useState(1000000);
   const [currentAmount, setCurrentAmount] = useState(0); 
   const [post, setPost] = useState(null); // 서버에서 받아온 데이터를 저장
   const [copyMessage, setCopyMessage] = useState('');
   const navigate = useNavigate();
+
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const toggleMenu = () => {
+      setMenuVisible(!menuVisible);
+  };
 
   useEffect(() => {
     // 페이지 로드 시 스크롤을 맨 위로 이동
@@ -156,7 +206,22 @@ const FundDetail = () => {
     };
 
     fetchPostDetail();
-  }, [postId]); // postId가 변경될 때마다 실행되도록 postId를 배열에 추가
+
+    // 메뉴 외의 다른 곳을 클릭했을 때 메뉴 닫기
+    const handleClickOutside = (event) => {
+      if (menuVisible && !event.target.closest('.menu-container')) {
+        setMenuVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // cleanup 함수로 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+
+  }, [postId, menuVisible]); // postId가 변경될 때마다 실행되도록 postId를 배열에 추가
 
   const handleShareClick = () => {
     const link = window.location.href;
@@ -235,17 +300,31 @@ const FundDetail = () => {
         </div>
       </div> */}
 
+      <StyledMoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+      {menuVisible && (
+          <MenuContainer>
+              <MenuItem>
+                  <EditIcon />
+                  <span>Edit</span>
+              </MenuItem>
+              <MenuItem>
+                  <DeleteIcon />
+                  <span>Delete</span>
+              </MenuItem>
+          </MenuContainer>
+      )}
+
       <ShareIcon className="share-icon" onClick={handleShareClick} />
       
       {copyMessage && <div className="copy-message">{copyMessage}</div>}
       
       {/* DonationDetails 컴포넌트에 post 데이터에서 필요한 값들을 전달 */}
       <DonationDetails
-        imageSrc={`http://localhost:9090/api/fund/image?image=${post.mainImage}`}
+        imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
         title={post.title}
         recipient={post.teamName}
         percentage={percentage}
-        targetAmount={targetAmount}
+        targetAmount={post.targetAmount}
       />
       
       <button className="fund-btn" onClick={() => navigate('/fund-payment')}>

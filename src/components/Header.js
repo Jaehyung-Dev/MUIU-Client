@@ -56,7 +56,7 @@ const Title = styled.h1`
     margin: 0;
     transition: opacity 0.5s ease;
     @media (max-width: 393px) {
-        opacity: ${({ searchOpen }) => (searchOpen ? 0 : 1)};
+        opacity: ${({ $searchOpen }) => ($searchOpen ? 0 : 1)};
     }
 `;
 
@@ -198,7 +198,6 @@ const Header = () => {
     const goBack = () => {
         navigate(-1);
     }
-
 
     return (
         <>

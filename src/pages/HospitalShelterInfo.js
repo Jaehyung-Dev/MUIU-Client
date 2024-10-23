@@ -855,7 +855,7 @@ export const HospitalShelterInfo = () => {
                 openFindRoadPopUp={openFindRoadPopUp}
                 searchQuery={searchQuery}
                 stations={stations.DATA}
-                setSelectedHospital={setSelectedHospital} // 병원 선택 상태 전달
+                setSelectedHospital={setSelectedHospital}
                 mode = {mode}
             />
             <HS_InfoModal

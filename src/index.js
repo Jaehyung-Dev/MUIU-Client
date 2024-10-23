@@ -4,7 +4,7 @@ import App from './App';
 import ReactDOM from 'react-dom/client';
 
 const container = document.getElementById('root');
-const root = createRoot(container); // createRoot 방식으로 렌더링
+const root = createRoot(container);
 root.render(
     <React.StrictMode>
         <App />
