@@ -1,542 +1,632 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import { MdGpsFixed } from "react-icons/md";
-import axios from 'axios';
-import graphImg from '../svg/graphImg.svg';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import ClearIcon from '@mui/icons-material/Clear';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../apis/memberApis';
+    import React, { useEffect, useState } from 'react';
+    import { useNavigate, useLocation } from 'react-router-dom';
+    import styled from 'styled-components';
+    import { MdGpsFixed } from "react-icons/md";
+    import axios from 'axios';
+    import graphImg from '../svg/graphImg.svg';
+    import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+    import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+    import ClearIcon from '@mui/icons-material/Clear';
+    import { useDispatch, useSelector } from 'react-redux';
+    import { fetchUser } from '../apis/memberApis';
 
-const Content = styled.div``;
+    const Content = styled.div``;
 
-const Section = styled.div`
+    const Section = styled.div`
 
-    padding: 20px;
+        padding: 20px;
 
-    h2 {
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-
-        a {
-            margin-left: auto;
-            font-size: 10px;
-            color: gray;
-        }
-    }
-
-    .current-info-items {
-        width: 100%;
-        height: 90px;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        justify-content: space-around;
-
-        .current-info-item {
-            width: 100%;
-            height: 40px;
+        h2 {
+            font-size: 1.2rem;
             display: flex;
+            align-items: center;
 
-            .current-location {
-                width: 12%;
-                height: 40px;
-                font-weight: bold;
-                font-size: 13px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-right: 0.5rem;
-
-                p{
-                    text-align: center;
-                    text-wrap: wrap;
-                    font-size: 0.8rem;
-                    font-weight: bold;
-                }
-            }
-
-            .current-location-info {
-                width: 88%;
-                height: 40px;
-                font-size: 14px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                p{
-                    text-align: left;
-                    text-wrap: wrap;
-                    font-size: 0.8rem;
-                }
+            a {
+                margin-left: auto;
+                font-size: 10px;
+                color: gray;
             }
         }
-    }
 
-    button.seeAll {
-        font-family: 'Pretendard-Regular';
-        font-size: 10px;
-        color: gray;
-        margin-left: auto;
-        background-color: transparent;
-        border: none;
-    }
+        .current-info-items {
+            width: 100%;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            justify-content: space-around;
 
-    .funding-items {
-        width: 100%;
-        height: 150px;
-        display: flex;
-        margin-bottom: 6vh;
+            .current-info-item {
+                width: 100%;
+                height: 40px;
+                display: flex;
 
-        .funding-item-section {
-            flex: 1;
-            padding: 10px;
-
-            .funding-item {
-                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-                border-radius: 10px;
-
-                .funding-top1 {
-                    width: 100%;
-                    height: 60%;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                    background-image: url(${process.env.PUBLIC_URL}/images/store-img1-1.png);
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    color: white;
-                }
-
-                .funding-top2 {
-                    width: 100%;
-                    height: 60%;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                    background-image: url(${process.env.PUBLIC_URL}/images/store-img1-2.png);
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    color: white;
-                }
-
-                .funding-title {
-                    width: 100%;
-                    font-size: 15px;
+                .current-location {
+                    width: 12%;
+                    height: 40px;
                     font-weight: bold;
-                    text-align: left;
-                    padding: 10px;
+                    font-size: 13px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 0.5rem;
+
+                    p{
+                        text-align: center;
+                        text-wrap: wrap;
+                        font-size: 0.8rem;
+                        font-weight: bold;
+                    }
                 }
 
-                .funding-content {
-                    width: 100%;
-                    height: 50px;
-                    font-size: 13px;
-                    font-weight: bold;
-                    text-align: left;
-                    padding: 10px;
-                }
+                .current-location-info {
+                    width: 88%;
+                    height: 40px;
+                    font-size: 14px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
 
-                .funding-bottom {
-                    width: 100%;
-                    height: 40%;
-                    padding: 10px;
-                    color: black;
-                    font-size: 13px;
-
-                    .funding-detail-content {
-                        margin-top: 5px;
-                        color: gray;
+                    p{
+                        text-align: left;
+                        text-wrap: wrap;
+                        font-size: 0.8rem;
                     }
                 }
             }
         }
-    }
-`;
 
-const CarouselWrapper = styled.div`
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 10px;
-    margin: 0 auto;
-    position: relative;
-`;
+        button.seeAll {
+            font-family: 'Pretendard-Regular';
+            font-size: 10px;
+            color: gray;
+            margin-left: auto;
+            background-color: transparent;
+            border: none;
+        }
 
-const Banner = styled.div`
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    transform: ${({ currentIndex }) => `translateX(-${currentIndex * 100}%)`};
-    width: ${({ imageCount }) => `${imageCount * 100}%`};
-`;
+        .funding-items {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            margin-bottom: 6vh;
 
-const ImageSlide = styled.div`
-    min-width: 100%;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
+            .funding-item-section {
+                flex: 1;
+                padding: 10px;
 
-const SlideImage = styled.img`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-`;
+                .funding-item {
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+                    border-radius: 10px;
 
-const DotsWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-`;
+                    .funding-top1 {
+                        width: 100%;
+                        height: 60%;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        background-image: url(${process.env.PUBLIC_URL}/images/store-img1-1.png);
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                        color: white;
+                    }
 
-const Dot = styled.div`
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: ${(props) => (props.active ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)')};
-    margin: 0 5px;
-    cursor: pointer;
-`;
+                    .funding-top2 {
+                        width: 100%;
+                        height: 60%;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        background-image: url(${process.env.PUBLIC_URL}/images/store-img1-2.png);
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                        color: white;
+                    }
 
-const Blocks = styled.div`
-    padding: 1.2rem;
-    background-color: #F4F4F4;
-    display: flex;
-    justify-content: space-between;
-`;
+                    .funding-title {
+                        width: 100%;
+                        font-size: 15px;
+                        font-weight: bold;
+                        text-align: left;
+                        padding: 10px;
+                    }
 
-const Block = styled.div`
-    border-radius: 10px;
-    background-color: white;
-    padding: 0.8rem;
-    width: 43%;
+                    .funding-content {
+                        width: 100%;
+                        height: 50px;
+                        font-size: 13px;
+                        font-weight: bold;
+                        text-align: left;
+                        padding: 10px;
+                    }
 
-    @media (max-width: 393px) {
-        width: 40%;
-    }
-    
-    .block-text-bold {
-        font-weight: bold;
-        font-size: 18px;
-    }
+                    .funding-bottom {
+                        width: 100%;
+                        height: 40%;
+                        padding: 10px;
+                        color: black;
+                        font-size: 13px;
 
-    .block-text-small {
-        font-weight: normal;
-        font-size: 15px;
-        color: gray;
-    }
+                        .funding-detail-content {
+                            margin-top: 5px;
+                            color: gray;
+                        }
+                    }
+                }
+            }
+        }
+    `;
 
-    img {
+    const CarouselWrapper = styled.div`
         width: 100%;
-        height: auto;
-        padding-top: 10px;
-        align-items: center;
-        justify-content: center;
-
-        @media (max-width: 393px) {
-            margin-bottom: -30px;
-        }
-    }
-
-    svg {
-        align-items: center;
-        justify-content: center;
-
-        @media (max-width: 393px) {
-            margin-left: -50px;
-            margin-bottom: 20px;
-        }
-    }
-`;
-
-const ModalOverlay = styled.div`
-    display: flex; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-`;
-
-
-const ModalContent = styled.div`
-    padding: 1rem;
-    border-radius: 10px;
-    width: 100vw;
-    height: 100vh;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    img {
-        max-width: 80%;
-        max-height: 80%;
+        height: 200px;
+        overflow: hidden;
         border-radius: 10px;
-    }
-`;
+        margin: 0 auto;
+        position: relative;
+    `;
 
-const NavButton = styled.button`
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    background-color: white;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
-`;
+    const Banner = styled.div`
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        transform: ${({ currentIndex }) => `translateX(-${currentIndex * 100}%)`};
+        width: ${({ imageCount }) => `${imageCount * 100}%`};
+    `;
 
-const CloseButton = styled.button`
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    font-size: 1.5rem;
-    background-color: white;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    const ImageSlide = styled.div`
+        min-width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    `;
 
-    &:hover {
-        transform: scale(1.1);
-    }
-`;
+    const SlideImage = styled.img`
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    `;
 
-const PageNumber = styled.div`
-    position: absolute;
-    bottom: 1rem;
-    font-size: 1rem;
-    color: #555;
-    width: 100%;
-    text-align: center;
-`;
+    const DotsWrapper = styled.div`
+        display: flex;
+        justify-content: center;
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+    `;
 
-export const Main = () => {
-    const navi = useNavigate();
-    const dispatch = useDispatch();
-    const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
-    const location = useLocation();
+    const Dot = styled.div`
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: ${(props) => (props.active ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)')};
+        margin: 0 5px;
+        cursor: pointer;
+    `;
 
-    const [messages, setMessages] = useState([]);
-    const [temporaryLocation] = useState('서울특별시');
+    const Blocks = styled.div`
+        padding: 1.2rem;
+        background-color: #F4F4F4;
+        display: flex;
+        justify-content: space-between;
+    `;
 
-    useEffect(() => {
-        if (naverLoginChk) {
-            const params = new URLSearchParams(location.search);
-            const token = params.get('token');
-            if (naverLoginChk && token) {
-                sessionStorage.setItem('ACCESS_TOKEN', token);
-                dispatch(fetchUser(token));
-            }
+    const Block = styled.div`
+        border-radius: 10px;
+        background-color: white;
+        padding: 0.8rem;
+        width: 43%;
+
+        @media (max-width: 393px) {
+            width: 40%;
         }
-    }, [dispatch, naverLoginChk, location]);
-
-    useEffect(() => {
-        axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
-            .then(response => {
-                console.log(response.data);
-                setMessages(response.data.slice(0, 2));
-            })
-            .catch(error => {
-                console.error('Error fetching disaster messages:', error);
-            });
-    }, [temporaryLocation]);
-    
-    
-    useEffect(() => {
-        if (naverLoginChk) {
-            const params = new URLSearchParams(location.search);
-            const token = params.get('token');
-            if (naverLoginChk && token) {
-                sessionStorage.setItem('ACCESS_TOKEN', token);
         
-                // 사용자 정보를 가져오는 Redux 액션 디스패치
-                dispatch(fetchUser(token));
+        .block-text-bold {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .block-text-small {
+            font-weight: normal;
+            font-size: 15px;
+            color: gray;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            padding-top: 10px;
+            align-items: center;
+            justify-content: center;
+
+            @media (max-width: 393px) {
+                margin-bottom: -30px;
             }
         }
-    }, [dispatch, naverLoginChk]); // naverLoginChk가 true일 때만 실행
 
-    const handleFundClick = () => navi('/fund');
-    const handleDiaryClick = () => navi('/my-diary');
+        svg {
+            align-items: center;
+            justify-content: center;
 
-    // 이미지 리스트 정의
-    const imageList = {
-        sleepless_night: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/sleepless_night(${i}).png`),
-        ptsd: Array.from({ length: 8 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/ptsd(${i}).png`),
-        panic_disorder: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/panic_disorder(${i}).png`),
-        social_psychology: Array.from({ length: 9 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/social_psychology(${i}).png`)
+            @media (max-width: 393px) {
+                margin-left: -50px;
+                margin-bottom: 20px;
+            }
+        }
+    `;
+
+    const ModalOverlay = styled.div`
+        display: flex; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+
+
+    const ModalContent = styled.div`
+        padding: 1rem;
+        border-radius: 10px;
+        width: 100vw;
+        height: 100vh;
+        max-width: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 10px;
+        }
+    `;
+
+    const NavButton = styled.button`
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        background-color: white;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
+    `;
+
+    const CloseButton = styled.button`
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        font-size: 1.5rem;
+        background-color: white;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    `;
+
+    const PageNumber = styled.div`
+        position: absolute;
+        bottom: 1rem;
+        font-size: 1rem;
+        color: #555;
+        width: 100%;
+        text-align: center;
+    `;
+
+    export const Main = () => {
+        const navi = useNavigate();
+        const dispatch = useDispatch();
+        const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
+        const location = useLocation();
+
+        const [messages, setMessages] = useState([]);
+        const [temporaryLocation, setTemporaryLocation] = useState(null);
+
+        /* 사용자 위치를 불러오는 값 testing(시, 도 정보까지만 불러오기) */
+        /* 예) 서울특별시, 경상남도, 부산광역시 ... */
+        const [userLocation, setUserLocation] = useState(null);
+        const [fullCityName, setFullCityName] = useState(null); // 전체 시/도 이름 및 구를 저장할 상태 추가
+        
+        // 시/도 이름 배열
+        const regions = [
+            '서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시',
+            '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도'
+        ];
+        
+        const getUserLocation = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        console.log('현재 위치 좌표:', { latitude, longitude });
+                        setUserLocation({ latitude, longitude });
+        
+                        // Nominatim API를 호출하여 시/도 이름 가져오기
+                        getCityNameFromCoordinates(latitude, longitude);
+                    },
+                    (error) => {
+                        console.error('Error getting user location:', error);
+                    }
+                );
+            } else {
+                console.error('Geolocation is not supported by this browser');
+            }
+        };
+        
+        const getCityNameFromCoordinates = async (latitude, longitude) => {
+            const apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ko`;
+        
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+        
+                if (data && data.address) {
+                    // 'state' 또는 'city'에서 시/도를 가져옴
+                    let stateOrCity = data.address.state || data.address.city || data.address.region; // 시/도 추출
+        
+                    // regions 배열에서 stateOrCity에 해당하는 값을 찾아서 우선 사용
+                    const matchedRegion = regions.find(region => stateOrCity && stateOrCity.includes(region));
+        
+                    // matchedRegion이 존재하면 그 값을 시/도 이름으로 사용
+                    const city = matchedRegion || stateOrCity; // matchedRegion이 있으면 그 값을 사용, 없으면 원래 값 사용
+                    const district = data.address.county || data.address.district || data.address.suburb; // 구/군 정보
+        
+                    // 전체 시/도 이름과 구 정보를 조합
+                    const officialName = district ? `${city}, ${district}` : city; // 구 정보가 있을 때만 추가
+                    setFullCityName(officialName ? officialName : '주소 정보를 찾을 수 없습니다.');
+                    console.log('전체 시/도 이름:', officialName);
+                    setTemporaryLocation(officialName); // 위치 업데이트
+                } else {
+                    console.error('주소 정보를 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('API 호출 중 오류 발생:', error);
+            }
+        };
+        
+        useEffect(() => {
+            getUserLocation(); // 컴포넌트가 마운트될 때 위치 가져오기
+        }, []);
+        
+        useEffect(() => {
+            if (naverLoginChk) {
+                const params = new URLSearchParams(location.search);
+                const token = params.get('token');
+                if (naverLoginChk && token) {
+                    sessionStorage.setItem('ACCESS_TOKEN', token);
+                    dispatch(fetchUser(token));
+                }
+            }
+        }, [dispatch, naverLoginChk, location]);
+        
+        useEffect(() => {
+            if (temporaryLocation) { // temporaryLocation이 설정된 후에 API 호출
+                axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
+                    .then(response => {
+                        console.log(response.data);
+                        setMessages(response.data.slice(0, 2));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching disaster messages:', error);
+                    });
+            }
+        }, [temporaryLocation]);
+        // ------------------ 기존 코드
+        // useEffect(() => {
+        //     if (naverLoginChk) {
+        //         const params = new URLSearchParams(location.search);
+        //         const token = params.get('token');
+        //         if (naverLoginChk && token) {
+        //             sessionStorage.setItem('ACCESS_TOKEN', token);
+        //             dispatch(fetchUser(token));
+        //         }
+        //     }
+        // }, [dispatch, naverLoginChk, location]);
+
+        // useEffect(() => {
+        //     axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
+        //         .then(response => {
+        //             console.log(response.data);
+        //             setMessages(response.data.slice(0, 2));
+        //         })
+        //         .catch(error => {
+        //             console.error('Error fetching disaster messages:', error);
+        //         });
+        // }, [temporaryLocation]);
+        
+        
+        // useEffect(() => {
+        //     if (naverLoginChk) {
+        //         const params = new URLSearchParams(location.search);
+        //         const token = params.get('token');
+        //         if (naverLoginChk && token) {
+        //             sessionStorage.setItem('ACCESS_TOKEN', token);
+            
+        //             // 사용자 정보를 가져오는 Redux 액션 디스패치
+        //             dispatch(fetchUser(token));
+        //         }
+        //     }
+        // }, [dispatch, naverLoginChk]); // naverLoginChk가 true일 때만 실행
+
+        const handleFundClick = () => navi('/fund');
+        const handleDiaryClick = () => navi('/my-diary');
+
+        // 이미지 리스트 정의
+        const imageList = {
+            sleepless_night: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/sleepless_night(${i}).png`),
+            ptsd: Array.from({ length: 8 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/ptsd(${i}).png`),
+            panic_disorder: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/panic_disorder(${i}).png`),
+            social_psychology: Array.from({ length: 9 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/social_psychology(${i}).png`)
+        };
+
+        const imageKeys = Object.keys(imageList);
+        const [randomImageKey, setRandomImageKey] = useState(imageKeys[0]);
+        const [isModalOpen, setModalOpen] = useState(false);
+        const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+        // 무작위 이미지 리스트 키 설정
+        useEffect(() => {
+            const randomKey = imageKeys[Math.floor(Math.random() * imageKeys.length)];
+            setRandomImageKey(randomKey);
+        }, []);
+
+        const closeModal = () => setModalOpen(false);
+        const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
+        const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
+
+        const carouselImages = [
+            `${process.env.PUBLIC_URL}/images/test-img1.png`,
+            `${process.env.PUBLIC_URL}/images/test-img2.png`,
+            `${process.env.PUBLIC_URL}/images/test-img3.png`,
+        ];
+
+        const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+        useEffect(() => {
+            const interval = setInterval(() => {
+                setActiveSlideIndex((prevIndex) => (prevIndex + 1) % carouselImages.length);
+            }, 3000);
+
+            return () => clearInterval(interval);
+        }, []);
+
+
+        return (
+            <>
+                <Content>
+                <CarouselWrapper>
+                <Banner imageCount={carouselImages.length} currentIndex={activeSlideIndex}>
+                    {carouselImages.map((image, index) => (
+                        <ImageSlide key={index}>
+                            <SlideImage src={image} alt={`slide-${index}`} />
+                        </ImageSlide>
+                    ))}
+                </Banner>
+                <DotsWrapper>
+                    {carouselImages.map((_, index) => (
+                        <Dot
+                            key={index}
+                            active={activeSlideIndex === index}
+                            onClick={() => setActiveSlideIndex(index)}
+                        />
+                    ))}
+                </DotsWrapper>
+            </CarouselWrapper>
+            <Section>
+                        <h2>{temporaryLocation}&nbsp;&nbsp;
+                            <MdGpsFixed size="1.2rem" />
+                        </h2>
+                        <div className="current-info-items">
+                            {messages.map((message, index) => (
+                                <div className="current-info-item" key={index}>
+                                    <div className="current-location">
+                                        <p>{`${message.alertLevel}`}</p>
+                                    </div>
+                                    <div className="current-location-info">
+                                        <p>{`${message.occurrenceTime} - ${message.messageContent}`}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Section>
+                </Content>
+                <Blocks>
+                    <Block onClick={handleDiaryClick}>
+                        <div className="block-text-bold">안녕하세요.<br /> 서준님,</div>
+                        <div className="block-text-small">오늘의 하루는<br />어떠셨나요?</div>
+                        <img src={graphImg} alt="graphImg" style={{ marginBottom: "-5%" }} />
+                    </Block>
+                    <Block onClick={() => setModalOpen(true)}>
+                        <div className="block-text-small"
+                            style={{ textAlign: 'right', cursor: 'pointer' }}
+                            onClick={() => navi('/mind-column')}>
+                            마음컬럼 전체보기
+                        </div>
+                        <img src={`${process.env.PUBLIC_URL}/MC_images/${randomImageKey}(0).png`} alt="mind-column" />
+                    </Block>
+                </Blocks>
+
+                {/* 마음컬럼 모달 창 */}
+                {isModalOpen && (
+                    <ModalOverlay>
+                        <ModalContent>
+                            <CloseButton onClick={closeModal}>
+                                <ClearIcon fontSize="large" />
+                            </CloseButton>
+                            <img src={imageList[randomImageKey][currentImageIndex]} alt="모달 이미지" />
+                            {currentImageIndex > 0 && (
+                                <NavButton onClick={showPrevImage}>
+                                    <NavigateBeforeIcon fontSize="large" />
+                                </NavButton>
+                            )}
+                            {currentImageIndex < imageList[randomImageKey].length - 1 && (
+                                <NavButton $right onClick={showNextImage}>
+                                    <NavigateNextIcon fontSize="large" />
+                                </NavButton>
+                            )}
+                            <PageNumber>{`${currentImageIndex + 1} / ${imageList[randomImageKey].length}`}</PageNumber>
+                        </ModalContent>
+                    </ModalOverlay>
+                )}
+
+                <Content>
+                    <Section>
+                        <h2>마음나누기
+                            <button className="seeAll" onClick={handleFundClick}>전체보기</button>
+                        </h2>
+                        <div className="funding-items">
+                            <div className="funding-item-section">
+                                <div className="funding-item">
+                                    <div className="funding-top1">
+                                        <div className="funding-title">호우피해<br />긴급모금</div>
+                                        <div className="funding-content">폭우로 삶의 터전을 잃은<br />이웃들에게 힘이 되어주세요.</div>
+                                    </div>
+                                    <div className="funding-bottom">
+                                        호우피해긴급모금
+                                        <div className="funding-detail-content">2024.7.16 ~ 2024.8.16</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="funding-item-section">
+                                <div className="funding-item">
+                                    <div className="funding-top2">
+                                        <div className="funding-title">산불피해<br />긴급모금</div>
+                                        <div className="funding-content">삶의 터전을 잃어버린<br />피해 주민들을 위해<br />함께 힘을 모아주세요.</div>
+                                    </div>
+                                    <div className="funding-bottom">
+                                        산불피해긴급모금
+                                        <div className="funding-detail-content">2024.7.16 ~ 2024.8.16</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </Section>
+                </Content>
+            </>
+        );
     };
 
-    const imageKeys = Object.keys(imageList);
-    const [randomImageKey, setRandomImageKey] = useState(imageKeys[0]);
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    // 무작위 이미지 리스트 키 설정
-    useEffect(() => {
-        const randomKey = imageKeys[Math.floor(Math.random() * imageKeys.length)];
-        setRandomImageKey(randomKey);
-    }, []);
-
-    const closeModal = () => setModalOpen(false);
-    const showNextImage = () => setCurrentImageIndex((currentImageIndex + 1) % imageList[randomImageKey].length);
-    const showPrevImage = () => setCurrentImageIndex((currentImageIndex - 1 + imageList[randomImageKey].length) % imageList[randomImageKey].length);
-
-    const carouselImages = [
-        `${process.env.PUBLIC_URL}/images/test-img1.png`,
-        `${process.env.PUBLIC_URL}/images/test-img2.png`,
-        `${process.env.PUBLIC_URL}/images/test-img3.png`,
-    ];
-
-    const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveSlideIndex((prevIndex) => (prevIndex + 1) % carouselImages.length);
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-
-    return (
-        <>
-            <Content>
-            <CarouselWrapper>
-            <Banner imageCount={carouselImages.length} currentIndex={activeSlideIndex}>
-                {carouselImages.map((image, index) => (
-                    <ImageSlide key={index}>
-                        <SlideImage src={image} alt={`slide-${index}`} />
-                    </ImageSlide>
-                ))}
-            </Banner>
-            <DotsWrapper>
-                {carouselImages.map((_, index) => (
-                    <Dot
-                        key={index}
-                        active={activeSlideIndex === index}
-                        onClick={() => setActiveSlideIndex(index)}
-                    />
-                ))}
-            </DotsWrapper>
-        </CarouselWrapper>
-        <Section>
-                    <h2>{temporaryLocation}&nbsp;&nbsp;
-                        <MdGpsFixed size="1.2rem" />
-                    </h2>
-                    <div className="current-info-items">
-                        {messages.map((message, index) => (
-                            <div className="current-info-item" key={index}>
-                                <div className="current-location">
-                                    <p>{`${message.alertLevel}`}</p>
-                                </div>
-                                <div className="current-location-info">
-                                    <p>{`${message.occurrenceTime} - ${message.messageContent}`}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Section>
-            </Content>
-            <Blocks>
-                <Block onClick={handleDiaryClick}>
-                    <div className="block-text-bold">안녕하세요.<br /> 서준님,</div>
-                    <div className="block-text-small">오늘의 하루는<br />어떠셨나요?</div>
-                    <img src={graphImg} alt="graphImg" style={{ marginBottom: "-5%" }} />
-                </Block>
-                <Block onClick={() => setModalOpen(true)}>
-                    <div className="block-text-small"
-                        style={{ textAlign: 'right', cursor: 'pointer' }}
-                        onClick={() => navi('/mind-column')}>
-                        마음컬럼 전체보기
-                    </div>
-                    <img src={`${process.env.PUBLIC_URL}/MC_images/${randomImageKey}(0).png`} alt="mind-column" />
-                </Block>
-            </Blocks>
-
-            {/* 마음컬럼 모달 창 */}
-            {isModalOpen && (
-                <ModalOverlay>
-                    <ModalContent>
-                        <CloseButton onClick={closeModal}>
-                            <ClearIcon fontSize="large" />
-                        </CloseButton>
-                        <img src={imageList[randomImageKey][currentImageIndex]} alt="모달 이미지" />
-                        {currentImageIndex > 0 && (
-                            <NavButton onClick={showPrevImage}>
-                                <NavigateBeforeIcon fontSize="large" />
-                            </NavButton>
-                        )}
-                        {currentImageIndex < imageList[randomImageKey].length - 1 && (
-                            <NavButton $right onClick={showNextImage}>
-                                <NavigateNextIcon fontSize="large" />
-                            </NavButton>
-                        )}
-                        <PageNumber>{`${currentImageIndex + 1} / ${imageList[randomImageKey].length}`}</PageNumber>
-                    </ModalContent>
-                </ModalOverlay>
-            )}
-
-            <Content>
-                <Section>
-                    <h2>마음나누기
-                        <button className="seeAll" onClick={handleFundClick}>전체보기</button>
-                    </h2>
-                    <div className="funding-items">
-                        <div className="funding-item-section">
-                            <div className="funding-item">
-                                <div className="funding-top1">
-                                    <div className="funding-title">호우피해<br />긴급모금</div>
-                                    <div className="funding-content">폭우로 삶의 터전을 잃은<br />이웃들에게 힘이 되어주세요.</div>
-                                </div>
-                                <div className="funding-bottom">
-                                    호우피해긴급모금
-                                    <div className="funding-detail-content">2024.7.16 ~ 2024.8.16</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="funding-item-section">
-                            <div className="funding-item">
-                                <div className="funding-top2">
-                                    <div className="funding-title">산불피해<br />긴급모금</div>
-                                    <div className="funding-content">삶의 터전을 잃어버린<br />피해 주민들을 위해<br />함께 힘을 모아주세요.</div>
-                                </div>
-                                <div className="funding-bottom">
-                                    산불피해긴급모금
-                                    <div className="funding-detail-content">2024.7.16 ~ 2024.8.16</div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </Section>
-            </Content>
-        </>
-    );
-};
-
-export default Main;
+    export default Main;

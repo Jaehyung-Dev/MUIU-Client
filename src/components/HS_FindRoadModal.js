@@ -369,7 +369,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         }
     };
 
-        const getUserLocation = () => {
+    const getUserLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -413,7 +413,9 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     useEffect(() => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
-    
+        
+        console.log('출발지:', departCoords);
+        console.log('도착지:', arriveCoords);
     }, [departValue, arriveValue, hospitalCoordinates, stations]);
     
 
