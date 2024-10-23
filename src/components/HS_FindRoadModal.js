@@ -7,8 +7,6 @@ import carIcon from '../svg/자동차.svg';
 import carHoverIcon from '../svg/자동차-hover.svg';
 import walkIcon from '../svg/도보.svg';
 import walkHoverIcon from '../svg/도보-hover.svg';
-import bikeIcon from '../svg/자전거.svg';
-import bikeHoverIcon from '../svg/자전거-hover.svg';
 import departIcon from '../svg/출발-icon.svg';
 import arriveIcon from '../svg/도착-icon.svg';
 import changeIcon from '../svg/변경.svg';
@@ -136,6 +134,7 @@ const ChangeIcon = styled.img`
     display: flex;
     top: 16vh;
     right: 3vw;
+    cursor: pointer;
 `;
 
 const Finding = styled.div`
@@ -208,20 +207,20 @@ const TimeText = styled.p`
     font-size: 15px;
 `;
 
-// 자동 완성 목록 스타일
+/* 검색어 추천 기능 스타일 */
 const SuggestionsList = styled.ul`
     list-style-type: none;
     padding: 0;
-    margin-top: 5px; // 여백 조정
+    margin-top: 5px;
     background-color: white;
     position: absolute;
     top: 220px;
     z-index: 1000;
     width: 90%;
-    max-height: 100px; // 최대 높이 설정
+    max-height: 100px;
     overflow-y: auto;
     border-radius: 5px;
-    border: 1px solid #888; // 테두리 추가
+    border: 1px solid #888;
 `;
 
 const SuggestionItem = styled.li`
@@ -229,19 +228,23 @@ const SuggestionItem = styled.li`
     padding: 8px;
 
     &:hover {
-        background-color: #e0e0e0; // 호버 시 색상 변경
+        background-color: #e0e0e0;
     }
 `;
 
 const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
+
+    /* 출발, 도착지 설정을 위한 부분 */
     const [departValue, setDepartValue] = useState('');
     const [arriveValue, setArriveValue] = useState('');
     const [filteredDepartStations, setFilteredDepartStations] = useState([]);
     const [filteredArriveStations, setFilteredArriveStations] = useState([]);
     const [hospitalCoordinates, setHospitalCoordinates] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
+    const [rotation, setRotation] = useState(0);
 
+    // 병원 이름
     useEffect(() => {
         if (hospitalName) {
             const coordinates = getHospitalCoordinates(hospitalName);
@@ -252,9 +255,9 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     const getHospitalCoordinates = (hospitalName) => {
         const hospital = hospitalData.DATA.find(hospital => hospital.dutyname.trim() === hospitalName.trim());
         if (hospital) {
-            return { lat: parseFloat(hospital.wgs84lat), lng: parseFloat(hospital.wgs84lon) }; // 병원의 위도와 경도
+            return { lat: parseFloat(hospital.wgs84lat), lng: parseFloat(hospital.wgs84lon) };
         }
-        return null; // 병원을 찾지 못한 경우
+        return null; 
     };
 
     const getDepartCoordinates = () => {
@@ -267,8 +270,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             const station = stations.find(station => station.bldn_nm === departValue);
             if (station) {
                 return { lat: parseFloat(station.lat), lng: parseFloat(station.lot) }; // 역 좌표
-            } else {
-                console.log("해당 역을 찾을 수 없습니다:", departValue);
             }
         }
     
@@ -406,17 +407,13 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         const tempArrive = arriveValue;
         setDepartValue(tempArrive);
         setArriveValue(tempDepart);
-        
-        console.log("스왑 후 출발지:", tempArrive);
-        console.log("스왑 후 도착지:", tempDepart);
+        setRotation(rotation + 180);
     };
     
     useEffect(() => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
     
-        console.log("출발지 좌표:", departCoords);
-        console.log("도착지 좌표:", arriveCoords);
     }, [departValue, arriveValue, hospitalCoordinates, stations]);
     
 
@@ -436,7 +433,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                         <TabImage 
                             src={hoveredTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
                             alt="대중교통" 
-                            className="tab-image" 
+                            className="tab-image"
                         />
                     </VehicleTab>
                     <VehicleTab 
@@ -458,17 +455,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                         <TabImage 
                             src={hoveredTab === 'walk' ? walkHoverIcon : walkIcon} 
                             alt="도보" 
-                            className="tab-image" 
-                        />
-                    </VehicleTab>
-                    <VehicleTab 
-                        id="bike" 
-                        onMouseEnter={() => setHoveredTab('bike')} 
-                        onMouseLeave={() => setHoveredTab(null)}
-                    >
-                        <TabImage 
-                            src={hoveredTab === 'bike' ? bikeHoverIcon : bikeIcon} 
-                            alt="자전거" 
                             className="tab-image" 
                         />
                     </VehicleTab>
@@ -500,7 +486,8 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                     <ChangeIcon 
                         src={changeIcon} 
                         alt="변경" 
-                        id="changeDeAr" 
+                        id="changeDeAr"
+                        style={{ transform: `rotate(${rotation}deg)`, transition: 'transform 0.5s' }}
                         onClick={swapValues}
                     />
                     <SearchingArrive>
