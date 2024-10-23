@@ -239,8 +239,8 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     const [arriveValue, setArriveValue] = useState('');
     const [filteredDepartStations, setFilteredDepartStations] = useState([]);
     const [filteredArriveStations, setFilteredArriveStations] = useState([]);
-
     const [hospitalCoordinates, setHospitalCoordinates] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
 
     useEffect(() => {
         if (hospitalName) {
@@ -271,6 +271,12 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                 console.log("해당 역을 찾을 수 없습니다:", departValue);
             }
         }
+    
+        // departValue가 null일 경우 현재 위치 반환
+        if (userLocation) {
+            return { lat: userLocation.latitude, lng: userLocation.longitude }; // 현재 위치 좌표 반환
+        }
+    
         return null; // 좌표가 없을 경우
     };
     
@@ -286,6 +292,12 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                 return { lat: parseFloat(station.lat), lng: parseFloat(station.lot) }; // 역 좌표
             }
         }
+    
+        // arriveValue가 null일 경우 현재 위치 반환
+        if (userLocation) {
+            return { lat: userLocation.latitude, lng: userLocation.longitude }; // 현재 위치 좌표 반환
+        }
+    
         return null; // 좌표가 없을 경우
     };
     
@@ -355,6 +367,39 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             setFilteredArriveStations([]);
         }
     };
+
+        const getUserLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setUserLocation({ latitude, longitude });
+                },
+                (error) => {
+                    console.error('Error getting user location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser');
+        }
+    };
+
+    useEffect(() => {
+        // 컴포넌트가 마운트될 때 사용자 위치 가져오기
+        getUserLocation();
+    }, []);
+
+    useEffect(() => {
+        // userLocation이 업데이트될 때 departValue와 arriveValue가 null일 경우 현재 위치를 설정
+        if (userLocation) {
+            if (departValue === null) {
+                setDepartValue(`현재 위치: ${userLocation.latitude}, ${userLocation.longitude}`);
+            }
+            if (arriveValue === null) {
+                setArriveValue(`현재 위치: ${userLocation.latitude}, ${userLocation.longitude}`);
+            }
+        }
+    }, [userLocation]);
 
     const swapValues = () => {
         const tempDepart = departValue;
