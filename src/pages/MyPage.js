@@ -438,7 +438,7 @@ export const MyPage = () => {
                             <p>반재형 (Frontend) - publicdev2024@gmail.com</p>
                             <p>송민교 (Full stack) - alsrysong@gmail.com</p>
                             <p>정다은 (Full stack) - dechung1004@naver.com</p>
-                            <p>한서준 (ull stack) - watashijxxnsuka@gmail.com</p>
+                            <p>한서준 (Full stack) - watashijxxnsuka@gmail.com</p>
                         </DeveloperInfo>
                         )}
                     </div>
