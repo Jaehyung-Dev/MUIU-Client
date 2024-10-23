@@ -436,7 +436,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                             type="text"
                             id="depart-input"
                             name="depart-input"
-                            placeholder="출발지"
+                            placeholder="출발지(공백 시, 현재 위치로 자동 설정)"
                             spellCheck="false"
                             value={departValue || ""}
                             onChange={handleDepartInputChange}
@@ -464,7 +464,7 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                             type="text"
                             id="arrive-input"
                             name="arrive-input"
-                            placeholder="도착지"
+                            placeholder="도착지(공백 시, 현재 위치로 자동 설정)"
                             spellCheck="false"
                             value={arriveValue || ""}
                             onChange={handleArriveInputChange}
