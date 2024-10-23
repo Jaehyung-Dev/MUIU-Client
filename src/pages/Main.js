@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { MdGpsFixed } from "react-icons/md";
+import axios from 'axios';
 import graphImg from '../svg/graphImg.svg';
-import { fetchUser } from '../apis/memberApis';
-
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from '../apis/memberApis';
 
 const Content = styled.div``;
 
@@ -340,6 +340,32 @@ export const Main = () => {
     const dispatch = useDispatch();
     const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
     const location = useLocation();
+
+    const [messages, setMessages] = useState([]);
+    const [temporaryLocation] = useState('서울특별시');
+
+    useEffect(() => {
+        if (naverLoginChk) {
+            const params = new URLSearchParams(location.search);
+            const token = params.get('token');
+            if (naverLoginChk && token) {
+                sessionStorage.setItem('ACCESS_TOKEN', token);
+                dispatch(fetchUser(token));
+            }
+        }
+    }, [dispatch, naverLoginChk, location]);
+
+    useEffect(() => {
+        axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
+            .then(response => {
+                console.log(response.data);
+                setMessages(response.data.slice(0, 2));
+            })
+            .catch(error => {
+                console.error('Error fetching disaster messages:', error);
+            });
+    }, [temporaryLocation]);
+    
     
     useEffect(() => {
         if (naverLoginChk) {
@@ -418,28 +444,21 @@ export const Main = () => {
                 ))}
             </DotsWrapper>
         </CarouselWrapper>
-                <Section>
-                    <h2>서울시 관악구&nbsp;&nbsp;
+        <Section>
+                    <h2>{temporaryLocation}&nbsp;&nbsp;
                         <MdGpsFixed size="1.2rem" />
                     </h2>
                     <div className="current-info-items">
-                        <div className="current-info-item">
-                            <div className="current-location">
-                                <p>봉천동</p>
+                        {messages.map((message, index) => (
+                            <div className="current-info-item" key={index}>
+                                <div className="current-location">
+                                    <p>{`${message.alertLevel}`}</p>
+                                </div>
+                                <div className="current-location-info">
+                                    <p>{`${message.occurrenceTime} - ${message.messageContent}`}</p>
+                                </div>
                             </div>
-                            <div className="current-location-info">
-                                <p>관악로 21-1 도로공사로 인해 교통체증이 예상됩니다. 교통사고에 유의하세요.</p>
-                            </div>
-                        </div>
-
-                        <div className="current-info-item">
-                            <div className="current-location">
-                                <p>봉천동</p>
-                            </div>
-                            <div className="current-location-info">
-                                <p>관악로 21-1 도로공사로 인해 교통체증이 예상됩니다. 교통사고에 유의하세요.</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </Section>
             </Content>
