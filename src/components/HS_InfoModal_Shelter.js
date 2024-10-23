@@ -1,3 +1,4 @@
+// 수정해야 함
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import hospitalData from '../JSON/hospitalData.json';

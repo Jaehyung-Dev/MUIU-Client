@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { MdGpsFixed } from "react-icons/md";
 import graphImg from '../svg/graphImg.svg';
+import { fetchUser } from '../apis/memberApis';
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Content = styled.div``;
 
@@ -335,6 +337,22 @@ const PageNumber = styled.div`
 
 export const Main = () => {
     const navi = useNavigate();
+    const dispatch = useDispatch();
+    const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
+    const location = useLocation();
+    
+    useEffect(() => {
+        if (naverLoginChk) {
+            const params = new URLSearchParams(location.search);
+            const token = params.get('token');
+            if (naverLoginChk && token) {
+                sessionStorage.setItem('ACCESS_TOKEN', token);
+        
+                // 사용자 정보를 가져오는 Redux 액션 디스패치
+                dispatch(fetchUser(token));
+            }
+        }
+    }, [dispatch, naverLoginChk]); // naverLoginChk가 true일 때만 실행
 
     const handleFundClick = () => navi('/fund');
     const handleDiaryClick = () => navi('/my-diary');

@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { createFundPost } from '../apis/fundApis';
+import { useSelector } from 'react-redux';
 
 const Main = styled.main`
   width: 100%;  
@@ -130,6 +131,7 @@ const CustomInput = ({ value, onClick }) => (
 );
 
 const FundPost = () => {
+  const userId = useSelector((state) => state.memberSlice.id);
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [team, setTeam] = useState('');
@@ -185,22 +187,20 @@ const resizeImage = (file, maxWidth, maxHeight) => {
   });
 };
 
-const handleImageChange = (e) => {
-  setFile(e.target.files[0]); // 파일을 상태에 저장
+
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    try {
+      const resizedImage = await resizeImage(file, 800, 800); // 최대 800x800 크기로 리사이즈
+      setFile(resizedImage); // 리사이즈된 이미지를 base64로 상태에 저장
+      setImagePreview(resizedImage); // 미리보기 이미지 설정 (필요에 따라)
+    } catch (error) {
+      console.error("이미지 리사이징 실패:", error);
+    }
+  }
 };
 
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImagePreview(reader.result);
-  //       setImageUrl(reader.result); // 서버에 업로드하고 나서 URL로 대체
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -208,25 +208,23 @@ const handleImageChange = (e) => {
     const content = editorRef.current?.getInstance().getHTML();
 
     const postData = {
-      // username: 'bitcamp10',  // 임시로 설정할 username 값
+      userId,
       title,
       description: content,
       teamName: team, 
       fundStartDate: fundStart,
       fundEndDate: fundEnd,
       targetAmount,
+      mainImage: file // base64로 인코딩된 이미지 데이터
     };
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('post', JSON.stringify(postData)); // JSON으로 변환하여 문자열로 전송
 
     console.log('작성된 글:', postData);
 
     try {
-      const response = await createFundPost(formData, {
+      const response = await createFundPost(postData, {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+          Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+          'Content-Type': 'application/json' // JSON 데이터로 전송
         }
       });
       console.log('게시글 등록 성공!', response);

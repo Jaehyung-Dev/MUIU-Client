@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import axios from 'axios'; // axios 추가
+import { sendSupportMessage } from '../apis/supportApi'; // API 함수 임포트
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -90,7 +91,7 @@ const NavItem = styled.div`
     flex-direction: column;
     align-items: center;
     font-size: 0.8rem;
-    color: ${(props) => (props.active ? '#fbb03b' : '#999')};
+    color: ${(props) => (props.$active ? '#fbb03b' : '#999')};
 `;
 
 const TopNav = styled.div`
@@ -121,24 +122,14 @@ const Support = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formData = { name, email, message };
     
         try {
-            // Spring Boot API 엔드포인트로 POST 요청
-            const response = await axios.post('http://localhost:9090/api/support/contact', {
-                name,
-                email,
-                message,
-            }, {
-                withCredentials: true, // 추가: 쿠키와 자격 증명이 포함되도록 설정
-            });
-            alert(response.data); // 서버에서 보낸 응답 메시지를 alert로 표시
-            // 폼 초기화
-            setName('');
-            setEmail('');
-            setMessage('');
+            await sendSupportMessage(formData);  // response 할당 제거
+            alert('문의사항이 성공적으로 접수되었습니다. 곧 답변을 받으실 수 있습니다.');
         } catch (error) {
-            console.error('이메일 전송 오류:', error);
-            alert('이메일 전송에 실패했습니다.');
+            console.error('이메일 전송 오류:', error.response ? error.response.data : error.message);
+            alert('이메일 전송에 실패했습니다. 잠시 후 다시 시도해주세요.');
         }
     };
 

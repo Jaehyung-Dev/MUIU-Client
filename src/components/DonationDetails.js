@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import fundPostImg from '../DMHM-images/fund-post-img.png'; 
+import { Height } from '@mui/icons-material';
 
 
 const PostBox = styled.div`
@@ -55,13 +56,17 @@ const TargetText = styled.p`
 `;
 
 // DonationDetails component
-const DonationDetails = ({ percentage, targetAmount }) => {
+const DonationDetails = ({ imageSrc, title, recipient, percentage, targetAmount }) => {
   return (
     <>
-      <PostImg src={fundPostImg} alt="호우피해 이미지" />
+      <PostImg 
+        src={imageSrc || ''}  // 이미지가 없을 경우 빈 문자열로 설정
+        alt="기부 메인 이미지" 
+        style={{ height: '200px', width: '100%', backgroundColor: '#f0f0f0', display: 'block' }} 
+      />
       <PostBox>
-        <PostTitle>폭우가 덮친 밤, 호우피해 주민들의 악몽을 깨워주세요</PostTitle>
-        <FundRecipient>사랑의열매 사회복지공동모금회</FundRecipient>
+        <PostTitle>{title}</PostTitle>
+        <FundRecipient>{recipient}</FundRecipient>
 
         <ProgressContainer>
           <ProgressBar style={{ width: `${percentage}%` }} />
