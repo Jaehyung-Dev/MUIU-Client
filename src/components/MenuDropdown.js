@@ -97,15 +97,17 @@ const MenuDropdown = ({ activeMenuItem, handleMenuClick }) => {
                         </StyledLink>
                     </li>
                 )}
-                <li>
-                    <StyledLink 
-                        to="/join-agree" 
-                        $isActive={activeMenuItem === 'join'} 
-                        onClick={() => handleMenuClick('join')}
-                    >
-                        <PersonAddOutlinedIcon />회원가입
-                    </StyledLink>
-                </li>
+                {!isLoginChk && (
+                    <li>
+                        <StyledLink 
+                            to="/join-agree" 
+                            $isActive={activeMenuItem === 'join'} 
+                            onClick={() => handleMenuClick('join')}
+                        >
+                            <PersonAddOutlinedIcon />회원가입
+                        </StyledLink>
+                    </li>
+                )}
                 <li>
                     <StyledLink 
                         to="/mypage" 

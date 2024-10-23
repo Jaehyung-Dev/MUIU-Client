@@ -130,8 +130,6 @@ const SpanLeftMargin = styled.span`
 
 const DetailFontsize = styled.p`
     font-size: 0.9rem;
-    white-space: pre-wrap; /* 줄바꿈 처리 */
-    word-wrap: break-word;
 `;
 
 const JoinAgree = () => {
