@@ -1,16 +1,19 @@
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 import { logout } from '../apis/memberApis';
 
-const Content = styled.div`
+const Content = styled.div``;
+
+const ProfileImageInput = styled.input`
+    display: none;
 `;
 
 const Profile = styled.div`
@@ -61,6 +64,7 @@ const Profile = styled.div`
         justify-content: center;
         background-color: #f0f0f0;
         margin-left: auto;
+        border: none;
     }
 `;
 
@@ -208,78 +212,95 @@ const DividerButton = styled.button`
 
 export const MyPage = () => {
     const [userData, setUserData] = useState(null); 
+    const [profileImage, setProfileImage] = useState(null);
     const [showDeveloperInfo, setShowDeveloperInfo] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchUserData = () => {
             try {
                 const persistRoot = sessionStorage.getItem('persist:root');
-    
                 if (!persistRoot) {
                     navigate('/login');
                     return;
                 }
     
                 const parsedRoot = JSON.parse(persistRoot);
-    
                 if (!parsedRoot.memberSlice) {
                     navigate('/login');
                     return;
                 }
     
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-    
-                if (!memberSlice.isLogin) {
+                if (!memberSlice.isLogin || !memberSlice.id || !memberSlice.username || !memberSlice.role) {
                     navigate('/login');
                     return;
                 }
     
-                const token = localStorage.getItem('token');
-                const userId = memberSlice.id;
+                setUserData({
+                    id: memberSlice.id,
+                    name: memberSlice.username,
+                    role: memberSlice.role,
+                });
     
-                if (!token || !userId) {
-                    navigate('/login');
-                    return;
-                }
-    
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                };
-    
-                try {
-                    const response = await axios.get(`http://localhost:9090/members/${userId}/name-role`, config);
-    
-                    if (response.status === 200 && response.data.item) {
-                        setUserData(response.data.item);
-                    } else {
-                        navigate('/login');
-                    }
-    
-                } catch (apiError) {
-                    navigate('/login');
-                }
+                // 로컬 스토리지에서 프로필 이미지 URL 불러오기
+                const storedProfileImageUrl = localStorage.getItem('profileImageUrl');
+                setProfileImage(storedProfileImageUrl || userProfile);
             } catch (error) {
+                console.error('오류:', error);
                 navigate('/login');
             }
         };
     
         fetchUserData();
     }, [navigate]);
-    
-    
 
-    // userData가 null이 아닌지 확인 후 렌더링
-    if (!userData) {
-        return <div>유저 정보를 불러오는 중 오류가 발생했습니다.</div>;
-    }
+    const handleProfileChangeClick = () => {
+        document.getElementById('profile-image-input').click();
+    };
+
+    const handleProfileImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('userId', userData.id);
+    
+            try {
+                const response = await axios.post(
+                    'http://localhost:9090/api/profile/upload',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        withCredentials: true
+                    }
+                );
+                
+                if (response.status === 200) {
+                    const imageUrl = response.data;
+                    alert('프로필 이미지가 변경되었습니다.');
+                    setProfileImage(imageUrl);
+    
+                    localStorage.setItem('profileImageUrl', imageUrl);
+                }
+            } catch (error) {
+                console.error('프로필 이미지 업로드 오류:', error);
+                alert('프로필 이미지 변경 중 오류가 발생했습니다.');
+            }
+        }
+    };
+
+    const handleLogoutClick = () => {
+        dispatch(logout());
+        navigate('/');
+    };
 
     const handleStarredPlaceClick = () => {
         navigate('/starred-place');
-    }
+    };
 
     const handleConsultationHistoryClick = () => {
         navigate('/consultation-record');
@@ -289,17 +310,8 @@ export const MyPage = () => {
         navigate('/donation-record');
     };
 
-    const handleProfilehangeClick = () => {
-        alert('프로필 변경 모달 이동');
-    };
-
     const handlePasswordChangeClick = () => {
         navigate('/change-password');
-    };
-
-    const handleLogoutClick = () => {
-        dispatch(logout());
-        navigate('/');
     };
 
     const handleSupportClick = () => {
@@ -313,7 +325,6 @@ export const MyPage = () => {
     const handleAccountDeleteClick = async () => {
         if (window.confirm('정말 탈퇴하시겠습니까?')) {
             try {
-                // sessionStorage에서 persist:root 가져오기
                 const persistRoot = sessionStorage.getItem('persist:root');
                 if (!persistRoot) {
                     console.warn('persist:root가 없습니다.');
@@ -324,11 +335,8 @@ export const MyPage = () => {
                     return;
                 }
     
-                // persist:root에서 memberSlice 파싱
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-    
-                // userId와 token 가져오기
                 const userId = memberSlice.id;
                 const token = localStorage.getItem('token');
     
@@ -341,7 +349,6 @@ export const MyPage = () => {
                     return;
                 }
     
-                // 서버에 DELETE 요청 보내기
                 const response = await axios.delete(`http://localhost:9090/members/${userId}/delete`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -366,23 +373,26 @@ export const MyPage = () => {
             }
         }
     };
-    
-    
-    
-    
-    
 
     return (
         <Content>
             <Profile>
                 <div className="profile-image">
-                    <img src={userProfile} alt=""/>
+                    <img src={profileImage} alt="프로필" />
                 </div>
                 <div className="profile-user">
-                    <div className="profile-type">{userData.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
-                    <div className="profile-name">{userData.name} 님</div>
+                    <div className="profile-type">{userData?.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
+                    <div className="profile-name">{userData?.name} 님</div>
                 </div>
-                <div className="change-profile-btn" onClick={handleProfilehangeClick}>프로필 변경</div>
+                <button className="change-profile-btn" onClick={handleProfileChangeClick}>
+                    프로필 변경
+                </button>
+                <ProfileImageInput
+                    id="profile-image-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileImageChange}
+                />
             </Profile>
             <Menu>
                 <div className="menu-button" onClick={handleStarredPlaceClick}>
@@ -428,7 +438,7 @@ export const MyPage = () => {
                             <p>반재형 (Frontend) - publicdev2024@gmail.com</p>
                             <p>송민교 (Full stack) - alsrysong@gmail.com</p>
                             <p>정다은 (Full stack) - dechung1004@naver.com</p>
-                            <p>한서준 (Full stack) - watashijxxnsuka@gmail.com</p>
+                            <p>한서준 (ull stack) - watashijxxnsuka@gmail.com</p>
                         </DeveloperInfo>
                         )}
                     </div>
