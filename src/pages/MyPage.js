@@ -171,7 +171,7 @@ const DeveloperInfo = styled.div`
 
 const DividerBox = styled.div`
     width: 93%;
-    height: 200px;
+    height: 150px;
     background-color: #f0f0f0;
     border-radius: 15px;
     margin: 15px auto;
@@ -297,10 +297,6 @@ export const MyPage = () => {
         navigate('/change-password');
     };
 
-    const handleSocialLinkClick = () => {
-        alert('소셜 연동');
-    };
-
     const handleLogoutClick = () => {
         dispatch(logout());
         navigate('/');
@@ -410,7 +406,6 @@ export const MyPage = () => {
             </Menu>
             <DividerBox>
                 <DividerButton onClick={handlePasswordChangeClick}>비밀번호 변경</DividerButton>
-                <DividerButton onClick={handleSocialLinkClick}>소셜 연동</DividerButton>
                 <DividerButton onClick={handleLogoutClick}>로그아웃</DividerButton>
             </DividerBox>
             <MenuList>
@@ -427,13 +422,13 @@ export const MyPage = () => {
                     </div>
                     {showDeveloperInfo && (
                         <DeveloperInfo>
-                            <p>민수정 (full stack) - soojeongmin@soongsil.ac.kr</p>
-                            <p>김대휘 (full stack) - whee990731@naver.com</p>
-                            <p>김서연 (full stack) - kimseoyeon0332@gmail.com</p>
-                            <p>반재형 (full stack) - publicdev2024@gmail.com</p>
-                            <p>송민교 (full stack) - alsrysong@gmail.com</p>
-                            <p>정다은 (full stack) - dechung1004@naver.com</p>
-                            <p>한서준 (full stack) - watashijxxnsuka@gmail.com</p>
+                            <p>민수정 (Frontend) - soojeongmin@soongsil.ac.kr</p>
+                            <p>김대휘 (Frontend) - whee990731@naver.com</p>
+                            <p>김서연 (Full stack) - kimseoyeon0332@gmail.com</p>
+                            <p>반재형 (Frontend) - publicdev2024@gmail.com</p>
+                            <p>송민교 (Full stack) - alsrysong@gmail.com</p>
+                            <p>정다은 (Full stack) - dechung1004@naver.com</p>
+                            <p>한서준 (Full stack) - watashijxxnsuka@gmail.com</p>
                         </DeveloperInfo>
                         )}
                     </div>
