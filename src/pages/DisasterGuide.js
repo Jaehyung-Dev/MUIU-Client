@@ -9,7 +9,6 @@ const Container = styled.div`
     font-family: 'Arial', sans-serif;
     background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`

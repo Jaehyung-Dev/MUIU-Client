@@ -232,6 +232,17 @@ const SuggestionItem = styled.li`
     }
 `;
 
+///
+const Step = styled.div`
+    margin: 5px 0;
+`;
+
+const Line = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
 const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -410,14 +421,79 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         setRotation(rotation + 180);
     };
     
+    /* 길찾기 기능 구현 */
+    // 대중교통
+    const [transitData, setTransitData] = useState(null); // API 데이터를 저장할 상태 추가
+
+    // 대중교통 길찾기 API 호출
+    const fetchTransitRoutes = async (departCoords, arriveCoords) => {
+        const appKey = process.env.REACT_APP_TMAP_APP_KEY;
+        const url = 'https://apis.openapi.sk.com/transit/routes';
+        const body = {
+            startX: departCoords.lng,
+            startY: departCoords.lat,
+            endX: arriveCoords.lng,
+            endY: arriveCoords.lat,
+            count: 10,
+            lang: 0,
+            format: 'json'
+        };
+    
+        try {
+            // 요청 간 대기 시간 (예: 1초)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+    
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'appKey': appKey,
+                },
+                body: JSON.stringify(body),
+            });
+    
+            if (!response.ok) {
+                if (response.status === 429) {
+                    alert('요청이 너무 많습니다. 잠시 후에 다시 시도해주세요.');
+                } else {
+                    alert('API 요청 실패: ' + response.status);
+                }
+                return;
+            }
+    
+            const data = await response.json();
+            console.log('API 응답 데이터:', data);
+    
+            if (data && data.plan && data.plan.itineraries) {
+                setTransitData(data.plan.itineraries);
+            } else {
+                console.error('itineraries가 존재하지 않습니다:', data);
+            }
+        } catch (error) {
+            console.error('API 요청 오류:', error);
+        }
+    };
+    // Finding 버튼 클릭 핸들러
+    const handleFindingClick = () => {
+        const departCoords = getDepartCoordinates();
+        const arriveCoords = getArriveCoordinates();
+
+        if (departCoords && arriveCoords) {
+            fetchTransitRoutes(departCoords, arriveCoords);
+        } else {
+            console.error('출발지 또는 도착지 좌표를 가져올 수 없습니다.');
+        }
+    };
+
     useEffect(() => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
-        
-        console.log('출발지:', departCoords);
-        console.log('도착지:', arriveCoords);
+
+        if (departCoords && arriveCoords) {
+            fetchTransitRoutes(departCoords, arriveCoords);
+        }
     }, [departValue, arriveValue, hospitalCoordinates, stations]);
-    
 
     if (!isOpen) return null;
 
@@ -515,25 +591,41 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                         )}
                     </SearchingArrive>
                     <Finding>
-                        <FindingImage src={findIcon} alt="길찾기" id="find-btn" />
+                        <FindingImage
+                            src={findIcon} 
+                            alt="길찾기" 
+                            id="find-btn" 
+                            onClick={handleFindingClick} />
                     </Finding>
                 </SearchingBox>
 
                 <FindingResultItems>
-                    <FindingResultItem id="finding-result-item1">
-                        <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
-                        <TakingTime>
-                            <GoH>
-                                11<TimeText>시간</TimeText>
-                            </GoH>
-                            <GoM>
-                                11<TimeText>분</TimeText>
-                            </GoM>
-                        </TakingTime>
-                    </FindingResultItem>
+                    {transitData && transitData.map((itinerary, index) => {
+                            const totalTime = Math.floor(itinerary.totalTime / 60);
+                            const totalFare = itinerary.fare.regular.totalFare;
+
+                            return (
+                                <FindingResultItem key={index}>
+                                    <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
+                                    <TakingTime>
+                                        <GoH>{totalTime} <TimeText>분</TimeText></GoH>
+                                        <GoM>{totalFare} <TimeText>원</TimeText></GoM>
+                                    </TakingTime>
+                                    {itinerary.legs.map((leg, legIndex) => (
+                                        <Step key={legIndex}>
+                                            <Line>
+                                                <div>{leg.mode === 'BUS' ? `버스 ${leg.route}` : `도보`}</div>
+                                                <div>{leg.sectionTime}초</div>
+                                            </Line>
+                                            <div>{leg.start.name} → {leg.end.name}</div>
+                                        </Step>
+                                    ))}
+                                </FindingResultItem>
+                            );
+                        })}
                 </FindingResultItems>
             </ModalContent>
-        </Modal>
+        </Modal>    
     );
 };
 

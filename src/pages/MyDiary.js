@@ -6,8 +6,9 @@ import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // 필요시 추가
-import MD_Block from '../components/MD_Block'; // MD_Block 컴포넌트 임포트
+import MD_Block from '../components/MD_Block';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const DiaryBackground = styled.div`
     width: 100%;
@@ -142,49 +143,43 @@ const DiaryViewAll = styled.a`
     color: gray;
     font-weight: bold;
     margin: 0 0.5rem 0 0.5rem;
-`;
+`
 
-const MyDiary = () => {
-    const [userName, setUserName] = useState(''); // 유저 이름을 저장할 상태
-    const navigate = useNavigate();
+export const MyDiary = () => {
+    const navi = useNavigate();
+
+    const [userData, setUserData] = useState(null); 
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const persistRoot = sessionStorage.getItem('persist:root');
-                if (!persistRoot) {
-                    navigate('/login');
-                    return;
-                }
-
                 const parsedRoot = JSON.parse(persistRoot);
-                if (!parsedRoot.memberSlice) {
-                    navigate('/login');
-                    return;
-                }
-
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-                if (!memberSlice.isLogin || !memberSlice.username) {
-                    navigate('/login');
-                    return;
-                }
 
-                setUserName(memberSlice.username); // 유저 이름 설정
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name.slice(1)
+                });
             } catch (error) {
-                console.error('유저 정보를 가져오는 중 오류:', error);
-                navigate('/login');
+                console.error('오류:', error);
             }
         };
-
         fetchUserData();
-    }, [navigate]);
+    }, []);
 
     return (
         <DiaryBackground>
             <FeelContainer onClick={() => navigate('/my-diary-write')}>
                 <CoverFeelDiv>
                     <DiaryName>
-                        안녕하세요 {userName}님,
+                        안녕하세요 {userData?.name || '이용자'}님,
                     </DiaryName>
                     <DiaryToday>
                         오늘의 하루는<br /> 어떠셨나요?
