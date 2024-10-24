@@ -10,6 +10,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../apis/memberApis';
 import hospitalData from '../JSON/hospitalData.json';
+// import { set } from 'react-datepicker/dist/date_utils';
 
 
 const Content = styled.div``;
@@ -343,6 +344,8 @@ export const Main = () => {
     const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
     const location = useLocation();
 
+    const [userData, setUserData] = useState(null); 
+
     const [messages, setMessages] = useState([]);
     const [temporaryLocation, setTemporaryLocation] = useState(null);// 전체 시/도 및 구 정보 저장
     const [titleLocation, setTitleLocation] = useState(null);
@@ -518,6 +521,30 @@ export const Main = () => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name.slice(1)
+                });
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+    
 
     return (
         <>
@@ -560,7 +587,7 @@ export const Main = () => {
             </Content>
             <Blocks>
                 <Block onClick={handleDiaryClick}>
-                    <div className="block-text-bold">안녕하세요.<br /> 서준님,</div>
+                    <div className="block-text-bold">안녕하세요.<br /> {userData?.name || '이용자'}님,</div>
                     <div className="block-text-small">오늘의 하루는<br />어떠셨나요?</div>
                     <img src={graphImg} alt="graphImg" style={{ marginBottom: "-5%" }} />
                 </Block>
