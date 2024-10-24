@@ -14,16 +14,16 @@ module.exports = function(app) {
     app.use(
         '/api2', // api path parameter -- 재형님이 쓰시는 api url 사용하시면 돼요!
         createProxyMiddleware({
-            target: 'https://nid.naver.com', // endpoint
+            target: '"https://nid.naver.com', // endpoint
             changeOrigin: true,
-            secure: false,
         })
     );
 
+    /* diaryWriteApis proxy 설정 */
     app.use(
-        '/apis',
+        '/api', // api path parameter
         createProxyMiddleware({
-            target: 'http://localhost:9090',
+            target: 'http://localhost:9090', // endpoint
             changeOrigin: true,
         })
     );
