@@ -5,6 +5,7 @@ import HS_MapDisplay from '../components/HS_MapDisplay';
 import HS_InfoModal from '../components/HS_InfoModal';
 import HS_PhotoModal from '../components/HS_PhotoModal';
 import HS_FindRoadModal from '../components/HS_FindRoadModal';
+import HS_InfoModal_Shelter from '../components/HS_InfoModal_Shelter';
 
 const Main = styled.div`
     width: 100%;
@@ -24,6 +25,7 @@ export const HospitalShelterInfo = () => {
     const [selectedHospital, setSelectedHospital] = useState(null);
     const [mode, setMode] = useState(null);
 
+    /* 병원 Modal 함수 모음 */
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
 
@@ -40,9 +42,30 @@ export const HospitalShelterInfo = () => {
         setIsFindRoadOpen(false);
         setSelectedHospital(null); // 모달 닫을 때 선택된 병원 초기화
         setMode(null);
-
     };
 
+    /*
+        【 Shelter 】
+        - openShelterInfo
+        - openShelterPhoto
+        - openShelterFindRoad
+    */
+    const [isShelterInfoOpen, setIsShelterInfoOpen] = useState(false);
+    const [isShelterPhotoOpen, setIsShelterPhotoOpen] = useState(false);
+    const [isShelterFindRoadOpen, setIsShelterFindRoadOpen] = useState(false);
+    const [selectedShelter, setSelectedShelter] = useState(null);
+
+    const openShelterInfo = () => setIsShelterInfoOpen(true);
+    const closeShelterInfo = () => setIsShelterInfoOpen(false);
+
+    const openShelterPhoto = () => setIsShelterPhotoOpen(true);
+    const closeShelterPhoto = () => setIsShelterPhotoOpen(false);
+
+    const openShelterFindRoad = () => {
+        
+    };
+
+    /* 검색창 */
     const handleSearch = (query) => {
         setSearchQuery(query);
     };
@@ -858,6 +881,7 @@ export const HospitalShelterInfo = () => {
                 setSelectedHospital={setSelectedHospital}
                 mode = {mode}
             />
+            {/* 병원 Modal 창 */}
             <HS_InfoModal
                 isOpen={isInfoOpen}
                 onClose={closeInfoPopUp}
@@ -871,6 +895,12 @@ export const HospitalShelterInfo = () => {
                 onClose={closeFindRoadPopUp}
                 hospitalName={selectedHospital} // 병원 이름 전달
                 mode={mode}
+                stations={stations.DATA}
+            />
+            {/* 대피소 Modal 창 */}
+            <HS_InfoModal_Shelter
+                isOpen={isInfoOpen}
+                onClose={closeInfoPopUp}
                 stations={stations.DATA}
             />
         </Main>
