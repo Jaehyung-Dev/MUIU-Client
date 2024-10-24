@@ -245,29 +245,28 @@ export const MyPage = () => {
                     navigate('/login');
                     return;
                 }
-
+    
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-
+    
                 if (!memberSlice.isLogin || !memberSlice.id) {
                     navigate('/login');
                     return;
                 }
-
-                setUserData({
-                    id: memberSlice.id,
-                    name: memberSlice.username,
-                    role: memberSlice.role,
-                });
-
-                // 프로필 이미지 서버에서 가져오기
-                const response = await axios.get('http://localhost:9090/apis/profile/me', {
+    
+                // Fetch the user's name instead of username
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
                     headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },
                     withCredentials: true,
                 });
-                setProfileImage(`${response.data.profileImageUrl}?t=${new Date().getTime()}`);
+    
+                setUserData({
+                    id: memberSlice.id,
+                    name: response.data.item.name,
+                    role: response.data.item.role,
+                });
             } catch (error) {
                 console.error('오류:', error);
                 if (error.response && error.response.status === 401) {
@@ -275,9 +274,10 @@ export const MyPage = () => {
                 }
             }
         };
-
+    
         fetchUserData();
     }, [navigate]);
+    
 
     const handleProfileChangeClick = () => {
         document.getElementById('profile-image-input').click();

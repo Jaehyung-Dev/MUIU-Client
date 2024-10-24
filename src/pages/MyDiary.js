@@ -7,6 +7,8 @@ import good from '../svg/good.svg'
 import happy from '../svg/happy.svg'
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const DiaryBackground = styled.div`
     width: 100%;
@@ -141,12 +143,38 @@ const DiaryViewAll = styled.a`
 export const MyDiary = () => {
     const navi = useNavigate();
 
+    const [userData, setUserData] = useState(null); 
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name.slice(1)
+                });
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+
     return (
         <DiaryBackground>
             <FeelContainer onClick={() => navi('/my-diary-write')}>
                 <CoverFeelDiv>
                     <DiaryName>
-                        안녕하세요 서준님,
+                        안녕하세요 {userData?.name || '이용자'}님,
                     </DiaryName>
                     <DiaryToday>
                         오늘의 하루는<br/> 어떠셨나요?
