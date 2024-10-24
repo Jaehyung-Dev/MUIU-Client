@@ -282,16 +282,18 @@ export const MyPage = () => {
                 if (response.status === 200) {
                     const imageUrl = response.data;
                     alert('프로필 이미지가 변경되었습니다.');
-                    setProfileImage(imageUrl);
+                    // 타임스탬프를 추가하여 캐시 무효화
+                    const imageWithTimestamp = `${imageUrl}?t=${new Date().getTime()}`;
+                    setProfileImage(imageWithTimestamp);
     
-                    localStorage.setItem('profileImageUrl', imageUrl);
+                    localStorage.setItem('profileImageUrl', imageWithTimestamp);
                 }
             } catch (error) {
                 console.error('프로필 이미지 업로드 오류:', error);
                 alert('프로필 이미지 변경 중 오류가 발생했습니다.');
             }
         }
-    };
+    };    
 
     const handleLogoutClick = () => {
         dispatch(logout());
