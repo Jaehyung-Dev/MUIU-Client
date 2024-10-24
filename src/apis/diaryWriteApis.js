@@ -9,7 +9,7 @@ export const WriteDiaryAPI = async (diaryData) => {
     }
 
     console.log('Sending diary data:', diaryData); // 요청을 보내기 전에 데이터를 출력
-    const response = await axios.post('/diaries/write', diaryData, {
+    const response = await axios.post('http://localhost:9090/diaries/write', diaryData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,  // JWT 토큰 추가
