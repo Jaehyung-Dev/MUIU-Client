@@ -9,7 +9,7 @@ export const WriteDiaryAPI = async (diaryData) => {
     }
 
     console.log('Sending diary data:', diaryData);
-    const response = await axios.post('/api/diaries/write', diaryData, {
+    const response = await axios.post('/api3/diaries/write', diaryData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,

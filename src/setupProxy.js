@@ -21,7 +21,7 @@ module.exports = function(app) {
 
     /* diaryWriteApis proxy 설정 */
     app.use(
-        '/api', // api path parameter
+        '/api3', // api path parameter
         createProxyMiddleware({
             target: 'http://localhost:9090', // endpoint
             changeOrigin: true,
