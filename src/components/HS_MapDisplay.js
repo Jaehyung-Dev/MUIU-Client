@@ -12,6 +12,7 @@ import hospitalMarkerIcon from '../HS_images/hospitalMarker.svg';
 import shelterData from '../JSON/shelterData.json';
 import shelterMarkerIcon from '../HS_images/shelterMarker.svg';
 import HS_InfoModal from './HS_InfoModal';
+import Test from './Test.js';
 
 const MapContainer = styled.div`
     width: 100%;
