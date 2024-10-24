@@ -9,7 +9,7 @@ export const WriteDiaryAPI = async (diaryData) => {
     }
 
     console.log('Sending diary data:', diaryData); // 요청을 보내기 전에 데이터를 출력
-    const response = await axios.post('http://localhost:9090/diaries/write', diaryData, {
+    const response = await axios.post('/diaries/write', diaryData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,  // JWT 토큰 추가
@@ -28,3 +28,18 @@ export const WriteDiaryAPI = async (diaryData) => {
     throw new Error('Error writing diary: ' + error.message);
   }
 };
+
+// // 오늘 일기를 이미 작성했는지 확인하는 API
+// export const CheckTodayDiaryAPI = async (userId) => {
+//   try {
+//     const response = await axios.get(`/diaries/check-today?userId=${userId}`, {
+//       headers: {
+//         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+//       },
+//     });
+//     return response.data; // 서버에서 'exists'라는 플래그를 반환한다고 가정
+//   } catch (error) {
+//     console.error('Error checking today\'s diary:', error);
+//     throw error;
+//   }
+// };

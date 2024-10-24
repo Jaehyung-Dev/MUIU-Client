@@ -8,7 +8,8 @@ import depress from '../svg/depress.svg';
 import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
-import { WriteDiaryAPI } from '../apis/diaryWriteApis'; 
+import { WriteDiaryAPI, CheckTodayDiaryAPI } from '../apis/diaryWriteApis'; // 오늘 일기 체크 API 추가
+import { useNavigate } from 'react-router-dom'; // 페이지 이동을 위한 useNavigate
 import { jwtDecode } from 'jwt-decode'; // 잘못된 import 해결
 
 const Container = styled.div`
@@ -173,6 +174,7 @@ const MyDiaryWrite = () => {
   const [mood, setMood] = useState('');
   const [selectedMood, setSelectedMood] = useState('');
   const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();  // 페이지 이동을 위한 useNavigate
 
   useEffect(() => {
     const token = sessionStorage.getItem('ACCESS_TOKEN'); // 세션 스토리지에서 JWT 토큰 가져오기
@@ -188,6 +190,21 @@ const MyDiaryWrite = () => {
   };
 
   const handleSaveDiary = async () => {
+    // // 오늘의 일기를 이미 썼는지 체크하는 로직 추가
+    // try {
+    //   const checkResponse = await CheckTodayDiaryAPI(userId);
+    //   if (checkResponse.exists) {
+    //     // 오늘 일기를 이미 작성한 경우
+    //     const confirmUpdate = window.confirm("오늘의 일기를 이미 작성하셨습니다. 수정하시겠습니까?");
+    //     if (!confirmUpdate) {
+    //       return; // 사용자가 수정을 원하지 않으면 리턴
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error('Error checking today\'s diary:', error);
+    //   return;
+    // }
+
     // 유효성 검사
     if (!title) {
       alert('제목을 입력해주세요.');
@@ -214,6 +231,11 @@ const MyDiaryWrite = () => {
     try {
       const response = await WriteDiaryAPI(diaryData);
       console.log('Diary saved successfully:', response);
+
+      // 일기 저장 성공 시 alert 후 페이지 이동
+      alert('일기가 저장되었습니다.');
+      navigate('/my-diary-collection'); // MyDiaryCollection 페이지로 이동
+
     } catch (error) {
       console.error('Error saving diary:', error);
     }
