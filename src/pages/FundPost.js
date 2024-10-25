@@ -1,11 +1,8 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import color from '@toast-ui/editor-plugin-color-syntax';
-import 'tui-color-picker/dist/tui-color-picker.css';
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
@@ -31,14 +28,10 @@ const Main = styled.main`
     box-sizing: border-box;
   }
 
-  .editor-container {
-    margin-bottom: 2.5rem;
-  }
-
   .date-field {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    margin: 1rem 0 1rem 0;
   }
 
   .date-label {
@@ -99,6 +92,51 @@ const Main = styled.main`
     cursor: pointer;
   }
 
+  .react-quill-editor{
+    height: 13rem;
+    width: 100%;
+    margin-bottom: 5rem;
+  }
+
+  .file-label {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ccc; 
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 0.35rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    width: 100%; 
+  }
+
+  .file-input {
+    display: none; /* 기본 input 파일 선택 버튼을 숨김 */
+  }
+
+  .file-label span {
+    color: #888; 
+  }
+
+  .file-select-btn {
+    background-color: #3A76E9; /* 버튼 배경색 */
+    color: #fff !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .file-select-btn:hover {
+    background-color: #2f5bb5; /* 호버 시 색상 변경 */
+  }
+
+
+
   @media (max-width: 768px) {
     .date-picker-container {
       flex-direction: column;
@@ -130,112 +168,143 @@ const CustomInput = ({ value, onClick }) => (
   </div>
 );
 
+// 툴바 옵션 설정 (이미지 버튼 추가)
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],        // 텍스트 서식
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],     // 리스트 서식
+  ['link', 'image'],                                // 링크, 이미지 삽입 버튼
+  [{ 'align': [] }],                                // 정렬
+];
+
 const FundPost = () => {
-  const userId = useSelector((state) => state.memberSlice.id);
+  const location = useLocation();  // 넘겨받은 데이터를 가져옴
+  const post = location.state?.post || {};  // post 데이터가 있으면 사용, 없으면 빈 객체
+  const userId = useSelector((state) => state.memberSlice.id); //세션저장소에 있는 id값 가져오기
   const navigate = useNavigate();
-  const [title, setTitle] = useState('');
-  const [team, setTeam] = useState('');
-  const [file, setFile] = useState(null); // 파일 상태 정의 추가
-  const [imageUrl, setImageUrl] = useState('');
-  const [imagePreview, setImagePreview] = useState(null);  // 이미지 미리보기 설정
-  const [fundStart, setFundStart] = useState(null);
-  const [fundEnd, setFundEnd] = useState(null);
-  //const [businessStart, setBusinessStart] = useState(null);
-  //const [businessEnd, setBusinessEnd] = useState(null);
-  const [targetAmount, setTargetAmount] = useState('');
-  const editorRef = useRef();
+  const [title, setTitle] = useState(post.title || '');  // 제목 미리 채우기
+  const [team, setTeam] = useState(post.teamName || '');  // 팀 이름 미리 채우기
+  const [file, setFile] = useState(null);  // 이미지 파일, 기본적으로 비워둠 (사용자가 새로 업로드할 수 있음)
+  const [imagePreview, setImagePreview] = useState(post.mainImage || null);  // 기존 이미지 미리 보기 설정
+  const [fundStart, setFundStart] = useState(post.fundStartDate ? new Date(post.fundStartDate) : null);
+  const [fundEnd, setFundEnd] = useState(post.fundEndDate ? new Date(post.fundEndDate) : null);
+  const [targetAmount, setTargetAmount] = useState(post.targetAmount || '');  // 목표 금액 미리 채우기
+  const [content, setContent] = useState(post.description || '');  // 에디터 내용 미리 채우기
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // 이미지 리사이즈 함수
-const resizeImage = (file, maxWidth, maxHeight) => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+  // 이미지 업로드 핸들러
+  const handleImageUpload = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
 
-        let width = img.width;
-        let height = img.height;
+    input.onchange = async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
 
-        // 이미지가 maxWidth, maxHeight보다 크면 비율 유지하여 리사이즈
-        if (width > maxWidth || height > maxHeight) {
-          if (width > height) {
-            height = Math.floor((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.floor((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
+      try {
+        // 여기에 이미지 업로드 API 호출
+        const response = await fetch('이미지 업로드 API 경로', {
+          method: 'POST',
+          body: formData
+        });
 
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
+        const data = await response.json();
+        const imageUrl = data.url;  // 서버에서 반환된 이미지 URL을 받음
 
-        // canvas 데이터를 base64로 변환
-        const resizedImage = canvas.toDataURL('image/jpeg', 0.2); // 이미지 품질 조정 (0.7)
-        resolve(resizedImage);
-      };
-      img.src = event.target.result;
+        // 에디터에 이미지 삽입
+        const quill = this.quillRef.current.getEditor(); // Quill 인스턴스에 접근
+        const range = quill.getSelection();
+        quill.insertEmbed(range.index, 'image', imageUrl);
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+      }
     };
-    reader.readAsDataURL(file);
-  });
-};
+  };
 
-
-const handleImageChange = async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    try {
-      const resizedImage = await resizeImage(file, 800, 800); // 최대 800x800 크기로 리사이즈
-      setFile(resizedImage); // 리사이즈된 이미지를 base64로 상태에 저장
-      setImagePreview(resizedImage); // 미리보기 이미지 설정 (필요에 따라)
-    } catch (error) {
-      console.error("이미지 리사이징 실패:", error);
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        // 여기에 이미지 리사이즈 및 업로드 로직을 추가할 수 있습니다
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result); // 이미지 미리보기 설정
+        };
+        reader.readAsDataURL(file);
+  
+        // 서버에 이미지를 업로드하는 로직을 추가할 수 있습니다
+        setFile(file); // 파일 상태 업데이트
+      } catch (error) {
+        console.error("이미지 처리 실패:", error);
+      }
     }
-  }
-};
+  };
+  
 
+  // ReactQuill 모듈 설정 (이미지 업로드 핸들러 연결)
+  const modules = {
+    toolbar: {
+      container: toolbarOptions,
+      handlers: {
+        image: handleImageUpload,  // 이미지 핸들러 연결
+      },
+    },
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const content = editorRef.current?.getInstance().getHTML();
+    const postId = post.postId;  // 수정 모드일 때 post에서 postId를 가져옴
 
     const postData = {
       userId,
       title,
       description: content,
-      teamName: team, 
+      teamName: team,
       fundStartDate: fundStart,
       fundEndDate: fundEnd,
       targetAmount,
-      mainImage: file // base64로 인코딩된 이미지 데이터
+      mainImage: file || post.mainImage  // 새 이미지가 없으면 기존 이미지를 사용
     };
 
     console.log('작성된 글:', postData);
 
     try {
-      const response = await createFundPost(postData, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-          'Content-Type': 'application/json' // JSON 데이터로 전송
-        }
-      });
-      console.log('게시글 등록 성공!', response);
-      navigate('/fund');
-    } catch (error) {
-      console.error('게시글 등록 실패:', error);
-    }
+      let response;
 
-    setTimeout(() => {
-      navigate('/fund', { state: postData });
-    }, 0);
+      if (postId) {
+        // 게시글 수정 (PUT 요청)
+        response = await axios.put(`http://localhost:9090/api/fund/post/${postId}`, postData, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+            'Content-Type': 'application/json' // JSON 데이터로 전송
+          }
+        });
+        console.log('게시글 수정 성공!', response);
+      } else {
+        // 새로운 게시글 등록 (POST 요청)
+        response = await createFundPost(postData, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+            'Content-Type': 'application/json' // JSON 데이터로 전송
+          }
+        });
+        console.log('게시글 등록 성공!', response);
+      }
+
+      // 게시글 등록 또는 수정 후 /fund로 리다이렉트
+      setTimeout(() => {
+        navigate('/fund', { state: postData });
+      }, 0);
+
+    } catch (error) {
+      console.error('게시글 처리 실패:', error);
+    }
   };
 
   return (
@@ -252,23 +321,26 @@ const handleImageChange = async (e) => {
         />
 
         {/* 대표 이미지 URL 입력 필드 */}
-        <input
-          type="file"
-          accept="image/*"
-          className="post-input"
-          onChange={handleImageChange}
-        />
+        <label className="file-label">
+          <span>대표 이미지를 선택하세요</span>
+          <span className="file-select-btn">이미지 선택</span>
+          <input
+            type="file"
+            accept="image/*"
+            className="post-input file-input"
+            onChange={handleImageChange}
+          />
+        </label>
+
 
         <div className="editor-container">
-          <Editor
-            ref={editorRef}
-            initialValue=""
-            previewStyle="vertical"
-            height="300px"
-            initialEditType="wysiwyg"
-            useCommandShortcut={true}
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={setContent}
             placeholder="내용을 입력하세요"
-            plugins={[color]}
+            className="react-quill-editor"
+            modules={modules}  // 툴바 모듈 연결
           />
         </div>
 
@@ -303,29 +375,6 @@ const handleImageChange = async (e) => {
             />
           </div>
         </div>
-
-        {/* <div className="date-field">
-                  <p className="date-label">사업 기간</p>
-                  <div className="date-picker-container">
-                    <DatePicker 
-                      selected={businessStart} 
-                      onChange={(date) => setBusinessStart(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="시작일 선택" 
-                      required
-                    />
-                    <span className="tilde">~</span>
-                    <DatePicker 
-                      selected={businessEnd} 
-                      onChange={(date) => setBusinessEnd(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="종료일 선택" 
-                      required
-                    />
-                  </div>
-                </div> */}
 
         <input
           type="number"
