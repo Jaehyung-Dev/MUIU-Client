@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import hospitalData from '../JSON/hospitalData.json';
 
 import departIcon from '../svg/출발.svg';
 import arriveIcon from '../svg/도착.svg';
