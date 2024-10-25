@@ -61,8 +61,16 @@ export const HospitalShelterInfo = () => {
     const openShelterPhoto = () => setIsShelterPhotoOpen(true);
     const closeShelterPhoto = () => setIsShelterPhotoOpen(false);
 
-    const openShelterFindRoad = () => {
-        
+    const openShelterFind = (hospitalName, mode) => {
+        setSelectedShelter(hospitalName);
+        setIsShelterFindRoadOpen(true);
+        setMode(mode);
+    };
+    
+    const closeShelterFind = () => {
+        setIsShelterFindRoadOpen(false);
+        setSelectedShelter(null); 
+        setMode(null);
     };
 
     /* 검색창 */
@@ -876,10 +884,16 @@ export const HospitalShelterInfo = () => {
                 openInfoPopUp={openInfoPopUp}
                 openPhotoPopUp={openPhotoPopUp}
                 openFindRoadPopUp={openFindRoadPopUp}
+                //
                 searchQuery={searchQuery}
                 stations={stations.DATA}
                 setSelectedHospital={setSelectedHospital}
                 mode = {mode}
+                // 
+                openShelterInfo={openShelterInfo}
+                openShelterPhoto={openShelterPhoto}
+                openShelterFind={openShelterFind}
+                setSelectedShelter={setSelectedShelter}
             />
             {/* 병원 Modal 창 */}
             <HS_InfoModal
@@ -899,8 +913,10 @@ export const HospitalShelterInfo = () => {
             />
             {/* 대피소 Modal 창 */}
             <HS_InfoModal_Shelter
-                isOpen={isInfoOpen}
-                onClose={closeInfoPopUp}
+                isShelterOpen={isShelterInfoOpen}
+                onShelterClose={closeShelterInfo}
+                openShelterPhoto={openShelterPhoto}
+                openShelterFind={openShelterFind}
                 stations={stations.DATA}
             />
         </Main>

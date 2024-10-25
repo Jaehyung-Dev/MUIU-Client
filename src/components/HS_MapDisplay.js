@@ -54,7 +54,7 @@ const ControlButton = styled.button`
     `}
 `;
 
-const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searchQuery, stations }) => {
+const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searchQuery, stations, openShelterInfo, openShelterPhoto, openShelterFind, setSelectedShelter }) => {
     const mapRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
     const [map, setMap] = useState(null);
@@ -167,7 +167,9 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
             
                             // 마커 클릭 이벤트 리스너 추가 
                             naver.maps.Event.addListener(shelterMarker, 'click', () => {
-                                openInfoPopUp();
+                                setSelectedHospital(hospital);
+                                findNearestStation(hospital);
+                                setModalOpen(true);
                             });
                         }
                     });
@@ -288,7 +290,6 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
         }
     };
     
-
     /* 가까운 역 찾기 함수 */
     const findNearestStation = (hospital) => {
         if (stations) {
