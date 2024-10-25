@@ -61,8 +61,8 @@ export const HospitalShelterInfo = () => {
     const openShelterPhoto = () => setIsShelterPhotoOpen(true);
     const closeShelterPhoto = () => setIsShelterPhotoOpen(false);
 
-    const openShelterFind = (hospitalName, mode) => {
-        setSelectedShelter(hospitalName);
+    const openShelterFind = (shelterName, mode) => {
+        setSelectedShelter(shelterName);
         setIsShelterFindRoadOpen(true);
         setMode(mode);
     };
@@ -919,6 +919,7 @@ export const HospitalShelterInfo = () => {
                 openShelterFind={openShelterFind}
                 stations={stations.DATA}
             />
+
         </Main>
     );
 };

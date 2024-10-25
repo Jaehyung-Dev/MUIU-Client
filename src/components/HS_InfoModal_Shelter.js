@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import hospitalData from '../JSON/hospitalData.json';
+import shelterData from '../JSON/shelterData.json';
 
 import departIcon from '../svg/출발.svg';
 import arriveIcon from '../svg/도착.svg';
@@ -17,7 +17,7 @@ import phoneIcon from '../svg/전화번호.svg';
 import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded';
 
 const Modal = styled.div`
-    display: ${(props) => (props.isOpen ? 'block' : 'none')};
+    display: ${(props) => (props.isShelterOpen ? 'block' : 'none')};
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -45,13 +45,6 @@ const HospitalName = styled.div`
     font-weight: bold;
     justify-content: center;
     align-items: center;
-`;
-
-const HospitalSort = styled.div`
-    margin-left: 10%;
-    font-size: 18px;
-    font-weight: bold;
-    color: #A1A1A1;
 `;
 
 const Info = styled.div`
@@ -160,7 +153,7 @@ const TabsInfoPicture = styled.div`
     }
 `;
 
-const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hospitalData, nearestStation, nearestDistance }) => {
+const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto, openShelterFind, shelterData, nearestStation, nearestDistance }) => {
     
     const [hoveredTab, setHoveredTab] = useState(null);
 
@@ -178,7 +171,7 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
 
     /* 네이버지도 검색창에 해당 링크 보내주기 */
     const copyToClipboard = () => {
-        const textToCopy = `https://map.naver.com/p/search/${hospitalData.dutyname}`;
+        const textToCopy = `https://map.naver.com/p/search/${shelterData.equp_nm}`;
         
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
@@ -192,21 +185,21 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
     };
 
 
-    if (!isOpen) return null;
+    if (!isShelterOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClick={onClose}>
+        <Modal isShelterOpen={isShelterOpen} onClick={onShelterClose}>
             <ModalContent onClick={(e) => { e.stopPropagation(); }}>
-                <ImagesContainer onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>
+                <ImagesContainer onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>
                     <MainImage>
                         <img src={mainImage1} alt="병원 예시 이미지 1" />
                     </MainImage>
                     <SmallImages>
                         <SmallImagesEle>
-                            <img src={mainImage2} alt="병원 예시 이미지 2" />
+                            <img src={mainImage1} alt="병원 예시 이미지 2" />
                         </SmallImagesEle>
                         <SmallImagesEle isSecond>
-                            <img src={mainImage3} alt="병원 예시 이미지 3" />
+                            <img src={mainImage1} alt="병원 예시 이미지 3" />
                         </SmallImagesEle>
                     </SmallImages>
                 </ImagesContainer>
@@ -216,7 +209,7 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
                         id="depart-icon" 
                         onMouseEnter={() => setHoveredTab('depart')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'depart'); }}
+                        onClick={(e) => { e.stopPropagation(); openShelterFind(shelterData.equp_nm, 'depart'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'depart' ? departHoverIcon : departIcon} 
@@ -227,7 +220,7 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
                         id="arrive-icon" 
                         onMouseEnter={() => setHoveredTab('arrive')} 
                         onMouseLeave={() => setHoveredTab(null)}
-                        onClick={(e) => { e.stopPropagation(); openFindRoadPopUp(hospitalData.dutyname, 'arrive'); }}
+                        onClick={(e) => { e.stopPropagation(); openShelterFind(shelterData.equp_nm, 'arrive'); }}
                     >
                         <TabImage 
                             src={hoveredTab === 'arrive' ? arriveHoverIcon : arriveIcon} 
@@ -252,17 +245,16 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
+                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>
-                    {hospitalData.dutyname}
-                    <HospitalSort>{hospitalData.dutydivnam}</HospitalSort>
+                    {shelterData.equp_nm}  
                 </HospitalName>
                 <Info>
                     <InfoItem>
                         <InfoItemImg src={locationIcon} alt="Location icon" />
-                        <span>{hospitalData.dutyaddr}</span>
+                        <span>{shelterData.loc_sfpr_a}</span>
                     </InfoItem>
                     <InfoItem>
                         <InfoItemImg src={distanceIcon} alt="Distance icon" />
@@ -271,17 +263,6 @@ const HS_InfoModal_Shelter = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPop
                                 ? `${nearestStation}역 약 ${nearestDistance.toFixed(1)}m` 
                                 : '가까운 역이 없습니다.'}
                         </span>
-                    </InfoItem>
-                    <InfoItem>
-                        <InfoItemImg src={phoneIcon} alt="Phone icon" />
-                        <span>{hospitalData.dutytel1}</span>
-                    </InfoItem>
-                    <InfoItem>
-                        <SubjectRoundedIcon 
-                            alt="Website icon"
-                            style={{ width: '20px', height: '20px', marginRight: '10px', color: '#A1A1A1' }} 
-                        />
-                        <span>{hospitalData.dutyinf}</span>
                     </InfoItem>
                 </Info>
             </ModalContent>
