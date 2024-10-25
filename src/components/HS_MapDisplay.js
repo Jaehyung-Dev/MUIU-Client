@@ -167,8 +167,8 @@ const HS_MapDisplay = ({ openInfoPopUp, openPhotoPopUp, openFindRoadPopUp, searc
             
                             // 마커 클릭 이벤트 리스너 추가 
                             naver.maps.Event.addListener(shelterMarker, 'click', () => {
-                                setSelectedHospital(hospital);
-                                findNearestStation(hospital);
+                                setSelectedHospital(shelter);
+                                findNearestStation(shelter);
                                 setModalOpen(true);
                             });
                         }
