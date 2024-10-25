@@ -216,9 +216,29 @@ export const MyPage = () => {
     const [showDeveloperInfo, setShowDeveloperInfo] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await axios.get('http://localhost:9090/apis/profile/me', {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+                    },
+                    withCredentials: true,
+                });
+                setProfileImage(`${response.data.profileImageUrl}?t=${new Date().getTime()}`);
+            } catch (error) {
+                console.error('프로필 이미지 로드 오류:', error);
+                if (error.response && error.response.status === 401) {
+                    navigate('/login');
+                }
+            }
+        };
+        fetchProfileImage();
+    }, [navigate]);
 
     useEffect(() => {
-        const fetchUserData = () => {
+        const fetchUserData = async () => {
             try {
                 const persistRoot = sessionStorage.getItem('persist:root');
                 if (!persistRoot) {
@@ -227,34 +247,37 @@ export const MyPage = () => {
                 }
     
                 const parsedRoot = JSON.parse(persistRoot);
-                if (!parsedRoot.memberSlice) {
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+    
+                if (!memberSlice.isLogin || !memberSlice.id) {
                     navigate('/login');
                     return;
                 }
     
-                const memberSlice = JSON.parse(parsedRoot.memberSlice);
-                if (!memberSlice.isLogin || !memberSlice.id || !memberSlice.username || !memberSlice.role) {
-                    navigate('/login');
-                    return;
-                }
+                // Fetch the user's name instead of username
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
     
                 setUserData({
                     id: memberSlice.id,
-                    name: memberSlice.username,
-                    role: memberSlice.role,
+                    name: response.data.item.name,
+                    role: response.data.item.role,
                 });
-    
-                // 로컬 스토리지에서 프로필 이미지 URL 불러오기
-                const storedProfileImageUrl = localStorage.getItem('profileImageUrl');
-                setProfileImage(storedProfileImageUrl || userProfile);
             } catch (error) {
                 console.error('오류:', error);
-                navigate('/login');
+                if (error.response && error.response.status === 401) {
+                    navigate('/login');
+                }
             }
         };
     
         fetchUserData();
     }, [navigate]);
+    
 
     const handleProfileChangeClick = () => {
         document.getElementById('profile-image-input').click();
@@ -262,34 +285,34 @@ export const MyPage = () => {
 
     const handleProfileImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (file && userData) {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('userId', userData.id);
-    
+
             try {
+                const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
-                    'http://localhost:9090/api/profile/upload',
+                    'http://localhost:9090/apis/profile/upload',
                     formData,
                     {
-                        headers: {
+                        headers: { 
                             'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${token}` 
                         },
-                        withCredentials: true
+                        withCredentials: true,
                     }
                 );
-                
+            
                 if (response.status === 200) {
                     const imageUrl = response.data;
-                    alert('프로필 이미지가 변경되었습니다.');
-                    setProfileImage(imageUrl);
-    
-                    localStorage.setItem('profileImageUrl', imageUrl);
+                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`);
+                    console.log(profileImage);
                 }
             } catch (error) {
                 console.error('프로필 이미지 업로드 오류:', error);
-                alert('프로필 이미지 변경 중 오류가 발생했습니다.');
             }
+            
         }
     };
 
@@ -428,8 +451,8 @@ export const MyPage = () => {
                     <div className='section'>
                     <div className="menu-item" onClick={handleDeveloperInfoClick}>
                         <span className="menu-item-text" style={{marginLeft:"-20px"}}>개발자 정보</span>
-                        <RotatingArrow style={{ color: "#999", marginRight:"-15px"}} rotate={showDeveloperInfo} />
-                    </div>
+                        <RotatingArrow style={{ color: "#999", marginRight: "-15px" }} rotate={showDeveloperInfo ? "true" : undefined} />
+                        </div>
                     {showDeveloperInfo && (
                         <DeveloperInfo>
                             <p>민수정 (Frontend) - soojeongmin@soongsil.ac.kr</p>
@@ -438,7 +461,7 @@ export const MyPage = () => {
                             <p>반재형 (Frontend) - publicdev2024@gmail.com</p>
                             <p>송민교 (Full stack) - alsrysong@gmail.com</p>
                             <p>정다은 (Full stack) - dechung1004@naver.com</p>
-                            <p>한서준 (ull stack) - watashijxxnsuka@gmail.com</p>
+                            <p>한서준 (Full stack) - watashijxxnsuka@gmail.com</p>
                         </DeveloperInfo>
                         )}
                     </div>

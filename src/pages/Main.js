@@ -10,6 +10,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../apis/memberApis';
 import hospitalData from '../JSON/hospitalData.json';
+// import { set } from 'react-datepicker/dist/date_utils';
 
 
 const Content = styled.div``;
@@ -343,8 +344,11 @@ export const Main = () => {
     const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
     const location = useLocation();
 
+    const [userData, setUserData] = useState(null); 
+
     const [messages, setMessages] = useState([]);
     const [temporaryLocation, setTemporaryLocation] = useState(null);// 전체 시/도 및 구 정보 저장
+    const [titleLocation, setTitleLocation] = useState(null);
 
     /* 사용자 위치를 불러오는 값 testing(시, 도 정보까지만 불러오기) */
     /* 예) 서울특별시, 경상남도, 부산광역시 ... */
@@ -407,6 +411,7 @@ export const Main = () => {
             const officialName = `${city}, ${district}`; // 시와 구 정보 조합
             setFullCityName(officialName);
             setTemporaryLocation(officialName); // 전체 시/도 및 구 정보 저장
+            setTitleLocation(city);
         }
     };
 
@@ -426,8 +431,8 @@ export const Main = () => {
     }, []);
 
     useEffect(() => {
-        if (temporaryLocation) {
-            axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
+        if (titleLocation) {
+            axios.get(`http://localhost:9090/api/disaster-messages/category?category=${titleLocation}`)
                 .then(response => {
                     console.log(response.data);
                     setMessages(response.data.slice(0, 2));
@@ -436,7 +441,7 @@ export const Main = () => {
                     console.error('Error fetching disaster messages:', error);
                 });
         }
-    }, [temporaryLocation]);
+    }, [titleLocation]);
     // ------------------ 기존 코드
     // useEffect(() => {
     //     if (naverLoginChk) {
@@ -516,6 +521,30 @@ export const Main = () => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name.slice(1)
+                });
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+    
 
     return (
         <>
@@ -558,7 +587,7 @@ export const Main = () => {
             </Content>
             <Blocks>
                 <Block onClick={handleDiaryClick}>
-                    <div className="block-text-bold">안녕하세요.<br /> 서준님,</div>
+                    <div className="block-text-bold">안녕하세요.<br /> {userData?.name || '이용자'}님,</div>
                     <div className="block-text-small">오늘의 하루는<br />어떠셨나요?</div>
                     <img src={graphImg} alt="graphImg" style={{ marginBottom: "-5%" }} />
                 </Block>

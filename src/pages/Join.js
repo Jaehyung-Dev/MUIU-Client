@@ -29,9 +29,9 @@ const MainContainer = styled.div`
   }
 
   input {
-   background: none;
-   border: none;
-   outline: none;
+    background: none;
+    border: none;
+    outline: none;
   }
 
   p {

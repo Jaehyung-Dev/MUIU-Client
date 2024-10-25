@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
 import ChangePassword from './pages/ChangePassword';
-import ChatComponent from './components/ChatComponent';
+import Chat from './pages/Chat';
 import ConsultationRecord from './pages/ConsultationRecord';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
@@ -150,7 +150,7 @@ function App() {
               <Route path="starred-place" element={<StarredPlace />} />
               <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
-              <Route path="/chat" element={<ChatComponent />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path='/support' element={<Support/>} />
             </Route>
