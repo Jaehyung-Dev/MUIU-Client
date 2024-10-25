@@ -16,7 +16,6 @@ const Card = styled.div`
     width: 100%;
     padding-top: 100%; /* 1:1 비율 유지 */
     position: relative;
-    // border: 1px solid black;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -68,20 +67,10 @@ const ModalContent = styled.div`
         max-height: 80%;
         border-radius: 10px;
     }
-
-    // .close-button {
-    //     position: absolute;
-    //     top: 0.5rem;
-    //     right: 0.5rem;
-    //     font-size: 1.5rem;
-    //     background: none;
-    //     border: none;
-    //     color: #333;
-    //     cursor: pointer;
-    // }
 `;
 
 const NavButton = styled.button`
+
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -101,9 +90,9 @@ const NavButton = styled.button`
 
     ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
 
-    // &:hover {
-    //     transform: scale(1.1);
-    // }
+    &:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
 `;
 
 const CloseButton = styled.button`
