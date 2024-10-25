@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { createFundPost } from '../apis/fundApis';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const Main = styled.main`
   width: 100%;  
