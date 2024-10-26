@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import ClearIcon from '@mui/icons-material/Clear';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { fetchMindColumns, deleteImage, updateImage } from '../slices/mindColumnSlice';
+import MC_Card from '../components/MC_Card';
 
 const Cards = styled.div`
     display: grid;
@@ -12,178 +13,76 @@ const Cards = styled.div`
     padding: 1rem;
 `;
 
-const Card = styled.div`
-    width: 100%;
-    padding-top: 100%; /* 1:1 비율 유지 */
-    position: relative;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    cursor: pointer;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-`;
-
-const ModalOverlay = styled.div`
-    display: ${(props) => (props.$visible ? 'flex' : 'none')};
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-    padding: 1rem;
-    border-radius: 10px;
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-        max-width: 80%;
-        max-height: 80%;
-        border-radius: 10px;
-    }
-`;
-
-const NavButton = styled.button`
-
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    background-color: white;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-
-    ${(props) => (props.$right ? 'right: 1rem;' : 'left: 1rem;')}
-
-    &:hover {
-        transform: translateY(-50%) scale(1.1);
-    }
-`;
-
-const CloseButton = styled.button`
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    font-size: 1.5rem;
-    background-color: white;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-
-    &:hover {
-        transform: scale(1.1);
-    }
-`;
-
-const PageNumber = styled.div`
-    position: absolute;
-    bottom: 1rem;
-    font-size: 1rem;
-    color: #bbb;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
-`;
-
-const Upload = styled.button`
-    margin: 0.5rem auto 0.5rem 0;
-    width: 5rem;
-`;
-
 export const MindColumn = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [items, setItems] = useState([]); // 로딩된 이미지 목록
+    const [page, setPage] = useState(0); // 페이지 번호
+    const itemsPerPage = 12; // 초기 로드할 이미지 개수
+    const loadMoreCount = 3; // 추가 로드할 이미지 개수
+
+    const mindColumns = useSelector((state) => state.mindColumnSlice.mindColumn);
+
     useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+        dispatch(fetchMindColumns()); // 컴포넌트 마운트 시 데이터 로드
+    }, [dispatch]);
 
-    const location = useLocation();
-    const selectedImageList = location.state?.selectedImageList || 'sleepless_night'; 
+    useEffect(() => {
+        // 데이터가 최신순으로 정렬되도록 정렬
+        const sortedMindColumns = [...mindColumns].sort((a, b) => new Date(b.regdate) - new Date(a.regdate));
+        setItems(sortedMindColumns.slice(0, itemsPerPage));
+    }, [mindColumns]);
 
-    const imageLists = {
-        sleepless_night: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/sleepless_night(${i}).png`),
-        ptsd: Array.from({ length: 8 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/ptsd(${i}).png`),
-        panic_disorder: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/panic_disorder(${i}).png`),
-        social_psychology: Array.from({ length: 9 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/social_psychology(${i}).png`),
+    // 무한 스크롤에서 데이터를 더 로드하는 함수
+    const fetchMoreData = () => {
+        setTimeout(() => {
+            const nextPage = page + 1;
+            const startIndex = nextPage * loadMoreCount;
+            const endIndex = startIndex + loadMoreCount;
+
+            // 새로운 아이템 추가
+            setItems((prevItems) => [
+                ...prevItems,
+                ...mindColumns.slice(startIndex, endIndex)
+            ]);
+            setPage(nextPage);
+        }, 1500);
     };
 
-    const images = imageLists[selectedImageList];
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedImages, setSelectedImages] = useState([]);
-
-    const openModal = (selectedImages) => {
-        setSelectedImages(selectedImages);
-        setCurrentImageIndex(0);
-        setModalOpen(true);
+    const handleDelete = (mcId) => {
+        if (window.confirm('정말로 삭제하시겠습니까?')) {
+            dispatch(deleteImage(mcId));
+        }
     };
-    const closeModal = () => setModalOpen(false);
-    const showNextImage = () => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % selectedImages.length);
-    const showPrevImage = () => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + selectedImages.length) % selectedImages.length);
 
-    const navi = useNavigate();
+    const handleEdit = (mcId) => {
+        const newTitle = prompt('새로운 제목을 입력하세요:');
+        if (newTitle) {
+            dispatch(updateImage({ mcId, mindColumnDto: { mcId, mcTitle: newTitle } }));
+        }
+    };
 
     return (
         <>
-            {/* <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload> */}
-            <Cards>
-                {Object.keys(imageLists).map((key, index) => (
-                    <Card key={index} onClick={() => openModal(imageLists[key])}>
-                        <img src={imageLists[key][0]} alt={`이미지 ${index + 1}`} />
-                    </Card>
-                ))}
-            </Cards>
-
-            <ModalOverlay $visible={isModalOpen}>
-                <ModalContent>
-                    <CloseButton onClick={closeModal}><ClearIcon fontSize="large" /></CloseButton>
-                    <img src={selectedImages[currentImageIndex]} alt="모달 이미지" />
-                    {currentImageIndex > 0 && <NavButton onClick={showPrevImage}><NavigateBeforeIcon fontSize="large" /></NavButton>}
-                    {currentImageIndex < selectedImages.length - 1 && <NavButton $right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
-                    <PageNumber>{`${currentImageIndex + 1} / ${selectedImages.length}`}</PageNumber>
-                </ModalContent>
-            </ModalOverlay>
+            <button type='button' onClick={() => navigate('/mind-column/post')}>업로드</button>
+            <InfiniteScroll
+                dataLength={items.length}
+                next={fetchMoreData}
+                hasMore={items.length < mindColumns.length} // 전체 데이터보다 적으면 더 로드
+                loader={<h4>로딩 중...</h4>}
+                endMessage={<p style={{ textAlign: 'center' }}>모든 데이터를 불러왔습니다.</p>}
+            >
+                <Cards>
+                    {items.map((item) => (
+                        <MC_Card
+                            key={item.mcId}
+                            item={item}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
+                        />
+                    ))}
+                </Cards>
+            </InfiniteScroll>
         </>
     );
 };

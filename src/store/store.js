@@ -1,5 +1,6 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import memberSlice from '../slices/memberSlice';
+import mindColumnSlice from '../slices/mindColumnSlice'
 import {
     persistReducer,
     FLUSH,
@@ -13,6 +14,7 @@ import storageSession from 'redux-persist/es/storage/session';
 
 const reducers = combineReducers({
     memberSlice,
+    mindColumnSlice
 });
 
 const persistConfig = {
