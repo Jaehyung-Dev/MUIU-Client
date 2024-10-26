@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import { Clock } from 'lucide-react';
+import TrainIcon from '@mui/icons-material/Train';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import trafficIcon from '../svg/대중교통.svg';
 import trafficHoverIcon from '../svg/대중교통-hover.svg';
 import carIcon from '../svg/자동차.svg';
@@ -11,7 +14,7 @@ import departIcon from '../svg/출발-icon.svg';
 import arriveIcon from '../svg/도착-icon.svg';
 import changeIcon from '../svg/변경.svg';
 import findIcon from '../svg/길찾기-hover.svg';
-import optimalIcon from '../svg/최적.svg';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import hospitalData from '../JSON/hospitalData.json';
 
@@ -160,51 +163,58 @@ const FindingResultItems = styled.div`
     margin-top: 1vh;
 `;
 
-const FindingResultItem = styled.div`
+const TransitRouteCard = styled.div`
     width: 90%;
-    height: 15vh;
-    border: 1px solid #888;
     background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const Progress = styled.div`
+    height: 10px;
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 5px 0;
+    display: flex;
+`;
+
+const ProgressSegment = styled.div`
+    height: 100%;
+    width: ${(props) => props.width}%; /* 동적으로 width 설정 */
+    background-color: ${(props) => props.color}; /* 동적으로 색상 설정 */
+    border-radius: 5px;
+`;
+
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const Duration = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const Cost = styled.div`
+    font-size: 1rem;
+    font-weight: bold;
+`;
+
+const SegmentDetails = styled.div`
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    border-radius: 10px;
 `;
 
-const FindingResultImage = styled.img`
-    width: 50px;
-    display: block;
-`;
-
-const TakingTime = styled.div`
-    width: 100%;
-    height: 3vh;
+const SegmentInfo = styled.div`
     display: flex;
-`;
-
-const GoH = styled.div`
-    width: 100px;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    font-size: 20px;
-    font-weight: bold;
-`;
-
-const GoM = styled.div`
-    width: 20px;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    font-size: 20px;
-    font-weight: bold;
-`;
-
-const TimeText = styled.p`
-    margin-left: 3px;
-    font-size: 15px;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #555;
 `;
 
 /* 검색어 추천 기능 스타일 */
@@ -230,17 +240,6 @@ const SuggestionItem = styled.li`
     &:hover {
         background-color: #e0e0e0;
     }
-`;
-
-///
-const Step = styled.div`
-    margin: 5px 0;
-`;
-
-const Line = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 `;
 
 const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => {
@@ -440,7 +439,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         };
     
         try {
-            // 요청 간 대기 시간 (예: 1초)
             await new Promise(resolve => setTimeout(resolve, 1000));
     
             const response = await fetch(url, {
@@ -465,16 +463,17 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             const data = await response.json();
             console.log('API 응답 데이터:', data);
     
-            if (data && data.plan && data.plan.itineraries) {
-                setTransitData(data.plan.itineraries);
+            // itineraries가 존재하는지 및 길이가 0이 아닌지 체크
+            if (data && data.metaData && data.metaData.plan && Array.isArray(data.metaData.plan.itineraries) && data.metaData.plan.itineraries.length > 0) {
+                setTransitData(data.metaData.plan.itineraries);
             } else {
-                console.error('itineraries가 존재하지 않습니다:', data);
+                console.error('itineraries가 존재하지 않거나 비어있습니다:', data);
             }
         } catch (error) {
             console.error('API 요청 오류:', error);
         }
     };
-    // Finding 버튼 클릭 핸들러
+
     const handleFindingClick = () => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
@@ -485,15 +484,121 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
             console.error('출발지 또는 도착지 좌표를 가져올 수 없습니다.');
         }
     };
-
-    useEffect(() => {
-        const departCoords = getDepartCoordinates();
-        const arriveCoords = getArriveCoordinates();
-
-        if (departCoords && arriveCoords) {
-            fetchTransitRoutes(departCoords, arriveCoords);
-        }
-    }, [departValue, arriveValue, hospitalCoordinates, stations]);
+    
+    // api 할당량 끝났을 때용 dummy 데이터 다 쓰면 transitData 에서 dummy로
+    const dummyTransitData = [
+        {
+            totalTime: 6000,
+            fare: {
+                regular: {
+                    totalFare: 1650,
+                },
+            },
+            legs: [
+                {
+                    mode: 'WALK',
+                    sectionTime: 120,
+                    start: {
+                        name: '출발지',
+                    },
+                    end: {
+                        name: '서울역',
+                    },
+                },
+                {
+                    mode: 'SUBWAY',
+                    sectionTime: 1800,
+                    start: {
+                        name: '서울역',
+                    },
+                    end: {
+                        name: '정부과천청사',
+                    },
+                    route: '수도권4호선',
+                },
+                {
+                    mode: 'WALK',
+                    sectionTime: 300, // 도보 시간 (초)
+                    start: {
+                        name: '정부과천청사',
+                    },
+                    end: {
+                        name: '(임시)정부과천청사역6번출구',
+                    },
+                },
+                {
+                    mode: 'BUS',
+                    sectionTime: 300, // 도보 시간 (초)
+                    start: {
+                        name: '정부과천청사',
+                    },
+                    end: {
+                        name: '(임시)정부과천청사역6번출구',
+                    },
+                    route: "일반:7",
+                },
+            ],
+        },
+        {
+            totalTime: 4600,
+            fare: {
+                regular: {
+                    totalFare: 1650,
+                },
+            },
+            legs: [
+                {
+                    mode: 'WALK',
+                    sectionTime: 120,
+                    start: {
+                        name: '출발지',
+                    },
+                    end: {
+                        name: '서울역',
+                    },
+                },
+                {
+                    mode: 'SUBWAY',
+                    sectionTime: 1800,
+                    start: {
+                        name: '서울역',
+                    },
+                    end: {
+                        name: '정부과천청사',
+                    },
+                    route: '수도권4호선',
+                },
+                {
+                    mode: 'WALK',
+                    sectionTime: 300,
+                    start: {
+                        name: '정부과천청사',
+                    },
+                    end: {
+                        name: '(임시)정부과천청사역6번출구',
+                    },
+                },
+                {
+                    mode: 'BUS',
+                    sectionTime: 300, // 도보 시간 (초)
+                    start: {
+                        name: '정부과천청사',
+                    },
+                    end: {
+                        name: '(임시)정부과천청사역6번출구',
+                    },
+                    route: "일반:7",
+                },
+            ],
+        },
+    ];
+    
+    // 시간 포맷 함수
+    const formatTime = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${hours > 0 ? `${hours}시간 ` : ''}${minutes}분`;
+    };
 
     if (!isOpen) return null;
 
@@ -600,30 +705,80 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                 </SearchingBox>
 
                 <FindingResultItems>
-                    {transitData && transitData.map((itinerary, index) => {
-                            const totalTime = Math.floor(itinerary.totalTime / 60);
-                            const totalFare = itinerary.fare.regular.totalFare;
+                    {Array.isArray(dummyTransitData) && dummyTransitData.length > 0 ? (
+                        // 총 소요 시간 기준으로 정렬
+                        dummyTransitData
+                            .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
+                            .map((itinerary, index) => {
+                                const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
+                                const totalTime = formatTime(totalDurationInSeconds); // 총 시간 (시/분)
+                                const totalFare = itinerary.fare.regular.totalFare; // 요금
 
-                            return (
-                                <FindingResultItem key={index}>
-                                    <FindingResultImage id="shortCut" src={optimalIcon} alt="최적" />
-                                    <TakingTime>
-                                        <GoH>{totalTime} <TimeText>분</TimeText></GoH>
-                                        <GoM>{totalFare} <TimeText>원</TimeText></GoM>
-                                    </TakingTime>
-                                    {itinerary.legs.map((leg, legIndex) => (
-                                        <Step key={legIndex}>
-                                            <Line>
-                                                <div>{leg.mode === 'BUS' ? `버스 ${leg.route}` : `도보`}</div>
-                                                <div>{leg.sectionTime}초</div>
-                                            </Line>
-                                            <div>{leg.start.name} → {leg.end.name}</div>
-                                        </Step>
-                                    ))}
-                                </FindingResultItem>
-                            );
-                        })}
+                                return (
+                                    <TransitRouteCard key={index}>
+                                        <Header>
+                                            <Duration>
+                                                {/* 최적 경로 아이콘 추가 */}
+                                                {index === 0
+                                                    && (
+                                                    <>
+                                                        <VerifiedIcon style={{fontSize: '0.9rem', color: '#3661B2', marginRight: '5px'}} />
+                                                        <span style={{marginRight: '10  px', fontSize: '0.9rem', fontWeight: 'bold', color: '#3661B2'}}>최적</span>
+                                                    </>
+                                                    )
+                                                }
+                                                <Clock style={{ width: '0.9rem', height: '0.9rem' }} />
+                                                <span className="font-medium" style={{ marginLeft: '10px' }}>{totalTime}</span>
+                                            </Duration>
+                                            <Cost>{totalFare.toLocaleString()}원</Cost>
+                                        </Header>
+
+                                        <Progress>
+                                            {itinerary.legs.map((leg, legIndex) => {
+                                                const legDuration = leg.sectionTime; // 각 교통수단의 소요 시간 (초)
+                                                const progressWidth = (legDuration / totalDurationInSeconds) * 100; // 비율 계산
+                                                let progressColor;
+
+                                                // 색상 설정
+                                                if (leg.mode === 'BUS') {
+                                                    progressColor = '#ff6f61'; // 버스 색상
+                                                } else if (leg.mode === 'SUBWAY') {
+                                                    progressColor = '#6fa3ef'; // 지하철 색상
+                                                } else if (leg.mode === 'WALK') {
+                                                    progressColor = '#90ee90'; // 도보 색상
+                                                }
+
+                                                return (
+                                                    <ProgressSegment key={legIndex} width={progressWidth} color={progressColor} />
+                                                );
+                                            })}
+                                        </Progress>
+
+                                        {/* 교통수단 설명 부분 */}
+                                        {itinerary.legs.map((leg, legIndex) => (
+                                            <SegmentDetails key={legIndex}>
+                                                <SegmentInfo>
+                                                    {leg.mode === 'BUS' && <DirectionsBusIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                    {leg.mode === 'SUBWAY' && <TrainIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                    {leg.mode === 'WALK' && <DirectionsWalkIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                    <span style={{ marginRight: '15px' }}>
+                                                        {leg.mode === 'BUS' ? `버스 ${leg.route}` : leg.mode === 'SUBWAY' ? `지하철 ${leg.route}` : `도보`}
+                                                    </span>
+                                                    {formatTime(leg.sectionTime)}
+                                                </SegmentInfo>
+                                                <SegmentInfo style={{ marginLeft: 'calc(0.8rem + 5px)', marginTop: '5px' }}>
+                                                    {leg.start.name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{leg.end.name}
+                                                </SegmentInfo>
+                                            </SegmentDetails>
+                                        ))}
+                                    </TransitRouteCard>
+                                );
+                            })
+                    ) : (
+                        <div>길찾기 결과가 없습니다.</div>
+                    )}
                 </FindingResultItems>
+
             </ModalContent>
         </Modal>    
     );

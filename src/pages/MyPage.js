@@ -261,12 +261,12 @@ export const MyPage = () => {
                     },
                     withCredentials: true,
                 });
-    
+                
                 setUserData({
-                    id: memberSlice.id,
                     name: response.data.item.name,
-                    role: response.data.item.role,
+                    role: response.data.item.role
                 });
+
             } catch (error) {
                 console.error('오류:', error);
                 if (error.response && error.response.status === 401) {
@@ -274,7 +274,6 @@ export const MyPage = () => {
                 }
             }
         };
-    
         fetchUserData();
     }, [navigate]);
     
@@ -288,8 +287,7 @@ export const MyPage = () => {
         if (file && userData) {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('userId', userData.id);
-
+    
             try {
                 const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
@@ -305,16 +303,16 @@ export const MyPage = () => {
                 );
             
                 if (response.status === 200) {
-                    const imageUrl = response.data;
-                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`);
-                    console.log(profileImage);
+                    const imageUrl = response.data.profileImageUrl;
+                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`); // 캐시 방지
+                    console.log(imageUrl);
                 }
             } catch (error) {
                 console.error('프로필 이미지 업로드 오류:', error);
             }
-            
         }
     };
+    
 
     const handleLogoutClick = () => {
         dispatch(logout());
@@ -401,11 +399,11 @@ export const MyPage = () => {
         <Content>
             <Profile>
                 <div className="profile-image">
-                    <img src={profileImage} alt="프로필" />
+                    <img src={profileImage || userProfile} alt="프로필" />
                 </div>
                 <div className="profile-user">
                     <div className="profile-type">{userData?.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
-                    <div className="profile-name">{userData?.name} 님</div>
+                    <div className="profile-name">{userData?.name}님</div>
                 </div>
                 <button className="change-profile-btn" onClick={handleProfileChangeClick}>
                     프로필 변경
