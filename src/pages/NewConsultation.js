@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import CallIcon from '@mui/icons-material/Call';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -105,10 +106,43 @@ const OptionSubText = styled.div`
 
 const NewConsultation = () => {
     const navigate = useNavigate();
+    const [userData, setUserData] = useState(null); 
     
     useEffect(() => {
         document.body.style.overflow = 'hidden';
     }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name
+                });
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+
+    const getPostposition = (name) => {
+        const lastChar = name[name.length - 1];
+        const uniCode = lastChar.charCodeAt(0);
+        const hasBatchim = (uniCode - 44032) % 28 !== 0;
+        
+        return hasBatchim ? '은' : '는';
+    };
 
     return (
         <Container>
@@ -116,7 +150,7 @@ const NewConsultation = () => {
                 <img src={`${process.env.PUBLIC_URL}/images/AI-header-img.png`} alt="Room Image" />
             </ImageBanner>
             <Title>비대면 상담 진행</Title>
-            <ConsultationSubText>내담자 요구는 성실하게 상담에 임할 것을 약속합니다.</ConsultationSubText>
+            <ConsultationSubText>내담자 {userData?.name}{userData ? getPostposition(userData.name) : '본인은'} 성실하게 상담에 임할 것을 약속합니다.</ConsultationSubText>
             <ShortHr />
 
             <OptionsContainer>
