@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { fetchMindColumns, deleteImage, updateImage } from '../slices/mindColumnSlice';
+// import { fetchMindColumns, deleteImage, updateImage } from '../slices/mindColumnSlice';
 import MC_Card from '../components/MC_Card';
 
 const Cards = styled.div`
@@ -23,9 +23,9 @@ export const MindColumn = () => {
 
     const mindColumns = useSelector((state) => state.mindColumnSlice.mindColumn);
 
-    useEffect(() => {
-        dispatch(fetchMindColumns()); // 컴포넌트 마운트 시 데이터 로드
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchMindColumns()); // 컴포넌트 마운트 시 데이터 로드
+    // }, [dispatch]);
 
     useEffect(() => {
         // 데이터가 최신순으로 정렬되도록 정렬
@@ -49,18 +49,18 @@ export const MindColumn = () => {
         }, 1500);
     };
 
-    const handleDelete = (mcId) => {
-        if (window.confirm('정말로 삭제하시겠습니까?')) {
-            dispatch(deleteImage(mcId));
-        }
-    };
+    // const handleDelete = (mcId) => {
+    //     if (window.confirm('정말로 삭제하시겠습니까?')) {
+    //         dispatch(deleteImage(mcId));
+    //     }
+    // };
 
-    const handleEdit = (mcId) => {
-        const newTitle = prompt('새로운 제목을 입력하세요:');
-        if (newTitle) {
-            dispatch(updateImage({ mcId, mindColumnDto: { mcId, mcTitle: newTitle } }));
-        }
-    };
+    // const handleEdit = (mcId) => {
+    //     const newTitle = prompt('새로운 제목을 입력하세요:');
+    //     if (newTitle) {
+    //         dispatch(updateImage({ mcId, mindColumnDto: { mcId, mcTitle: newTitle } }));
+    //     }
+    // };
 
     return (
         <>
@@ -77,8 +77,8 @@ export const MindColumn = () => {
                         <MC_Card
                             key={item.mcId}
                             item={item}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
+                            // onDelete={handleDelete}
+                            // onEdit={handleEdit}
                         />
                     ))}
                 </Cards>
