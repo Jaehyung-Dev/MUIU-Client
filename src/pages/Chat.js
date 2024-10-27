@@ -1,22 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { Stomp } from '@stomp/stompjs';
+import { useNavigate } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import axios from 'axios';
 import styled from 'styled-components';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
+const HeaderContainer = styled.header`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    z-index: 1000;
+`;
+
+const BackButton = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+`;
+
+const Title = styled.h1`
+    font-weight: 700;
+    color: black;
+    font-size: 18px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+`;
 
 const MessageWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: ${({ $isUser }) => ($isUser ? 'flex-end' : 'flex-start')};
-  margin-bottom: 20px;
   position: relative;
   flex-direction: column;
   align-items: ${({ $isUser }) => ($isUser ? 'flex-end' : 'flex-start')};
 `;
 
 const Message = styled.div`
-  background-color: ${({ $isUser, $isEmoji }) => ($isEmoji ? 'transparent' : $isUser ? '#fbbf24' : '#e0e0e0')};
+  background-color: ${({ $isUser, $isEmoji }) => ($isEmoji ? 'transparent' : $isUser ? '#fbbf24' : '#ffffff')};
   color: ${({ $isUser, $isEmoji }) => ($isEmoji ? 'transparent' : $isUser ? 'white' : 'black')};
   padding: ${({ $isEmoji }) => ($isEmoji ? '0' : '10px')};
   border-radius: 20px;
@@ -24,6 +58,10 @@ const Message = styled.div`
   word-wrap: break-word;
   width: fit-content;
   white-space: pre-wrap;
+  margin-left: ${({ $isUser }) => ($isUser ? 'auto' : '15px')}; /* 사용자 메시지의 좌측 여백 */
+  margin-right: ${({ $isUser }) => ($isUser ? '15px' : 'auto')}; /* 상대 메시지의 우측 여백 */
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const EmojiImage = styled.img`
@@ -37,9 +75,8 @@ const ChatContainer = styled.div`
   align-items: center;
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
-  padding: 10px;
   position: relative;
+  background-color: #f2f2f2;
 `;
 
 const EmojiOverlay = styled.div`
@@ -124,12 +161,17 @@ const ImageButton = styled.button`
 `;
 
 const Chat = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   // Emoji 이미지 경로
   const emojiImages = [
@@ -238,6 +280,13 @@ const Chat = () => {
   };
 
   return (
+    <>
+    <HeaderContainer>
+      <BackButton onClick={handleBackClick}>
+        <ArrowBackIosIcon />
+      </BackButton>
+      <Title>반재형 상담사</Title>
+    </HeaderContainer>
     <ChatContainer>
       {messages.map((msg, index) => (
         <MessageWrapper key={index} $isUser={msg.sender === `${userData.name}`}>
@@ -279,6 +328,7 @@ const Chat = () => {
         </ImageButton>
       </MessageInputContainer>
     </ChatContainer>
+    </>
   );
 };
 
