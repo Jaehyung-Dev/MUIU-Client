@@ -91,16 +91,16 @@ const BackButton = styled.button`
     align-items: center;
 `;
 
-const HS_PhotoModal_Shelter = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
+const HS_PhotoModal_Shelter = ({ isShelterPhotoOpen, closeShelterPhoto }) => {
+    if (!isShelterPhotoOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClick={onClose}>
+        <Modal isOpen={isShelterPhotoOpen} onClick={closeShelterPhoto}>
             <ModalContent onClick={(e) => {e.stopPropagation();}}>
-                <BackButton onClick={onClose}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackButton>
+                <BackButton onClick={closeShelterPhoto}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackButton>
 
                 <TabsInfoPicture>
-                    <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={onClose}>정보</Tab>
+                    <Tab style={{borderBottom: '2px solid #A1A1A1'}} onClick={closeShelterPhoto}>정보</Tab>
                     <Tab className="active">사진</Tab>
                 </TabsInfoPicture>
 

@@ -182,11 +182,9 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
         
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
-                console.log("클립보드 복사 성공:");
                 alert("해당 병원 주소를 클립보드에 복사했습니다.");
             })
             .catch((err) => {
-                console.error("클립보드 복사 실패:", err);
                 alert("해당 병원 주소를 클립보드에 복사하지 못했습니다.");
             });
     };
