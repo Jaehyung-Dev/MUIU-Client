@@ -7,6 +7,7 @@ import HS_PhotoModal from '../components/HS_PhotoModal';
 import HS_FindRoadModal from '../components/HS_FindRoadModal';
 import HS_InfoModal_Shelter from '../components/HS_InfoModal_Shelter';
 import HS_PhotoModal_Shelter from '../components/HS_PhotoModal_Shelter';
+import HS_FindRoadModal_Shelter from '../components/HS_FindRoadModal_Shelter';
 
 const Main = styled.div`
     width: 100%;
@@ -920,7 +921,17 @@ export const HospitalShelterInfo = () => {
                 openShelterFind={openShelterFind}
                 stations={stations.DATA}
             />
-            < HS_PhotoModal_Shelter />
+            < HS_PhotoModal_Shelter
+                isShelterPhotoOpen={isShelterPhotoOpen}
+                closeShelterPhoto={closeShelterPhoto}
+            />
+            <HS_FindRoadModal_Shelter
+                isShelterFindRoadOpen={isShelterFindRoadOpen}
+                closeShelterFind={closeShelterFind}
+                shelterName={selectedShelter} // 대피소 이름 전달
+                mode={mode}
+                stations={stations.DATA}
+            />
         </Main>
     );
 };
