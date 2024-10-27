@@ -165,15 +165,7 @@ const Fund = () => {
           },
           withCredentials: true // 쿠키 또는 세션 ID를 함께 보내기 위해 필요
         });
-        
-        // 이미지 URL 생성 및 설정
-        const postsWithImages = await Promise.all(response.data.map(async (post) => {
-          const imageUrl = `http://localhost:9090/api/fund/image?image=${post.mainImage}`;
-          return { ...post, imageUrl };
-        }));
-        
-        console.log(`response.data:`, response.data); // 데이터를 콘솔에 출력하여 구조 확인
-        setPosts(postsWithImages);
+        setPosts(response.data);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -209,10 +201,10 @@ const Fund = () => {
       />
 
       {/* 서버에서 불러온 글들을 표시하는 카드들 */}
-      {posts.map((post, index) => (
+      {posts.map((post) => (
         <FundCard
-          key={index}
-          imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
+          key={post.postId}
+          imageSrc={post.mainImage} 
           altText={post.title}
           title={post.title}
           date={`${post.fundStartDate} ~ ${post.fundEndDate}`}

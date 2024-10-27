@@ -351,9 +351,8 @@ const FundDetail = () => {
       
       {copyMessage && <div className="copy-message">{copyMessage}</div>}
       
-      {/* DonationDetails 컴포넌트에 post 데이터에서 필요한 값들을 전달 */}
       <DonationDetails
-        imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
+        imageSrc={post.mainImage}   
         title={post.title}
         recipient={post.teamName}
         percentage={percentage}
