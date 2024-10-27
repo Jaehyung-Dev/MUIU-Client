@@ -200,26 +200,23 @@ const FundPost = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // 에러 임시 방편용
-    const handleImageUpload = () => {};
-
     // 이미지 버튼 감지
-    const toolbar = document.querySelector('.ql-image');
-    const handleButtonClick = (e) => {
-      e.preventDefault(); 
-      e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
-      handleImageUpload();
-    };
+    // const toolbar = document.querySelector('.ql-image');
+    // const handleButtonClick = (e) => {
+    //   e.preventDefault(); 
+    //   e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
+    //   handleImageUpload();
+    // };
 
-    if (toolbar) {
-      toolbar.addEventListener('click', handleButtonClick);
-    }
+    // if (toolbar) {
+    //   toolbar.addEventListener('click', handleButtonClick);
+    // }
 
-    return () => {
-      if (toolbar) {
-        toolbar.removeEventListener('click', handleButtonClick);
-      }
-    };
+    // return () => {
+    //   if (toolbar) {
+    //     toolbar.removeEventListener('click', handleButtonClick);
+    //   }
+    // };
   }, []);
 
   // 파일 선택 시 클라우드 업로드 및 미리보기 생성
