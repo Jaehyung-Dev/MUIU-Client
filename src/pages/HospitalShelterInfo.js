@@ -6,6 +6,7 @@ import HS_InfoModal from '../components/HS_InfoModal';
 import HS_PhotoModal from '../components/HS_PhotoModal';
 import HS_FindRoadModal from '../components/HS_FindRoadModal';
 import HS_InfoModal_Shelter from '../components/HS_InfoModal_Shelter';
+import HS_PhotoModal_Shelter from '../components/HS_PhotoModal_Shelter';
 
 const Main = styled.div`
     width: 100%;
@@ -919,7 +920,7 @@ export const HospitalShelterInfo = () => {
                 openShelterFind={openShelterFind}
                 stations={stations.DATA}
             />
-
+            < HS_PhotoModal_Shelter />
         </Main>
     );
 };

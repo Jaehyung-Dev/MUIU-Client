@@ -200,6 +200,9 @@ const FundPost = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    // 에러 임시 방편용
+    const handleImageUpload = () => {};
+
     // 이미지 버튼 감지
     const toolbar = document.querySelector('.ql-image');
     const handleButtonClick = (e) => {
