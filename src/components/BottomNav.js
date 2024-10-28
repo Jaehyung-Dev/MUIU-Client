@@ -5,9 +5,10 @@ import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
-import styled from 'styled-components';
 import bottomNav from '../svg/bottom-nav.svg';
 import redCall from '../svg/red-call.svg';
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const Nav = styled.nav`
     position: fixed;
@@ -129,9 +130,14 @@ const MenuContainer = styled.div`
 const BottomNav = () => {
     const location = useLocation();
     const [isActive, setIsActive] = useState(false);
+    const role = useSelector((state) => {
+        console.log(state); // 스토어 상태 확인
+        return state.members ? state.members.role : null; // 안전하게 접근
+    });
 
     const handleCircleClick = () => {
         setIsActive(!isActive);
+        console.log(role);
     };
 
     return (
@@ -157,10 +163,18 @@ const BottomNav = () => {
                 <CenterNavItem className="nav-center" $isActive={isActive} onClick={handleCircleClick}>
                     <img src={redCall} alt="중앙 아이콘" />
                 </CenterNavItem>
-                <NavItem to="/my-diary" $active={location.pathname === '/my-diary'}>
-                    <AutoStoriesOutlinedIcon className="icon" />
-                    <span>일기</span>
-                </NavItem>
+                {/* 상담사일 경우 상담사 일기 페이지로 이동, 아닐 경우 일반 일기 페이지로 이동 */}
+                {role === 'ROLE_USER' ? (
+                    <NavItem to="/counselor-diary" $active={location.pathname === '/counselor-diary'}>
+                        <AutoStoriesOutlinedIcon className="icon" />
+                        <span>상담사 일기</span>
+                    </NavItem>
+                ) : (
+                    <NavItem to="/my-diary" $active={location.pathname === '/my-diary'}>
+                        <AutoStoriesOutlinedIcon className="icon" />
+                        <span>일기</span>
+                    </NavItem>
+                )}
                 <NavItem to="/mypage" $active={location.pathname === '/mypage'}>
                     <PersonOutlinedIcon className="icon" />
                     <span>내 정보</span>
