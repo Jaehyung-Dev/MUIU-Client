@@ -9,12 +9,8 @@ import departHoverIcon from '../svg/출발-hover.svg';
 import arriveHoverIcon from '../svg/도착-hover.svg';
 import shareHoverIcon from '../svg/공유-hover.svg';
 import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
-import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
-import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
 import locationIcon from '../svg/장소위치.svg';
 import distanceIcon from '../svg/인근역.svg';
-import phoneIcon from '../svg/전화번호.svg';
-import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded';
 
 const Modal = styled.div`
     display: ${(props) => (props.isShelterOpen ? 'block' : 'none')};
@@ -38,7 +34,7 @@ const ModalContent = styled.div`
     overflow-y: auto;
 `;
 
-const HospitalName = styled.div`
+const ShelterName = styled.div`
     display: flex;
     padding: 10px;
     font-size: 25px;
@@ -175,12 +171,10 @@ const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto,
         
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
-                console.log("클립보드 복사 성공:");
-                alert("해당 병원 주소를 클립보드에 복사했습니다.");
+                alert("해당 대피소 주소를 클립보드에 복사했습니다.");
             })
             .catch((err) => {
-                console.error("클립보드 복사 실패:", err);
-                alert("해당 병원 주소를 클립보드에 복사하지 못했습니다.");
+                alert("해당 대피소 주소를 클립보드에 복사하지 못했습니다.");
             });
     };
 
@@ -248,9 +242,9 @@ const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto,
                     <Tab className="tab" onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>사진</Tab>
                 </TabsInfoPicture>
 
-                <HospitalName>
+                <ShelterName>
                     {shelterData.equp_nm}  
-                </HospitalName>
+                </ShelterName>
                 <Info>
                     <InfoItem>
                         <InfoItemImg src={locationIcon} alt="Location icon" />

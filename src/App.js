@@ -61,6 +61,7 @@ import { persistStore } from 'redux-persist';
 import { store } from './store/store';
 import MindColumnPost from './pages/MindColumnPost';
 import AI_Chat from './pages/AI_Chat';
+import AudioCall from './pages/AudioCall';
 
 function App() {
   const persiststore = persistStore(store);
@@ -155,6 +156,7 @@ function App() {
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path='/support' element={<Support/>} />
               <Route path='/ai-counseling' element={<AI_Chat/>}/>
+              <Route path='/audio-call' element={<AudioCall/>}/>
             </Route>
           </Routes>
         </Router>

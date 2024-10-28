@@ -6,9 +6,8 @@ import 'react-quill/dist/quill.snow.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
-import { createFundPost } from '../apis/fundApis';
+import { createFundPost, updateFundPost, uploadImage } from '../apis/fundApis';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 
 const Main = styled.main`
   width: 100%;  
@@ -190,7 +189,7 @@ const FundPost = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState(post.title || '');
   const [team, setTeam] = useState(post.teamName || '');
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(post.mainImage || null); // 클라우드 URL로 활용
   const [imagePreview, setImagePreview] = useState(post.mainImage || null);
   const [fundStart, setFundStart] = useState(post.fundStartDate ? new Date(post.fundStartDate) : null);
   const [fundEnd, setFundEnd] = useState(post.fundEndDate ? new Date(post.fundEndDate) : null);
@@ -202,84 +201,38 @@ const FundPost = () => {
     window.scrollTo(0, 0);
 
     // 이미지 버튼 감지
-    const toolbar = document.querySelector('.ql-image');
-    const handleButtonClick = (e) => {
-      e.preventDefault(); 
-      e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
-      handleImageUpload();
-    };
+    // const toolbar = document.querySelector('.ql-image');
+    // const handleButtonClick = (e) => {
+    //   e.preventDefault(); 
+    //   e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
+    //   handleImageUpload();
+    // };
 
-    if (toolbar) {
-      toolbar.addEventListener('click', handleButtonClick);
-    }
+    // if (toolbar) {
+    //   toolbar.addEventListener('click', handleButtonClick);
+    // }
 
-    return () => {
-      if (toolbar) {
-        toolbar.removeEventListener('click', handleButtonClick);
-      }
-    };
+    // return () => {
+    //   if (toolbar) {
+    //     toolbar.removeEventListener('click', handleButtonClick);
+    //   }
+    // };
   }, []);
 
+  // 파일 선택 시 클라우드 업로드 및 미리보기 생성
   const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file)); 
-      const formData = new FormData();
-      formData.append('file', file);
-
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImagePreview(URL.createObjectURL(selectedFile));
       try {
-        const token = sessionStorage.getItem('ACCESS_TOKEN');
-        const response = await axios.post('http://localhost:9090/apis/fund/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
-          },
-          withCredentials: true,
-        });
-
-        if (response.status === 200) {
-          const imageUrl = response.data.imageUrl;
-          setImagePreview(imageUrl);
-          setFile(imageUrl);
-        }
+        const imageUrl = await uploadImage(selectedFile);
+        setFile(imageUrl);
       } catch (error) {
         console.error("이미지 업로드 실패:", error);
       }
     }
   };
 
-  const handleImageUpload = async () => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-          const response = await axios.post('http://localhost:9090/api/fund/upload', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
-            },
-          });
-
-          if (response.status === 200) {
-            const imageUrl = response.data.imageUrl;
-            const editor = quillRef.current.getEditor();
-            const range = editor.getSelection();
-            editor.insertEmbed(range.index, 'image', imageUrl);
-          }
-        } catch (error) {
-          console.error("에디터 이미지 업로드 실패:", error);
-        }
-      }
-    };
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -295,33 +248,15 @@ const FundPost = () => {
       mainImage: file || post.mainImage
     };
 
-    console.log('작성된 글:', postData);
-
     try {
-      let response;
-
       if (post.postId) {
-        response = await axios.put(`http://localhost:9090/api/fund/post/${post.postId}`, postData, {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        console.log('게시글 수정 성공!', response);
+        await updateFundPost(post.postId, postData);
+        console.log('게시글 수정 성공!');
       } else {
-        response = await createFundPost(postData, {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        console.log('게시글 등록 성공!', response);
+        await createFundPost(postData);
+        console.log('게시글 등록 성공!');
       }
-
-      setTimeout(() => {
-        navigate('/fund', { state: postData });
-      }, 0);
-
+      navigate('/fund', { state: postData });
     } catch (error) {
       console.error('게시글 처리 실패:', error);
     }

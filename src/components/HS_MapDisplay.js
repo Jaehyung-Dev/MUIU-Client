@@ -184,7 +184,6 @@ const HS_MapDisplay = ({
                                 setSelectedShelterState(shelter); // 선택된 대피소 설정
                                 findNearestStation(shelter); // 가까운 역 찾기
                                 setIsShelterInfoOpen(true); // 대피소 모달 열기
-                                console.log('버튼 클릭 됨');
                             });
                         }
                     });
@@ -460,7 +459,7 @@ const HS_MapDisplay = ({
                 />
             )}
             {/* 대피소 모달 */}
-            {selectedShelter && isShelterInfoOpen && (
+            {selectedShelter && (
                 <HS_InfoModal_Shelter
                     isShelterOpen={isShelterInfoOpen}
                     onShelterClose={() => {

@@ -160,7 +160,7 @@ const NewConsultation = () => {
                     <OptionSubText style={{color: '#FF3D3B'}}>대기 혼잡</OptionSubText>
                 </Option>
 
-                <Option bgColor="#FFEFCC">
+                <Option bgColor="#FFEFCC" onClick={()=>{navigate('/audio-call');}}>
                     <CallIcon style={{ fontSize: '40px', color: '#FF8800' }} />
                     <OptionText style={{color: '#FF8800'}}>전화 상담</OptionText>
                     <OptionSubText style={{color: '#FF8800'}}>대기 보통</OptionSubText>
