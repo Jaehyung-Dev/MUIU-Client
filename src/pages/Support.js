@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-
-// import AddCircleIcon from '@mui/icons-material/AddCircle';
-import BookIcon from '@mui/icons-material/Book';
-import HomeIcon from '@mui/icons-material/Home';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import VideoCallIcon from '@mui/icons-material/VideoCall';
-import axios from 'axios'; // axios 추가
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { sendSupportMessage } from '../apis/supportApi'; // API 함수 임포트
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-// 전체 페이지 레이아웃 및 스타일
 const Container = styled.div`
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 2rem;
+    overflow: hidden;
 `;
 
-// 입력 폼 섹션 스타일
+const BackButton = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+`;
+
 const FormSection = styled.div`
-    width: 90%;
+    width: 85%;
     max-width: 600px;
     background-color: white;
     padding: 1.5rem;
@@ -46,7 +46,8 @@ const Input = styled.input`
     margin: 0.5rem 0;
     border: 1px solid #ddd;
     border-radius: 5px;
-    width: 100%;
+    width: 90%;
+    font-size: 1rem;
 `;
 
 const Textarea = styled.textarea`
@@ -54,8 +55,9 @@ const Textarea = styled.textarea`
     margin: 0.5rem 0;
     border: 1px solid #ddd;
     border-radius: 5px;
-    width: 100%;
+    width: 90%;
     height: 100px;
+    font-size: 1rem;
 `;
 
 const SubmitButton = styled.button`
@@ -66,52 +68,37 @@ const SubmitButton = styled.button`
     border-radius: 20px;
     margin-top: 1rem;
     cursor: pointer;
-
+    font-size: 0.8rem;
+    
     &:hover {
         background-color: #e69b27;
     }
 `;
 
-// 하단 네비게이션 바 스타일
-const BottomNav = styled.div`
-    width: 100%;
-    max-width: 600px;
-    height: 60px;
-    background-color: white;
-    position: fixed;
-    bottom: 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const NavItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 0.8rem;
-    color: ${(props) => (props.$active ? '#fbb03b' : '#999')};
-`;
-
 const TopNav = styled.div`
-    width: 100%;
-    max-width: 600px;
-    height: 60px;
-    background-color: white;
     display: flex;
-    justify-content: center;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #ffffff;
     position: fixed;
     top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
     z-index: 1000;
 `;
 
 const TopNavTitle = styled.h2`
-    font-size: 1.5rem;
-    margin: 0;
-    color: #333;
+    font-weight: 700;
+    color: black;
+    font-size: 18px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 `;
 
 const Support = () => {
@@ -135,12 +122,13 @@ const Support = () => {
 
     return (
         <Container>
-            {/* 상단 네비게이션 */}
             <TopNav>
+                <BackButton onClick={()=>navigate(-1)}>
+                    <ArrowBackIosIcon />
+                </BackButton>
                 <TopNavTitle>문의하기</TopNavTitle>
             </TopNav>
 
-            {/* 지원 폼 섹션 */}
             <FormSection>
                 <FormTitle>문의사항을 작성해주세요</FormTitle>
                 <form onSubmit={handleSubmit}>
@@ -164,29 +152,6 @@ const Support = () => {
                     <SubmitButton type="submit">문의하기</SubmitButton>
                 </form>
             </FormSection>
-
-            {/* 하단 네비게이션 */}
-            <BottomNav>
-                <NavItem>
-                    <HomeIcon style={{ fontSize: '1.5rem' }} onClick={() => navigate('/')} />
-                    홈
-                </NavItem>
-                <NavItem>
-                    <VideoCallIcon style={{ fontSize: '1.5rem' }} />
-                    비대면 상담
-                </NavItem>
-                <NavItem active>
-                    {/* <AddCircleIcon style={{ fontSize: '2rem', color: '#fbb03b' }} /> */}
-                </NavItem>
-                <NavItem>
-                    <BookIcon style={{ fontSize: '1.5rem' }} />
-                    일기
-                </NavItem>
-                <NavItem>
-                    <LocationOnIcon style={{ fontSize: '1.5rem' }} />
-                    내 정보
-                </NavItem>
-            </BottomNav>
         </Container>
     );
 };
