@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import { useNavigate } from 'react-router-dom';
 import SockJS from 'sockjs-client';
@@ -76,13 +76,19 @@ const ChatContainer = styled.div`
   width: 100%;
   max-width: 600px;
   position: relative;
+  height: calc(100vh); /* 헤더 높이 제외한 화면 전체 높이 */
   background-color: #f2f2f2;
+  padding-top: 170px; /* 헤더 아래로 여유 공간 */
+  padding-bottom: 100px;
+  box-sizing: border-box;
+  overflow-y: auto; /* 스크롤 가능하게 설정 */
 `;
 
+
 const EmojiOverlay = styled.div`
-  position: absolute;
-  bottom: 70px;
-  width: 600px;
+  position: fixed;
+  bottom: 190px;
+  width: 580px;
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   z-index: 1000;
@@ -109,6 +115,15 @@ const MessageInputContainer = styled.div`
   background-color: #ffffff;
   border-top: 1px solid #e0e0e0;
   box-sizing: border-box;
+`;
+
+const MessageInputContainerWrapper = styled.div`
+  position: fixed;
+  bottom: 70px;
+  width: 100%;
+  max-width: 600px;
+  background-color: #ffffff;
+  padding-bottom: 60px;
 `;
 
 const MessageInput = styled.input`
@@ -168,6 +183,8 @@ const Chat = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const chatContainerRef = useRef(null);
+  const bottomRef = useRef(null);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -279,55 +296,72 @@ const Chat = () => {
     }
   };
 
+  useEffect(() => {
+    // 채팅이 로드되거나 새 메시지가 올 때 스크롤을 최하단으로 이동
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'auto' });
+    }
+  }, [messages]);
+
   return (
     <>
-    <HeaderContainer>
-      <BackButton onClick={handleBackClick}>
-        <ArrowBackIosIcon />
-      </BackButton>
-      <Title>반재형 상담사</Title>
-    </HeaderContainer>
-    <ChatContainer>
-      {messages.map((msg, index) => (
-        <MessageWrapper key={index} $isUser={msg.sender === `${userData.name}`}>
-          <Message $isUser={msg.sender === `${userData.name}`} $isEmoji={msg.type === 'EMOJI'}>
-            {msg.type === 'EMOJI' ? (
-              <EmojiImage src={`/images/Emoji/${msg.content}`} alt="emoji" />
-            ) : (
-              msg.content
-            )}
-          </Message>
-        </MessageWrapper>
-      ))}
-      {showEmojiPicker && (
-        <EmojiOverlay>
-          <EmojiPicker>
-            {emojiImages.map((emoji, index) => (
-              <EmojiButton
-                key={index}
-                src={`/images/Emoji/${emoji}`}
-                alt={`emoji-${index}`}
-                onClick={() => handleEmojiSelect(emoji)}
-              />
-            ))}
-          </EmojiPicker>
-        </EmojiOverlay>
-      )}
-      <MessageInputContainer>
-        <MessageInput
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="메시지를 입력하세요"
-        />
-        <SendButton onClick={sendMessage} disabled={!isConnected}>
-          전송
-        </SendButton>
-        <ImageButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-          <InsertEmoticonIcon />
-        </ImageButton>
-      </MessageInputContainer>
-    </ChatContainer>
+      <HeaderContainer>
+        <BackButton onClick={handleBackClick}>
+          <ArrowBackIosIcon />
+        </BackButton>
+        <Title>반재형 상담사</Title>
+      </HeaderContainer>
+      <ChatContainer ref={chatContainerRef}>
+        {messages.map((msg, index) => (
+          <MessageWrapper key={index} $isUser={msg.sender === `${userData.name}`}>
+            <Message $isUser={msg.sender === `${userData.name}`} $isEmoji={msg.type === 'EMOJI'}>
+              {msg.type === 'EMOJI' ? (
+                <EmojiImage src={`/images/Emoji/${msg.content}`} alt="emoji" />
+              ) : (
+                msg.content
+              )}
+            </Message>
+          </MessageWrapper>
+        ))}
+        {showEmojiPicker && (
+          <EmojiOverlay>
+            <EmojiPicker>
+              {emojiImages.map((emoji, index) => (
+                <EmojiButton
+                  key={index}
+                  src={`/images/Emoji/${emoji}`}
+                  alt={`emoji-${index}`}
+                  onClick={() => handleEmojiSelect(emoji)}
+                />
+              ))}
+            </EmojiPicker>
+          </EmojiOverlay>
+        )}
+        <div ref={bottomRef} /> {/* 채팅 컨테이너의 최하단을 가리키는 ref */}
+      </ChatContainer>
+      <MessageInputContainerWrapper>
+        <MessageInputContainer>
+          <MessageInput
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="메시지를 입력하세요"
+          />
+          <SendButton onClick={sendMessage} disabled={!isConnected}>
+            전송
+          </SendButton>
+          <ImageButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+            <InsertEmoticonIcon />
+          </ImageButton>
+        </MessageInputContainer>
+      </MessageInputContainerWrapper>
     </>
   );
 };
