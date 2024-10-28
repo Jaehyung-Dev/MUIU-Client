@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import C_HumanCounseling from './pages/C_HumanCounseling';
 import C_NewConsultation from './pages/C_NewConsultation';
 import ChangePassword from './pages/ChangePassword';
-import ChatComponent from './components/ChatComponent';
+import Chat from './pages/Chat';
 import ConsultationRecord from './pages/ConsultationRecord';
 import CounselorChart from './pages/CounselorChart';
 import CounselorDiary from './pages/CounselorDiary';
@@ -54,12 +54,14 @@ import MyPage from './pages/MyPage';
 import NewConsultation from './pages/NewConsultation';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import StarredPlace from './pages/StarredPlace';
 import Support from './pages/Support';
 import VideoConsultationScreen from './pages/VideoConsultationScreen';
 import { persistStore } from 'redux-persist';
 import { store } from './store/store';
 import MindColumnPost from './pages/MindColumnPost';
+import AI_Chat from './pages/AI_Chat';
+import AudioCall from './pages/AudioCall';
+import HomeAddress from './pages/HomeAddress';
 
 function App() {
   const persiststore = persistStore(store);
@@ -147,12 +149,14 @@ function App() {
               <Route path="c-new-consultation" element={<C_NewConsultation />} />
               <Route path="emotion-graph" element={<EmotionGraph />} />
               <Route path="consultation-record" element={<ConsultationRecord />} />
-              <Route path="starred-place" element={<StarredPlace />} />
               <Route path="donation-record" element={<DonationRecord />} />
               <Route path="loading" element={<Loading />} />
-              <Route path="/chat" element={<ChatComponent />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path='/support' element={<Support/>} />
+              <Route path='/ai-counseling' element={<AI_Chat/>}/>
+              <Route path='/audio-call' element={<AudioCall/>}/>
+              <Route path='/home-address' element={<HomeAddress/>}/>
             </Route>
           </Routes>
         </Router>

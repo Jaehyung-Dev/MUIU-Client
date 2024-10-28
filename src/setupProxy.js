@@ -12,9 +12,18 @@ module.exports = function(app) {
 
     /* 네이버 로그인 api proxy 설정 */
     app.use(
-        '/api2', // api path parameter -- 재형님이 쓰시는 api url 사용하시면 돼요!
+        '/naver', // api path parameter -- 재형님이 쓰시는 api url 사용하시면 돼요!
         createProxyMiddleware({
-            target: '"https://nid.naver.com', // endpoint
+            target: 'http://localhost:9090', // endpoint
+            changeOrigin: true,
+        })
+    );
+
+    /* diaryWriteApis proxy 설정 */
+    app.use(
+        '/api3', // api path parameter
+        createProxyMiddleware({
+            target: 'http://localhost:9090', // endpoint
             changeOrigin: true,
         })
     );

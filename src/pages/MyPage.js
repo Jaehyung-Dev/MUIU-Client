@@ -3,12 +3,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { logout } from '../apis/memberApis';
+import HomeIcon from '@mui/icons-material/Home';
 
 const Content = styled.div``;
 
@@ -216,9 +216,29 @@ export const MyPage = () => {
     const [showDeveloperInfo, setShowDeveloperInfo] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await axios.get('http://localhost:9090/apis/profile/me', {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+                    },
+                    withCredentials: true,
+                });
+                setProfileImage(`${response.data.profileImageUrl}?t=${new Date().getTime()}`);
+            } catch (error) {
+                console.error('프로필 이미지 로드 오류:', error);
+                if (error.response && error.response.status === 401) {
+                    navigate('/login');
+                }
+            }
+        };
+        fetchProfileImage();
+    }, [navigate]);
 
     useEffect(() => {
-        const fetchUserData = () => {
+        const fetchUserData = async () => {
             try {
                 const persistRoot = sessionStorage.getItem('persist:root');
                 if (!persistRoot) {
@@ -227,34 +247,36 @@ export const MyPage = () => {
                 }
     
                 const parsedRoot = JSON.parse(persistRoot);
-                if (!parsedRoot.memberSlice) {
-                    navigate('/login');
-                    return;
-                }
-    
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-                if (!memberSlice.isLogin || !memberSlice.id || !memberSlice.username || !memberSlice.role) {
+    
+                if (!memberSlice.isLogin || !memberSlice.id) {
                     navigate('/login');
                     return;
                 }
     
-                setUserData({
-                    id: memberSlice.id,
-                    name: memberSlice.username,
-                    role: memberSlice.role,
+                // Fetch the user's name instead of username
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
                 });
-    
-                // 로컬 스토리지에서 프로필 이미지 URL 불러오기
-                const storedProfileImageUrl = localStorage.getItem('profileImageUrl');
-                setProfileImage(storedProfileImageUrl || userProfile);
+                
+                setUserData({
+                    name: response.data.item.name,
+                    role: response.data.item.role
+                });
+
             } catch (error) {
                 console.error('오류:', error);
-                navigate('/login');
+                if (error.response && error.response.status === 401) {
+                    navigate('/login');
+                }
             }
         };
-    
         fetchUserData();
     }, [navigate]);
+    
 
     const handleProfileChangeClick = () => {
         document.getElementById('profile-image-input').click();
@@ -262,46 +284,43 @@ export const MyPage = () => {
 
     const handleProfileImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (file && userData) {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('userId', userData.id);
     
             try {
+                const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
-                    'http://localhost:9090/api/profile/upload',
+                    'http://localhost:9090/apis/profile/upload',
                     formData,
                     {
-                        headers: {
+                        headers: { 
                             'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${token}` 
                         },
-                        withCredentials: true
+                        withCredentials: true,
                     }
                 );
-                
+            
                 if (response.status === 200) {
-                    const imageUrl = response.data;
-                    alert('프로필 이미지가 변경되었습니다.');
-                    // 타임스탬프를 추가하여 캐시 무효화
-                    const imageWithTimestamp = `${imageUrl}?t=${new Date().getTime()}`;
-                    setProfileImage(imageWithTimestamp);
-    
-                    localStorage.setItem('profileImageUrl', imageWithTimestamp);
+                    const imageUrl = response.data.profileImageUrl;
+                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`); // 캐시 방지
+                    console.log(imageUrl);
                 }
             } catch (error) {
                 console.error('프로필 이미지 업로드 오류:', error);
-                alert('프로필 이미지 변경 중 오류가 발생했습니다.');
             }
         }
-    };    
+    };
+    
 
     const handleLogoutClick = () => {
         dispatch(logout());
         navigate('/');
     };
 
-    const handleStarredPlaceClick = () => {
-        navigate('/starred-place');
+    const handleHomeAddressClick = () => {
+        navigate('/home-address');
     };
 
     const handleConsultationHistoryClick = () => {
@@ -380,11 +399,11 @@ export const MyPage = () => {
         <Content>
             <Profile>
                 <div className="profile-image">
-                    <img src={profileImage} alt="프로필" />
+                    <img src={profileImage || userProfile} alt="프로필" />
                 </div>
                 <div className="profile-user">
                     <div className="profile-type">{userData?.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
-                    <div className="profile-name">{userData?.name} 님</div>
+                    <div className="profile-name">{userData?.name}님</div>
                 </div>
                 <button className="change-profile-btn" onClick={handleProfileChangeClick}>
                     프로필 변경
@@ -397,11 +416,11 @@ export const MyPage = () => {
                 />
             </Profile>
             <Menu>
-                <div className="menu-button" onClick={handleStarredPlaceClick}>
+                <div className="menu-button" onClick={handleHomeAddressClick}>
                     <div className="menu-button-icon">
-                        <StarIcon/>
+                        <HomeIcon/>
                     </div>
-                    <div className="menu-button-text">즐겨찾기 장소</div>
+                    <div className="menu-button-text">내 주소</div>
                 </div>
                 <div className="menu-button" onClick={handleConsultationHistoryClick}>
                     <div className="menu-button-icon">
@@ -430,8 +449,8 @@ export const MyPage = () => {
                     <div className='section'>
                     <div className="menu-item" onClick={handleDeveloperInfoClick}>
                         <span className="menu-item-text" style={{marginLeft:"-20px"}}>개발자 정보</span>
-                        <RotatingArrow style={{ color: "#999", marginRight:"-15px"}} rotate={showDeveloperInfo} />
-                    </div>
+                        <RotatingArrow style={{ color: "#999", marginRight: "-15px" }} rotate={showDeveloperInfo ? "true" : undefined} />
+                        </div>
                     {showDeveloperInfo && (
                         <DeveloperInfo>
                             <p>민수정 (Frontend) - soojeongmin@soongsil.ac.kr</p>

@@ -1,22 +1,19 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import color from '@toast-ui/editor-plugin-color-syntax';
-import 'tui-color-picker/dist/tui-color-picker.css';
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
-import { createFundPost } from '../apis/fundApis';
+import { createFundPost, updateFundPost, uploadImage } from '../apis/fundApis';
 import { useSelector } from 'react-redux';
 
 const Main = styled.main`
   width: 100%;  
   box-sizing: border-box; 
   padding: 0; 
-  
+
   .post-form {
     padding: 1.2rem;
   }
@@ -31,14 +28,10 @@ const Main = styled.main`
     box-sizing: border-box;
   }
 
-  .editor-container {
-    margin-bottom: 2.5rem;
-  }
-
   .date-field {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    margin: 1rem 0 1rem 0;
   }
 
   .date-label {
@@ -94,9 +87,61 @@ const Main = styled.main`
     color: #fff;
     font-weight: 600;
     font-size: 1.25rem;
-    margin-top: 2.5rem;
+    margin: 2.5rem 0 3rem 0;
     letter-spacing: 0.5px;
     cursor: pointer;
+  }
+
+  .react-quill-editor {
+    height: 13rem;
+    width: 100%;
+    margin-bottom: 5rem;
+    overflow: visible !important;
+  }
+
+  .file-label {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ccc; 
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 0.35rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    width: 100%; 
+  }
+
+  .file-input {
+    display: none; /* 기본 input 파일 선택 버튼을 숨김 */
+  }
+
+  .file-label span {
+    color: #888; 
+  }
+
+  .file-select-btn {
+    background-color: #3A76E9; /* 버튼 배경색 */
+    color: #fff !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .file-select-btn:hover {
+    background-color: #2f5bb5; /* 호버 시 색상 변경 */
+  }
+
+  .file-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-top: 0.8rem;
+    border-radius: 0.35rem;
   }
 
   @media (max-width: 768px) {
@@ -130,112 +175,91 @@ const CustomInput = ({ value, onClick }) => (
   </div>
 );
 
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  ['link', 'image'],
+  [{ 'align': [] }],
+];
+
 const FundPost = () => {
+  const location = useLocation();
+  const post = location.state?.post || {};
   const userId = useSelector((state) => state.memberSlice.id);
   const navigate = useNavigate();
-  const [title, setTitle] = useState('');
-  const [team, setTeam] = useState('');
-  const [file, setFile] = useState(null); // 파일 상태 정의 추가
-  const [imageUrl, setImageUrl] = useState('');
-  const [imagePreview, setImagePreview] = useState(null);  // 이미지 미리보기 설정
-  const [fundStart, setFundStart] = useState(null);
-  const [fundEnd, setFundEnd] = useState(null);
-  //const [businessStart, setBusinessStart] = useState(null);
-  //const [businessEnd, setBusinessEnd] = useState(null);
-  const [targetAmount, setTargetAmount] = useState('');
-  const editorRef = useRef();
+  const [title, setTitle] = useState(post.title || '');
+  const [team, setTeam] = useState(post.teamName || '');
+  const [file, setFile] = useState(post.mainImage || null); // 클라우드 URL로 활용
+  const [imagePreview, setImagePreview] = useState(post.mainImage || null);
+  const [fundStart, setFundStart] = useState(post.fundStartDate ? new Date(post.fundStartDate) : null);
+  const [fundEnd, setFundEnd] = useState(post.fundEndDate ? new Date(post.fundEndDate) : null);
+  const [targetAmount, setTargetAmount] = useState(post.targetAmount || '');
+  const [content, setContent] = useState(post.description || '');
+  const quillRef = useRef(null); 
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // 이미지 버튼 감지
+    // const toolbar = document.querySelector('.ql-image');
+    // const handleButtonClick = (e) => {
+    //   e.preventDefault(); 
+    //   e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
+    //   handleImageUpload();
+    // };
+
+    // if (toolbar) {
+    //   toolbar.addEventListener('click', handleButtonClick);
+    // }
+
+    // return () => {
+    //   if (toolbar) {
+    //     toolbar.removeEventListener('click', handleButtonClick);
+    //   }
+    // };
   }, []);
 
-  // 이미지 리사이즈 함수
-const resizeImage = (file, maxWidth, maxHeight) => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width = img.width;
-        let height = img.height;
-
-        // 이미지가 maxWidth, maxHeight보다 크면 비율 유지하여 리사이즈
-        if (width > maxWidth || height > maxHeight) {
-          if (width > height) {
-            height = Math.floor((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.floor((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // canvas 데이터를 base64로 변환
-        const resizedImage = canvas.toDataURL('image/jpeg', 0.2); // 이미지 품질 조정 (0.7)
-        resolve(resizedImage);
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-
-const handleImageChange = async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    try {
-      const resizedImage = await resizeImage(file, 800, 800); // 최대 800x800 크기로 리사이즈
-      setFile(resizedImage); // 리사이즈된 이미지를 base64로 상태에 저장
-      setImagePreview(resizedImage); // 미리보기 이미지 설정 (필요에 따라)
-    } catch (error) {
-      console.error("이미지 리사이징 실패:", error);
+  // 파일 선택 시 클라우드 업로드 및 미리보기 생성
+  const handleImageChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImagePreview(URL.createObjectURL(selectedFile));
+      try {
+        const imageUrl = await uploadImage(selectedFile);
+        setFile(imageUrl);
+      } catch (error) {
+        console.error("이미지 업로드 실패:", error);
+      }
     }
-  }
-};
+  };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const content = editorRef.current?.getInstance().getHTML();
-
     const postData = {
       userId,
       title,
       description: content,
-      teamName: team, 
+      teamName: team,
       fundStartDate: fundStart,
       fundEndDate: fundEnd,
       targetAmount,
-      mainImage: file // base64로 인코딩된 이미지 데이터
+      mainImage: file || post.mainImage
     };
 
-    console.log('작성된 글:', postData);
-
     try {
-      const response = await createFundPost(postData, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-          'Content-Type': 'application/json' // JSON 데이터로 전송
-        }
-      });
-      console.log('게시글 등록 성공!', response);
-      navigate('/fund');
-    } catch (error) {
-      console.error('게시글 등록 실패:', error);
-    }
-
-    setTimeout(() => {
+      if (post.postId) {
+        await updateFundPost(post.postId, postData);
+        console.log('게시글 수정 성공!');
+      } else {
+        await createFundPost(postData);
+        console.log('게시글 등록 성공!');
+      }
       navigate('/fund', { state: postData });
-    }, 0);
+    } catch (error) {
+      console.error('게시글 처리 실패:', error);
+    }
   };
 
   return (
@@ -251,24 +275,34 @@ const handleImageChange = async (e) => {
           required
         />
 
-        {/* 대표 이미지 URL 입력 필드 */}
-        <input
-          type="file"
-          accept="image/*"
-          className="post-input"
-          onChange={handleImageChange}
-        />
+        <label className="file-label">
+          {/* 이미지 미리보기와 선택 버튼 분기 */}
+          {imagePreview ? (
+            <img src={imagePreview} alt="미리보기" className="file-preview" />
+          ) : (
+            <span>대표 이미지를 선택하세요</span>
+          )}
+          <span className="file-select-btn">이미지 선택</span>
+          <input
+            type="file"
+            accept="image/*"
+            className="post-input file-input"
+            onChange={handleImageChange}
+          />
+        </label>
 
         <div className="editor-container">
-          <Editor
-            ref={editorRef}
-            initialValue=""
-            previewStyle="vertical"
-            height="300px"
-            initialEditType="wysiwyg"
-            useCommandShortcut={true}
+          <ReactQuill
+            ref={quillRef}
+            theme="snow"
+            value={content}
+            onChange={(value) => setContent(value)}
             placeholder="내용을 입력하세요"
-            plugins={[color]}
+            className="react-quill-editor"
+            modules={{
+              toolbar: toolbarOptions,
+            }}
+            formats={['bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link', 'align', 'image']}
           />
         </div>
 
@@ -303,29 +337,6 @@ const handleImageChange = async (e) => {
             />
           </div>
         </div>
-
-        {/* <div className="date-field">
-                  <p className="date-label">사업 기간</p>
-                  <div className="date-picker-container">
-                    <DatePicker 
-                      selected={businessStart} 
-                      onChange={(date) => setBusinessStart(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="시작일 선택" 
-                      required
-                    />
-                    <span className="tilde">~</span>
-                    <DatePicker 
-                      selected={businessEnd} 
-                      onChange={(date) => setBusinessEnd(date)} 
-                      customInput={<CustomInput />}
-                      dateFormat="yyyy.MM.dd"
-                      placeholderText="종료일 선택" 
-                      required
-                    />
-                  </div>
-                </div> */}
 
         <input
           type="number"

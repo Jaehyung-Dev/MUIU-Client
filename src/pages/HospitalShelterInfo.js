@@ -5,6 +5,9 @@ import HS_MapDisplay from '../components/HS_MapDisplay';
 import HS_InfoModal from '../components/HS_InfoModal';
 import HS_PhotoModal from '../components/HS_PhotoModal';
 import HS_FindRoadModal from '../components/HS_FindRoadModal';
+import HS_InfoModal_Shelter from '../components/HS_InfoModal_Shelter';
+import HS_PhotoModal_Shelter from '../components/HS_PhotoModal_Shelter';
+import HS_FindRoadModal_Shelter from '../components/HS_FindRoadModal_Shelter';
 
 const Main = styled.div`
     width: 100%;
@@ -24,6 +27,7 @@ export const HospitalShelterInfo = () => {
     const [selectedHospital, setSelectedHospital] = useState(null);
     const [mode, setMode] = useState(null);
 
+    /* 병원 Modal 함수 모음 */
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
 
@@ -40,9 +44,38 @@ export const HospitalShelterInfo = () => {
         setIsFindRoadOpen(false);
         setSelectedHospital(null); // 모달 닫을 때 선택된 병원 초기화
         setMode(null);
-
     };
 
+    /*
+        【 Shelter 】
+        - openShelterInfo
+        - openShelterPhoto
+        - openShelterFindRoad
+    */
+    const [isShelterInfoOpen, setIsShelterInfoOpen] = useState(false);
+    const [isShelterPhotoOpen, setIsShelterPhotoOpen] = useState(false);
+    const [isShelterFindRoadOpen, setIsShelterFindRoadOpen] = useState(false);
+    const [selectedShelter, setSelectedShelter] = useState(null);
+
+    const openShelterInfo = () => setIsShelterInfoOpen(true);
+    const closeShelterInfo = () => setIsShelterInfoOpen(false);
+
+    const openShelterPhoto = () => setIsShelterPhotoOpen(true);
+    const closeShelterPhoto = () => setIsShelterPhotoOpen(false);
+
+    const openShelterFind = (shelterName, mode) => {
+        setSelectedShelter(shelterName);
+        setIsShelterFindRoadOpen(true);
+        setMode(mode);
+    };
+    
+    const closeShelterFind = () => {
+        setIsShelterFindRoadOpen(false);
+        setSelectedShelter(null); 
+        setMode(null);
+    };
+    
+    /* 검색창 */
     const handleSearch = (query) => {
         setSearchQuery(query);
     };
@@ -853,11 +886,18 @@ export const HospitalShelterInfo = () => {
                 openInfoPopUp={openInfoPopUp}
                 openPhotoPopUp={openPhotoPopUp}
                 openFindRoadPopUp={openFindRoadPopUp}
+                //
                 searchQuery={searchQuery}
                 stations={stations.DATA}
                 setSelectedHospital={setSelectedHospital}
                 mode = {mode}
+                // 
+                openShelterInfo={openShelterInfo}
+                openShelterPhoto={openShelterPhoto}
+                openShelterFind={openShelterFind}
+                setSelectedShelter={setSelectedShelter}
             />
+            {/* 병원 Modal 창 */}
             <HS_InfoModal
                 isOpen={isInfoOpen}
                 onClose={closeInfoPopUp}
@@ -870,6 +910,25 @@ export const HospitalShelterInfo = () => {
                 isOpen={isFindRoadOpen}
                 onClose={closeFindRoadPopUp}
                 hospitalName={selectedHospital} // 병원 이름 전달
+                mode={mode}
+                stations={stations.DATA}
+            />
+            {/* 대피소 Modal 창 */}
+            <HS_InfoModal_Shelter
+                isShelterOpen={isShelterInfoOpen}
+                onShelterClose={closeShelterInfo}
+                openShelterPhoto={openShelterPhoto}
+                openShelterFind={openShelterFind}
+                stations={stations.DATA}
+            />
+            < HS_PhotoModal_Shelter
+                isShelterPhotoOpen={isShelterPhotoOpen}
+                closeShelterPhoto={closeShelterPhoto}
+            />
+            <HS_FindRoadModal_Shelter
+                isShelterFindRoadOpen={isShelterFindRoadOpen}
+                closeShelterFind={closeShelterFind}
+                shelterName={selectedShelter} // 대피소 이름 전달
                 mode={mode}
                 stations={stations.DATA}
             />

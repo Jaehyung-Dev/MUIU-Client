@@ -1,11 +1,11 @@
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import React, { useState } from 'react'
-import good from '../svg/good.svg'
+import good from '../svg/good.svg';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-
+import axios from 'axios'; // API 호출을 위한 axios
 
 const DiaryEntry = styled.div`
     width: 85%;
@@ -81,46 +81,71 @@ const MenuItem = styled.div`
 `;
 
 const MD_Block = () => {
-
     const [menuVisible, setMenuVisible] = useState(false);
+    const [diaryData, setDiaryData] = useState({ title: '', content: '', date: '' });
+    const [userId, setUserId] = useState(null);
 
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
 
-  return (
-    <DiaryEntry>
-        <EntryHeader>
-            <img src={good} alt="좋음" />
-            <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
-            {menuVisible && (
-                <MenuContainer>
-                    <MenuItem>
-                        <EditIcon />
-                        <span>Edit</span>
-                    </MenuItem>
-                    <MenuItem>
-                        <DeleteIcon />
-                        <span>Delete</span>
-                    </MenuItem>
-                </MenuContainer>
-            )}
-        </EntryHeader>
-        <TimeBlock>
-            <AccessTimeFilledIcon style={{ width: '15px' }} />
-            <EntryDateText>28 May 21</EntryDateText>
-        </TimeBlock>
-        <EntryTitle>비트캠프에서의 첫 날</EntryTitle>
-        <EntryContent>
-            오늘은 비트캠프에 처음 왔다.
-            <br />
-            처음에는 많이 긴장했지만, 새로운 분들이 친절하게 맞아주셔서 금방 긴장이 풀렸다.
-            <br /><br />
-            오늘은 HTML, CSS, JavaScript에 대해 간단하게 배웠다.
-            앞으로도 열심히 해야지.
-        </EntryContent>
-    </DiaryEntry>
-  );
+    useEffect(() => {
+        const fetchDiaryData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                if (!persistRoot) {
+                    console.error('유저 정보 없음');
+                    return;
+                }
+
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                if (memberSlice.isLogin && memberSlice.id) {
+                    setUserId(memberSlice.id);
+
+                    // Fetch diary data using userId
+                    const response = await axios.get(`/api/diary/${memberSlice.id}`);
+                    if (response.status === 200) {
+                        setDiaryData(response.data);
+                    } else {
+                        console.error('일기 데이터를 가져오는 중 오류');
+                    }
+                }
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+
+        fetchDiaryData();
+    }, []);
+
+    return (
+        <DiaryEntry>
+            <EntryHeader>
+                <img src={good} alt="좋음" />
+                <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+                {menuVisible && (
+                    <MenuContainer>
+                        <MenuItem>
+                            <EditIcon />
+                            <span>Edit</span>
+                        </MenuItem>
+                        <MenuItem>
+                            <DeleteIcon />
+                            <span>Delete</span>
+                        </MenuItem>
+                    </MenuContainer>
+                )}
+            </EntryHeader>
+            <TimeBlock>
+                <AccessTimeFilledIcon style={{ width: '15px' }} />
+                <EntryDateText>{diaryData.date}</EntryDateText>
+            </TimeBlock>
+            <EntryTitle>{diaryData.title}</EntryTitle>
+            <EntryContent>{diaryData.content}</EntryContent>
+        </DiaryEntry>
+    );
 };
 
 export default MD_Block;
