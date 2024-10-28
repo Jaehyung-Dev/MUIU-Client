@@ -7,7 +7,6 @@ import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const DiaryBackground = styled.div`
@@ -146,7 +145,7 @@ const DiaryViewAll = styled.a`
 `
 
 export const MyDiary = () => {
-    const navi = useNavigate();
+    const navigate = useNavigate();
 
     const [userData, setUserData] = useState(null); 
 
@@ -157,7 +156,7 @@ export const MyDiary = () => {
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
 
-                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                const response = await axios.get(`/api3/members/${memberSlice.id}/name`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },

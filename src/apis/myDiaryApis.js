@@ -13,7 +13,9 @@ const apiClient = axios.create({
   baseURL: '/api',  // API의 기본 URL
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
   },
+  withCredentials: true // 쿠키 또는 세션 ID를 함께 보내기 위해 필요
 });
 
 // 요청 전에 JWT 토큰을 Authorization 헤더에 추가하는 interceptor

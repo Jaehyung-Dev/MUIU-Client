@@ -82,7 +82,7 @@ const MenuItem = styled.div`
 
 const MD_Block = () => {
     const [menuVisible, setMenuVisible] = useState(false);
-    const [diaryData, setDiaryData] = useState({ title: '', content: '', date: '' });
+    const [diaryData, setDiaryData] = useState({ title: '', content: '', regdate: '' });
     const [userId, setUserId] = useState(null);
 
     const toggleMenu = () => {
@@ -92,6 +92,7 @@ const MD_Block = () => {
     useEffect(() => {
         const fetchDiaryData = async () => {
             try {
+                // 세션에서 유저 ID를 가져오는 로직 (예: JWT 토큰 또는 세션 스토리지)
                 const persistRoot = sessionStorage.getItem('persist:root');
                 if (!persistRoot) {
                     console.error('유저 정보 없음');
@@ -104,12 +105,23 @@ const MD_Block = () => {
                 if (memberSlice.isLogin && memberSlice.id) {
                     setUserId(memberSlice.id);
 
-                    // Fetch diary data using userId
-                    const response = await axios.get(`/api/diary/${memberSlice.id}`);
-                    if (response.status === 200) {
-                        setDiaryData(response.data);
+                    // 유저 ID로 다이어리 데이터를 가져오는 API 호출
+                    const response = await axios.get(`http://localhost:9090/diaries/my-diaries`, {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+                        }
+                    });
+
+                    // 응답 성공 시 데이터 설정
+                    if (response.status === 200 && response.data.item.length > 0) {
+                        const latestDiary = response.data.item[0]; // 최신 일기 데이터 가져오기
+                        setDiaryData({
+                            title: latestDiary.title,
+                            content: latestDiary.content,
+                            regdate: new Date(latestDiary.regdate).toLocaleDateString() // 날짜 포맷 변경
+                        });
                     } else {
-                        console.error('일기 데이터를 가져오는 중 오류');
+                        console.log('일기 데이터가 존재하지 않습니다.');
                     }
                 }
             } catch (error) {
@@ -140,10 +152,10 @@ const MD_Block = () => {
             </EntryHeader>
             <TimeBlock>
                 <AccessTimeFilledIcon style={{ width: '15px' }} />
-                <EntryDateText>{diaryData.date}</EntryDateText>
+                <EntryDateText>{diaryData.regdate}</EntryDateText>
             </TimeBlock>
-            <EntryTitle>{diaryData.title}</EntryTitle>
-            <EntryContent>{diaryData.content}</EntryContent>
+            <EntryTitle>{diaryData.title || '제목 없음'}</EntryTitle>
+            <EntryContent>{diaryData.content || '내용이 없습니다.'}</EntryContent>
         </DiaryEntry>
     );
 };
