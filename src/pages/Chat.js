@@ -185,6 +185,8 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);
+  const [partnerInfo, setPartnerInfo] = useState({ name: '', role: '' });
+  const userId = JSON.parse(sessionStorage.getItem('persist:root')).memberSlice.id;
 
   const handleBackClick = () => {
     navigate(-1);
@@ -244,11 +246,7 @@ const Chat = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const persistRoot = sessionStorage.getItem('persist:root');
-        const parsedRoot = JSON.parse(persistRoot);
-        const memberSlice = JSON.parse(parsedRoot.memberSlice);
-
-        const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+        const response = await axios.get(`http://localhost:9090/members/${userId}/name`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
           },
@@ -310,18 +308,39 @@ const Chat = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    const fetchPartnerInfo = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9090/chat/partner/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+          },
+          withCredentials: true,
+        });
+        setPartnerInfo({
+          name: response.data.item.name,
+          role: response.data.item.role
+        });
+        console.log("연결 성공:", response.data.item.name, response.data.item.role);
+      } catch (error) {
+        console.error("상대방 정보 불러오기 실패: 연결 실패", error);
+      }
+    };   
+    fetchPartnerInfo();
+  }, []);
+
   return (
     <>
       <HeaderContainer>
         <BackButton onClick={handleBackClick}>
           <ArrowBackIosIcon />
         </BackButton>
-        <Title>반재형 상담사</Title>
+        <Title>{partnerInfo ? `${partnerInfo.name} ${partnerInfo.role}` : "연결 중..."}</Title>
       </HeaderContainer>
       <ChatContainer ref={chatContainerRef}>
         {messages.map((msg, index) => (
-          <MessageWrapper key={index} $isUser={msg.sender === `${userData.name}`}>
-            <Message $isUser={msg.sender === `${userData.name}`} $isEmoji={msg.type === 'EMOJI'}>
+          <MessageWrapper key={index} $isUser={msg.sender === `${userData?.name}`}>
+            <Message $isUser={msg.sender === `${userData?.name}`} $isEmoji={msg.type === 'EMOJI'}>
               {msg.type === 'EMOJI' ? (
                 <EmojiImage src={`/images/Emoji/${msg.content}`} alt="emoji" />
               ) : (
@@ -354,7 +373,7 @@ const Chat = () => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="메시지를 입력하세요"
           />
-          <SendButton onClick={sendMessage} disabled={!isConnected}>
+          <SendButton onClick={sendMessage} disabled={!isConnected || !partnerInfo}> {/* 버튼 활성화 조건 수정 */}
             전송
           </SendButton>
           <ImageButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
