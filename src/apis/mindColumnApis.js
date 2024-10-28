@@ -50,3 +50,15 @@ export const update = createAsyncThunk(
         }
     }
 );
+
+export const deleteCard = createAsyncThunk(
+    'mind-column/delete',
+    async(id, thunkApi) => {
+        try {
+            const response = await axios.delete(`http://localhost:9090/mind-column/${id}`, {});
+            return response.data.items;
+        } catch(e) {
+            return thunkApi.rejectWithValue(e);
+        }
+    }
+);
