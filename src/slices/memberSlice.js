@@ -8,12 +8,16 @@ const memberSlice = createSlice({
         id: 0,
         username: '',
         role: '',
-        naverLogin: false,
     },
     reducers: {
-        // 네이버 로그인 상태를 변경하는 reducer 추가
-        setNaverLogin: (state, action) => {
-            state.naverLogin = action.payload;
+        // 사용자 정보를 최상위 레벨에 업데이트하는 reducer 추가
+        setUserInfo: (state, action) => {
+            const { isLogin, id, username, role, token } = action.payload;
+            // 최상위 상태를 직접 업데이트
+            state.isLogin = isLogin || false;
+            state.id = id || 0;
+            state.username = username || '';
+            state.role = role || '';
         },
     },
     extraReducers: (builder) => {
@@ -111,6 +115,6 @@ const memberSlice = createSlice({
 });
 
 // `setNaverLogin` 액션을 export
-export const { setNaverLogin } = memberSlice.actions;
+export const { setUserInfo } = memberSlice.actions;
 
 export default memberSlice.reducer;
