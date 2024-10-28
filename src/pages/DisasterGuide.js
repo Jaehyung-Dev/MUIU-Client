@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 
 const Container = styled.div`
     max-width: 800px;
@@ -71,11 +72,20 @@ const DisasterMessages = () => {
         '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도'
     ];
 
+
     useEffect(() => {
         if (region) {
             axios.get(`http://localhost:9090/api/disaster-messages/category?category=${region}`)
                 .then(response => {
-                    setMessages(response.data);
+                    console.log("Fetched Messages:", response.data);
+
+                    const sortedMessages = response.data.sort((a, b) => {
+                        const dateA = dayjs(a.readStatus, 'YYYY/MM/DD HH:mm:ss');
+                        const dateB = dayjs(b.readStatus, 'YYYY/MM/DD HH:mm:ss');
+                        return dateB - dateA;
+                    });
+
+                    setMessages(sortedMessages);
                 })
                 .catch(error => {
                     console.error('Error fetching disaster messages:', error);
@@ -83,6 +93,8 @@ const DisasterMessages = () => {
         }
     }, [region]);
 
+    
+    
     const handleRegionChange = (event) => {
         setRegion(event.target.value);
     };

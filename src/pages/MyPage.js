@@ -3,12 +3,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { logout } from '../apis/memberApis';
+import HomeIcon from '@mui/icons-material/Home';
 
 const Content = styled.div``;
 
@@ -319,8 +319,8 @@ export const MyPage = () => {
         navigate('/');
     };
 
-    const handleStarredPlaceClick = () => {
-        navigate('/starred-place');
+    const handleHomeAddressClick = () => {
+        navigate('/home-address');
     };
 
     const handleConsultationHistoryClick = () => {
@@ -416,11 +416,11 @@ export const MyPage = () => {
                 />
             </Profile>
             <Menu>
-                <div className="menu-button" onClick={handleStarredPlaceClick}>
+                <div className="menu-button" onClick={handleHomeAddressClick}>
                     <div className="menu-button-icon">
-                        <StarIcon/>
+                        <HomeIcon/>
                     </div>
-                    <div className="menu-button-text">즐겨찾기 장소</div>
+                    <div className="menu-button-text">내 주소</div>
                 </div>
                 <div className="menu-button" onClick={handleConsultationHistoryClick}>
                     <div className="menu-button-icon">

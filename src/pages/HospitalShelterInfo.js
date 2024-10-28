@@ -74,7 +74,7 @@ export const HospitalShelterInfo = () => {
         setSelectedShelter(null); 
         setMode(null);
     };
-
+    
     /* 검색창 */
     const handleSearch = (query) => {
         setSearchQuery(query);

@@ -2,14 +2,17 @@ import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import memberSlice from '../slices/memberSlice';
 import mindColumnSlice from '../slices/mindColumnSlice'
 import {
-    persistReducer,
     FLUSH,
-    REHYDRATE,
     PAUSE,
     PERSIST,
     PURGE,
-    REGISTER
+    REGISTER,
+    REHYDRATE,
+    persistReducer
 } from 'redux-persist';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+
+import memberSlice from '../slices/memberSlice';
 import storageSession from 'redux-persist/es/storage/session';
 
 const reducers = combineReducers({

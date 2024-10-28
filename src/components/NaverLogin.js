@@ -1,7 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { setNaverLogin } from '../slices/memberSlice';
 
 const NaverButton = styled.button`
   cursor: pointer;
@@ -18,12 +16,18 @@ const NaverButton = styled.button`
 `;
 
 const NaverLogin = () => {
-	const NAVER_AUTH_URL = "http://localhost:9090/oauth2/authorization/naver";
-  const dispatch = useDispatch();
-
-	const handleNaverLogin = () => {
-		// 네이버 로그인 요청 전에 naverLogin 상태를 true로 변경
-		dispatch(setNaverLogin(true));
+  const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
+  const REDIRECT_URI = "http://localhost:3000/oauth"; // Callback URL
+  
+  // Math.random()을 이용한 임의 문자열 생성 함수
+  const generateState = () => {
+    return Math.random().toString(36).substring(2, 15);
+  };
+  // 생성된 값을 STATE에 할당
+  const STATE = generateState();
+  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}`;
+	
+  const handleNaverLogin = () => {
 		// 네이버 로그인 URL로 이동
 		window.location.href = NAVER_AUTH_URL;
 	};
