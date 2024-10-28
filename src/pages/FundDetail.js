@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import DonationDetails from '../components/DonationDetails';
-import ShareIcon from '@mui/icons-material/Share';
 import Loading from '../pages/Loading'; 
 import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ShareIcon from '@mui/icons-material/Share';
 
 
 // Styled components
@@ -102,6 +102,11 @@ const Main = styled.main`
     z-index: 1000;
   }
 
+  .icon-without-pointer {
+    pointer-events: none;
+  }
+
+
   @media (max-width: 600px) {
     .post-img {
       width: 100%;
@@ -170,12 +175,53 @@ const FundDetail = () => {
   const [currentAmount, setCurrentAmount] = useState(0); 
   const [post, setPost] = useState(null); // 서버에서 받아온 데이터를 저장
   const [copyMessage, setCopyMessage] = useState('');
+  const [menuVisible, setMenuVisible] = useState(false);
   const navigate = useNavigate();
 
-  const [menuVisible, setMenuVisible] = useState(false);
+  //console.log(`postId: `, postId);  
 
+  // 케밥버튼 토글
   const toggleMenu = () => {
+    console.log('Menu 토글 클릭됨');  
       setMenuVisible(!menuVisible);
+  };
+  
+  // 케밥 - edit버튼
+  const handleEditClick = (event) => {
+    console.log(menuVisible);
+    console.log('Edit 버튼이 클릭되었습니다.');
+    event.stopPropagation();  // 이벤트 전파 차단
+    if (!post) {
+      console.error('Post가 존재하지 않습니다.');
+      return;
+    }
+    console.log('Navigate 호출 전: ', post); // post 데이터 확인
+    navigate('/fund-post', { state: { post } });  // 현재 post 데이터를 넘기면서 FundPost.js로 이동
+  };  
+  const handleTest = () => {
+    console.log('Edit 버튼이 클릭되었습니다.');
+  }
+
+  // 메뉴 외부 클릭 시 메뉴 닫기
+  const handleClickOutside = (event) => {
+    // 메뉴 외부를 클릭했을 때만 메뉴를 닫기
+    if (menuVisible && !event.target.closest('.menu-container') && !event.target.closest('.MuiSvgIcon-root')) {
+      setMenuVisible(false);
+    }
+  };  
+
+  // 공유버튼(주소복사)
+  const handleShareClick = () => {
+    const link = window.location.href;
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        setCopyMessage('링크가 복사되었습니다.');
+        setTimeout(() => setCopyMessage(''), 2000);
+      })
+      .catch(() => {
+        setCopyMessage('링크 복사에 실패했습니다.');
+        setTimeout(() => setCopyMessage(''), 2000);
+      });
   };
 
   useEffect(() => {
@@ -207,12 +253,7 @@ const FundDetail = () => {
 
     fetchPostDetail();
 
-    // 메뉴 외의 다른 곳을 클릭했을 때 메뉴 닫기
-    const handleClickOutside = (event) => {
-      if (menuVisible && !event.target.closest('.menu-container')) {
-        setMenuVisible(false);
-      }
-    };
+    console.log(menuVisible ? '메뉴가 열렸습니다.' : '메뉴가 닫혔습니다.');
 
     document.addEventListener('mousedown', handleClickOutside);
 
@@ -220,25 +261,13 @@ const FundDetail = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-
   }, [postId, menuVisible]); // postId가 변경될 때마다 실행되도록 postId를 배열에 추가
 
-  const handleShareClick = () => {
-    const link = window.location.href;
-    navigator.clipboard.writeText(link)
-      .then(() => {
-        setCopyMessage('링크가 복사되었습니다.');
-        setTimeout(() => setCopyMessage(''), 2000);
-      })
-      .catch(() => {
-        setCopyMessage('링크 복사에 실패했습니다.');
-        setTimeout(() => setCopyMessage(''), 2000);
-      });
-  };
 
   if (!post) {
     return <Loading />; // 로딩 중일 때 로딩 페이지 표시
   }  
+
 
   return (
     <Main>
@@ -300,15 +329,19 @@ const FundDetail = () => {
         </div>
       </div> */}
 
-      <StyledMoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+      <StyledMoreVertIcon onClick={toggleMenu} />
+
       {menuVisible && (
           <MenuContainer>
-              <MenuItem>
-                  <EditIcon />
+            <div onMouseDown={handleEditClick}>
+              <MenuItem >
+                  <EditIcon /> 
+                  {/* mui가 부모꺼랑 조부모꺼까지 이벤트 다 뺏어감. 전파 방지 코드 추가해도 안됨여 */}
                   <span>Edit</span>
               </MenuItem>
-              <MenuItem>
-                  <DeleteIcon />
+            </div>
+              <MenuItem >
+                  <DeleteIcon  />
                   <span>Delete</span>
               </MenuItem>
           </MenuContainer>
@@ -318,9 +351,8 @@ const FundDetail = () => {
       
       {copyMessage && <div className="copy-message">{copyMessage}</div>}
       
-      {/* DonationDetails 컴포넌트에 post 데이터에서 필요한 값들을 전달 */}
       <DonationDetails
-        imageSrc={`data:image/jpeg;base64,${post.mainImage}`}  // base64 이미지 데이터
+        imageSrc={post.mainImage}   
         title={post.title}
         recipient={post.teamName}
         percentage={percentage}

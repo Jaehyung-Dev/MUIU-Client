@@ -14,7 +14,7 @@ module.exports = function(app) {
     app.use(
         '/naver', // api path parameter -- 재형님이 쓰시는 api url 사용하시면 돼요!
         createProxyMiddleware({
-            target: 'http://localhost:3000', // endpoint
+            target: 'http://localhost:9090', // endpoint
             changeOrigin: true,
         })
     );

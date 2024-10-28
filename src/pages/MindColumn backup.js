@@ -69,16 +69,16 @@ const ModalContent = styled.div`
         border-radius: 10px;
     }
 
-    // .close-button {
-    //     position: absolute;
-    //     top: 0.5rem;
-    //     right: 0.5rem;
-    //     font-size: 1.5rem;
-    //     background: none;
-    //     border: none;
-    //     color: #333;
-    //     cursor: pointer;
-    // }
+    .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        color: #333;
+        cursor: pointer;
+    }
 `;
 
 const NavButton = styled.button`
@@ -177,7 +177,7 @@ export const MindColumn = () => {
 
     return (
         <>
-            {/* <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload> */}
+            <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
             <Cards>
                 {Object.keys(imageLists).map((key, index) => (
                     <Card key={index} onClick={() => openModal(imageLists[key])}>

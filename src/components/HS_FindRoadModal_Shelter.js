@@ -16,10 +16,10 @@ import changeIcon from '../svg/변경.svg';
 import findIcon from '../svg/길찾기-hover.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import hospitalData from '../JSON/hospitalData.json';
+import shelterData from '../JSON/shelterData.json';
 
 const Modal = styled.div`
-    display: ${(props) => (props.isOpen ? 'block' : 'none')};
+    display: ${(props) => (props.isShelterFindRoadOpen ? 'block' : 'none')};
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -242,7 +242,7 @@ const SuggestionItem = styled.li`
     }
 `;
 
-const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => {
+const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, shelterName, mode, stations }) => {
     const [hoveredTab, setHoveredTab] = useState(null);
 
     /* 출발, 도착지 설정을 위한 부분 */
@@ -250,31 +250,31 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     const [arriveValue, setArriveValue] = useState('');
     const [filteredDepartStations, setFilteredDepartStations] = useState([]);
     const [filteredArriveStations, setFilteredArriveStations] = useState([]);
-    const [hospitalCoordinates, setHospitalCoordinates] = useState(null);
+    const [shelterCoordinates, setShelterCoordinates] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
     const [rotation, setRotation] = useState(0);
 
-    // 병원 이름
+    // 대피소 이름
     useEffect(() => {
-        if (hospitalName) {
-            const coordinates = getHospitalCoordinates(hospitalName);
-            setHospitalCoordinates(coordinates);
+        if (shelterName) {
+            const coordinates = getShelterCoordinates(shelterName);
+            setShelterCoordinates(coordinates);
         }
-    }, [hospitalName]);
+    }, [shelterName]);
 
-    const getHospitalCoordinates = (hospitalName) => {
-        const hospital = hospitalData.DATA.find(hospital => hospital.dutyname.trim() === hospitalName.trim());
-        if (hospital) {
-            return { lat: parseFloat(hospital.wgs84lat), lng: parseFloat(hospital.wgs84lon) };
+    const getShelterCoordinates = (shelterName) => {
+        const shelter = shelterData.DATA.find(shelter => shelter.equp_nm.trim() === shelterName.trim());
+        if (shelter) {
+            return { lat: parseFloat(shelter.ycord), lng: parseFloat(shelter.xcord) };
         }
         return null; 
     };
 
     const getDepartCoordinates = () => {
         if (departValue) {
-            // 병원 이름이 출발지일 경우
-            if (departValue === hospitalName) {
-                return getHospitalCoordinates(hospitalName); // 병원 좌표 반환
+            // 대피소 이름이 출발지일 경우
+            if (departValue === shelterName) {
+                return getShelterCoordinates(shelterName); // 대피소 좌표 반환
             }
     
             const station = stations.find(station => station.bldn_nm === departValue);
@@ -293,9 +293,9 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     
     const getArriveCoordinates = () => {
         if (arriveValue) {
-            // 병원 이름이 도착지일 경우
-            if (arriveValue === hospitalName) {
-                return getHospitalCoordinates(hospitalName); // 병원 좌표 반환
+            // 대피소 이름이 도착지일 경우
+            if (arriveValue === shelterName) {
+                return getShelterCoordinates(shelterName); // 대피소 좌표 반환
             }
     
             const station = stations.find(station => station.bldn_nm === arriveValue);
@@ -315,13 +315,13 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
 
     useEffect(() => {
         if (mode === 'depart') {
-            setDepartValue(hospitalName); // 출발지에 병원 이름 설정
+            setDepartValue(shelterName); // 출발지에 대피소 이름 설정
             setArriveValue('');
         } else if (mode === 'arrive') {
-            setArriveValue(hospitalName);
+            setArriveValue(shelterName);
             setDepartValue('');
         }
-    }, [hospitalName, mode]);
+    }, [shelterName, mode]);
     
 
     // 출발지 입력 핸들러
@@ -600,12 +600,12 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         return `${hours > 0 ? `${hours}시간 ` : ''}${minutes}분`;
     };
 
-    if (!isOpen) return null;
+    if (!isShelterFindRoadOpen) return null;
 
     return (
-        <Modal isOpen={isOpen} onClick={onClose}>
+        <Modal isShelterFindRoadOpen={isShelterFindRoadOpen} onClick={closeShelterFind}>
             <ModalContent style={{ backgroundColor: '#F3F3F3' }} onClick={(e) => { e.stopPropagation(); }}>
-                <BackBtn onClick={onClose}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackBtn>
+                <BackBtn onClick={closeShelterFind}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackBtn>
                 
                 <SelectVehicle>
                     <VehicleTab 
@@ -784,4 +784,4 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
     );
 };
 
-export default HS_FindRoadModal;
+export default HS_FindRoadModal_Shelter;

@@ -3,12 +3,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PeopleIcon from '@mui/icons-material/People';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StarIcon from '@mui/icons-material/Star';
 import styled from 'styled-components';
 import userProfile from '../svg/user-de-profile.svg';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { logout } from '../apis/memberApis';
+import HomeIcon from '@mui/icons-material/Home';
 
 const Content = styled.div``;
 
@@ -261,12 +261,12 @@ export const MyPage = () => {
                     },
                     withCredentials: true,
                 });
-    
+                
                 setUserData({
-                    id: memberSlice.id,
                     name: response.data.item.name,
-                    role: response.data.item.role,
+                    role: response.data.item.role
                 });
+
             } catch (error) {
                 console.error('오류:', error);
                 if (error.response && error.response.status === 401) {
@@ -274,7 +274,6 @@ export const MyPage = () => {
                 }
             }
         };
-    
         fetchUserData();
     }, [navigate]);
     
@@ -288,8 +287,7 @@ export const MyPage = () => {
         if (file && userData) {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('userId', userData.id);
-
+    
             try {
                 const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
@@ -305,24 +303,24 @@ export const MyPage = () => {
                 );
             
                 if (response.status === 200) {
-                    const imageUrl = response.data;
-                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`);
-                    console.log(profileImage);
+                    const imageUrl = response.data.profileImageUrl;
+                    setProfileImage(`${imageUrl}?t=${new Date().getTime()}`); // 캐시 방지
+                    console.log(imageUrl);
                 }
             } catch (error) {
                 console.error('프로필 이미지 업로드 오류:', error);
             }
-            
         }
     };
+    
 
     const handleLogoutClick = () => {
         dispatch(logout());
         navigate('/');
     };
 
-    const handleStarredPlaceClick = () => {
-        navigate('/starred-place');
+    const handleHomeAddressClick = () => {
+        navigate('/home-address');
     };
 
     const handleConsultationHistoryClick = () => {
@@ -401,11 +399,11 @@ export const MyPage = () => {
         <Content>
             <Profile>
                 <div className="profile-image">
-                    <img src={profileImage} alt="프로필" />
+                    <img src={profileImage || userProfile} alt="프로필" />
                 </div>
                 <div className="profile-user">
                     <div className="profile-type">{userData?.role === 'ROLE_COUNSELOR' ? '상담사' : '내담자'}</div>
-                    <div className="profile-name">{userData?.name} 님</div>
+                    <div className="profile-name">{userData?.name}님</div>
                 </div>
                 <button className="change-profile-btn" onClick={handleProfileChangeClick}>
                     프로필 변경
@@ -418,11 +416,11 @@ export const MyPage = () => {
                 />
             </Profile>
             <Menu>
-                <div className="menu-button" onClick={handleStarredPlaceClick}>
+                <div className="menu-button" onClick={handleHomeAddressClick}>
                     <div className="menu-button-icon">
-                        <StarIcon/>
+                        <HomeIcon/>
                     </div>
-                    <div className="menu-button-text">즐겨찾기 장소</div>
+                    <div className="menu-button-text">내 주소</div>
                 </div>
                 <div className="menu-button" onClick={handleConsultationHistoryClick}>
                     <div className="menu-button-icon">

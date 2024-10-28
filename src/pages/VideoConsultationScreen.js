@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import CallIcon from '@mui/icons-material/Call';
@@ -28,10 +28,21 @@ const VideoBox = styled.div`
     margin-bottom: 20px;
     margin-top: 80px;
     margin-right: -65vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
     @media (min-width: 393px) {
         margin-right: -28vw;
         margin-top: 30px;
     }
+`;
+
+const StyledVideo = styled.video`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
 const ButtonGroup = styled.div`
@@ -62,18 +73,52 @@ const Button = styled.div`
 
 const VideoConsultationScreen = () => {
     const navigate = useNavigate();
+    const localVideoRef = useRef(null);
+    const [isCameraOn, setCameraOn] = useState(true);
+
+    useEffect(() => {
+        const startVideo = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                if (localVideoRef.current) {
+                    localVideoRef.current.srcObject = stream;
+                }
+            } catch (error) {
+                console.error("Error accessing media devices.", error);
+            }
+        };
+        startVideo();
+
+        return () => {
+            if (localVideoRef.current && localVideoRef.current.srcObject) {
+                const tracks = localVideoRef.current.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    const toggleCamera = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            localVideoRef.current.srcObject.getVideoTracks().forEach(track => {
+                track.enabled = !track.enabled;
+                setCameraOn(track.enabled);
+            });
+        }
+    };
 
     return (
         <ScreenContainer>
-            <VideoBox />
+            <VideoBox>
+                <StyledVideo ref={localVideoRef} autoPlay playsInline muted />
+            </VideoBox>
             <ButtonGroup>
                 <Button color="white" iconColor="black">
                     <CallIcon />
                 </Button>
-                <Button color="red" iconColor="white" onClick={() => { navigate(-1);}}>
+                <Button color="red" iconColor="white" onClick={() => navigate(-1)}>
                     <CloseIcon />
                 </Button>
-                <Button color="darkgray" iconColor="white">
+                <Button color="darkgray" iconColor="white" onClick={toggleCamera}>
                     <CameraswitchIcon />
                 </Button>
             </ButtonGroup>

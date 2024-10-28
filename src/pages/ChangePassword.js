@@ -89,29 +89,32 @@ const ChangePassword = () => {
             alert('입력한 내용을 확인해주세요.');
             return;
         }
-
+    
         try {
             const persistRoot = sessionStorage.getItem('persist:root');
-            const parsedRoot = JSON.parse(persistRoot);
-            const memberSlice = JSON.parse(parsedRoot.memberSlice);
-            const token = localStorage.getItem('token');
-            const userId = memberSlice.id;
-
-            if (!token || !userId) {
+            if (!persistRoot) {
                 alert('로그인이 필요합니다.');
                 navigate('/login');
                 return;
             }
-
-            const response = await axios.post(`http://localhost:9090/members/${userId}/change-password`, {
-                currentPassword,
-                newPassword,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-
+    
+            const parsedRoot = JSON.parse(persistRoot);
+            const memberSlice = JSON.parse(parsedRoot.memberSlice);
+            // const token = localStorage.getItem('token');
+            // const userId = memberSlice?.id;
+    
+            if (!memberSlice.isLogin || !memberSlice.id) {
+                alert('로그인이 필요합니다.');
+                navigate('/login');
+                return;
+            }
+    
+            const response = await axios.post(
+                `http://localhost:9090/members/${memberSlice.id}/change-password`,
+                { currentPassword, newPassword },
+                { headers: { 'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` } }
+            );
+    
             if (response.status === 200) {
                 alert('비밀번호가 변경되었습니다.');
                 navigate('/mypage');
@@ -124,6 +127,7 @@ const ChangePassword = () => {
             }
         }
     };
+    
 
     return (
         <Container>
