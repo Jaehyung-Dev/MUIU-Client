@@ -319,8 +319,8 @@ export const MyPage = () => {
         navigate('/');
     };
 
-    const handleStarredPlaceClick = () => {
-        navigate('/starred-place');
+    const handleHomeAddressClick = () => {
+        navigate('/home-address');
     };
 
     const handleConsultationHistoryClick = () => {
@@ -416,7 +416,7 @@ export const MyPage = () => {
                 />
             </Profile>
             <Menu>
-                <div className="menu-button" onClick={handleStarredPlaceClick}>
+                <div className="menu-button" onClick={handleHomeAddressClick}>
                     <div className="menu-button-icon">
                         <HomeIcon/>
                     </div>
