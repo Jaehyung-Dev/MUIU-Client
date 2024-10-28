@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { post } from "../apis/mindColumnApis";
+import { getList, post } from "../apis/mindColumnApis";
 
 const mindColumnSlice = createSlice({
     name: 'mindColumn',
@@ -25,7 +25,7 @@ const mindColumnSlice = createSlice({
             return state; 
         });
         builder.addCase(getList.fulfilled, (state, action) => {
-            alert('정상적으로 등록되었습니다.');
+            console.log('Fetched Data:', action.payload);
 
             return {
                 ...state,

@@ -17,3 +17,19 @@ export const post = createAsyncThunk(
         }
     }
 );
+
+export const getList = createAsyncThunk(
+    'mind-column/getList',
+    async(_, thunkApi) => {
+        try {
+            const response = await axios.get('http://localhost:9090/mind-column', {
+                params: {}
+            });
+            console.log('API Response:', response.data);
+            return response.data;
+        } catch (e) {
+            console.error('API Error:', e); 
+            return thunkApi.rejectWithValue(e);
+        }
+    }
+);
