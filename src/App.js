@@ -62,6 +62,7 @@ import MindColumnPost from './pages/MindColumnPost';
 import AI_Chat from './pages/AI_Chat';
 import AudioCall from './pages/AudioCall';
 import HomeAddress from './pages/HomeAddress';
+import Oauth from './pages/Oauth';
 
 function App() {
   const persiststore = persistStore(store);
@@ -157,6 +158,7 @@ function App() {
               <Route path='/ai-counseling' element={<AI_Chat/>}/>
               <Route path='/audio-call' element={<AudioCall/>}/>
               <Route path='/home-address' element={<HomeAddress/>}/>
+              <Route path='/oauth' element={<Oauth/>} />
             </Route>
           </Routes>
         </Router>
