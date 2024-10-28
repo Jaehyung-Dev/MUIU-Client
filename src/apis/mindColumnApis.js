@@ -33,3 +33,20 @@ export const getList = createAsyncThunk(
         }
     }
 );
+
+export const update = createAsyncThunk(
+    'mind-column/update',
+    async(formData, thunkApi) => {
+        try {
+            const response = await axios.patch('http://localhost:9090/mind-column', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            return response.data;
+        } catch(e) {
+            return thunkApi.rejectWithValue(e);
+        }
+    }
+);

@@ -198,11 +198,14 @@ export const MindColumn = () => {
     }, []);
     const closeModal = useCallback(() => {setModalOpen(false)}, []);
     const showNextImage = useCallback(() => {setCurrentImageIndex((prevIndex) => (prevIndex + 1) % card.mc_img_num)}, [card.mc_img_num]);
-    const showPrevImage = () => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + card.mc_img_num) % card.mc_img_num);
+    const showPrevImage = useCallback(() => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + card.mc_img_num) % card.mc_img_num), [card.mc_img_num]);
 
     const navi = useNavigate();
 
-    const handleEdit = useCallback(() => {}, []);
+    const handleEdit = useCallback((column) => {
+        navi('/mind-column/post', {state: {column}});
+    }, [navi]);
+
     return (
         <>
             <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
@@ -228,7 +231,7 @@ export const MindColumn = () => {
                             <NavigateNextIcon fontSize='large'/>    
                         </NavButton>}
                     <AdminButton>
-                        <button>수정</button>
+                        <button onClick={() => handleEdit(card)}>수정</button>
                         <button>삭제</button>
                     </AdminButton>
                     <PageNumber>{`${currentImageIndex + 1} / ${card.mc_img_num}`}</PageNumber>

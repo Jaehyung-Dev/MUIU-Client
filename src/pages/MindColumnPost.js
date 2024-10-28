@@ -1,120 +1,144 @@
 import React, { useCallback, useState } from 'react';
-import { TextField, Button, IconButton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { TextField, 
+  Button, 
+  Grid, 
+  Card, 
+  CardMedia, 
+  CardActions, 
+  IconButton,
+  Container,
+  Typography, } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { post } from '../apis/mindColumnApis';
+import { ArrowUpward, ArrowDownward, Delete, Add } from '@mui/icons-material';
+import { post, update } from '../apis/mindColumnApis';
 
 const MindColumnPost = () => {
   const navi = useNavigate();
   const dispatch = useDispatch();
-  const [uploadFiles, setUploadFiles] = useState([]); // 상태로 관리
+  const { state } = useLocation();
 
-  // 파일 선택 시 호출되는 함수
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+  const editingColumn = state?.column || null;
 
-    // 기존 파일 목록에 새 파일 추가 (순서를 유지)
-    setUploadFiles((prevFiles) => [...prevFiles, ...files]);
-  };
+  const [title, setTitle] = useState(editingColumn ? editingColumn.mc_title : '');
+  const [images, setImages] = useState(editingColumn ? editingColumn.mcfList.map(image => ({
+    ...image,
+    isNew: false,
+  })) : []);
 
-  // 파일 삭제 시 호출되는 함수
-  const handleFileRemove = (index) => {
-    setUploadFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-  };
+  const handleImageOrderChange = useCallback((oldIndex, newIndex) => {
+    const updatedList = [...images];
+    const [movedItem] = updatedList.splice(oldIndex, 1);
+    updatedList.splice(newIndex, 0, movedItem);
+    setImages(updatedList);
+  }, [setImages]);
 
-  // 파일 순서 위로 이동
-  const moveFileUp = (index) => {
-    if (index === 0) return; // 첫 번째 파일은 위로 이동 불가
+  const handleAddImage = useCallback((e) => {
+    const files = e.target.files;
+    if (files) {
+      const newImagesArray = Array.from(files).map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+        isNew: true
+      }));
+      setImages((prevImages) => [...prevImages, ...newImagesArray]);
+    }
+  }, []);
 
-    setUploadFiles((prevFiles) => {
-      const newFiles = [...prevFiles];
-      [newFiles[index - 1], newFiles[index]] = [newFiles[index], newFiles[index - 1]]; // Swap
-      return newFiles;
-    });
-  };
+  const handleDeleteImage = useCallback((index) => {
+    setImages(images.filter((_, i) => i !== index));
+  }, [setImages]);
 
-  // 파일 순서 아래로 이동
-  const moveFileDown = (index) => {
-    if (index === uploadFiles.length - 1) return; // 마지막 파일은 아래로 이동 불가
-
-    setUploadFiles((prevFiles) => {
-      const newFiles = [...prevFiles];
-      [newFiles[index], newFiles[index + 1]] = [newFiles[index + 1], newFiles[index]]; // Swap
-      return newFiles;
-    });
-  };
-
-  // 파일 업로드 핸들러
-  const handlePost = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    const data = {
+      mc_title: title,
+      mcfList: images,
+    };
 
-    // 제목 추가
-    const title = e.target.querySelector('#outlined-basic').value;
-    formData.append('title', title);
-
-    // 선택한 파일을 클릭 순서대로 formData에 추가
-    uploadFiles.forEach((file, index) => {
-      formData.append('uploadFiles', file);
-    });
-
-    // Redux 액션을 통해 서버로 데이터 전송
-    dispatch(post(formData)).then((action) => {
-      if (action.type === 'boards/post/fulfilled') {
-        navi('/board-list');
+    try {
+      if (editingColumn) {
+        // 수정 모드일 때
+        await dispatch(update({ id: editingColumn.mc_id, data }));
+      } else {
+        // 새 게시물 작성일 때
+        await dispatch(post(data));
       }
-    });
-
-  }, [dispatch, navi, uploadFiles]);
+      navi('/mind-column');
+    } catch (error) {
+      console.error('Error while submitting:', error);
+    }
+  }, [navi]);
 
   return (
-    <form onSubmit={handlePost}>
-      <TextField id='outlined-basic' label='제목' variant='outlined' fullWidth />
-      <br /><br />
-      <TextField type='file' inputProps={{ multiple: true }} onChange={handleFileChange} />
-      <br /><br />
-      <Button type='submit' variant='contained' color='primary'>완료</Button>
+    <Container maxWidth="md" style={{ marginTop: '2rem' }}>
+      <Typography variant="h4" gutterBottom>
+        {editingColumn ? '수정하기' : '새 글 작성하기'}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          fullWidth
+          label="제목"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          style={{ marginBottom: '1rem' }}
+        />
 
-      {/* 선택한 파일 미리보기와 순서 표시 */}
-      <div style={{ marginTop: '20px' }}>
-        <h3>업로드할 파일 목록 (순서 조정 가능)</h3>
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {uploadFiles.map((file, index) => (
-            <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ marginRight: '10px' }}>{index + 1}. {file.name}</span>
-              
-              {/* 미리보기 이미지 */}
-              {file.type.startsWith('image/') && (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={`미리보기-${index}`}
-                  style={{ width: '100px', height: '70px', objectFit: 'cover', marginRight: '10px' }}
+        {/* 기존 및 새 이미지 목록 */}
+        <Grid container spacing={2}>
+          {images.map((image, index) => (
+            <Grid item xs={12} sm={6} md={4} key={`existing-${index}`}>
+              <Card>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={image.isNew ? image.preview : `https://kr.object.ncloudstorage.com/bitcamp126/mindColumn/${image.mcf_name}`}
+                  alt="이미지"
                 />
-              )}
-              
-              {/* 위로 이동 버튼 */}
-              <IconButton onClick={() => moveFileUp(index)} color='primary' disabled={index === 0}>
-                <ArrowUpwardIcon />
-              </IconButton>
-              
-              {/* 아래로 이동 버튼 */}
-              <IconButton onClick={() => moveFileDown(index)} color='primary' disabled={index === uploadFiles.length - 1}>
-                <ArrowDownwardIcon />
-              </IconButton>
-
-              {/* 삭제 버튼 */}
-              <IconButton onClick={() => handleFileRemove(index)} color='secondary'>
-                <DeleteIcon />
-              </IconButton>
-            </li>
+                <CardActions>
+                  <IconButton onClick={() => handleDeleteImage(index)} color="error">
+                    <Delete />
+                  </IconButton>
+                  {index > 0 && (
+                    <IconButton onClick={() => handleImageOrderChange(index, index - 1)}>
+                      <ArrowUpward />
+                    </IconButton>
+                  )}
+                  {index < images.length - 1 && (
+                    <IconButton onClick={() => handleImageOrderChange(index, index + 1)}>
+                      <ArrowDownward />
+                    </IconButton>
+                  )}
+                </CardActions>
+              </Card>
+            </Grid>
           ))}
-        </ul>
-      </div>
-    </form>
+        </Grid>
+
+        {/* 이미지 추가 버튼 */}
+        <Button
+          variant="contained"
+          component="label"
+          startIcon={<Add />}
+          style={{ marginTop: '1rem', marginBottom: '1rem' }}
+        >
+          이미지 추가
+          <input
+            type="file"
+            multiple
+            hidden
+            onChange={handleAddImage}
+          />
+        </Button>
+
+        {/* 제출 버튼 */}
+        <Button type="submit" variant="contained" color="primary" fullWidth>
+          제출
+        </Button>
+      </form>
+    </Container>
   );
 };
 

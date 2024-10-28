@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getList, post } from "../apis/mindColumnApis";
+import { getList, post, update } from "../apis/mindColumnApis";
 
 const mindColumnSlice = createSlice({
     name: 'mindColumn',
@@ -30,10 +30,24 @@ const mindColumnSlice = createSlice({
             return {
                 ...state,
                 mindColumn: action.payload.pageItems,
-                page: 0
+                page: action.payload.pageItems.pageable.pageNumber
             }
         });
         builder.addCase(getList.rejected, (state, action) => {
+            alert('에러가 발생했습니다.');
+            console.log(action.payload);
+            return state; 
+        });
+        builder.addCase(update.fulfilled, (state, action) => {
+            console.log('Fetched Data:', action.payload);
+
+            return {
+                ...state,
+                mindColumn: action.payload.pageItems,
+                page: 0
+            }
+        });
+        builder.addCase(update.rejected, (state, action) => {
             alert('에러가 발생했습니다.');
             console.log(action.payload);
             return state; 
