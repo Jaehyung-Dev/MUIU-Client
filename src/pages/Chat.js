@@ -92,6 +92,10 @@ const EmojiOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   z-index: 1000;
+  @media (max-width: 393px) {
+    width: 370px;
+    bottom: 135px;
+  }
 `;
 
 const EmojiPicker = styled.div`
@@ -99,6 +103,10 @@ const EmojiPicker = styled.div`
   grid-template-columns: repeat(6, 70px);
   gap: 10px;
   justify-content: center;
+  @media (max-width: 393px) {
+    grid-template-columns: repeat(6, 50px);
+    gap: 10px;
+  }
 `;
 
 const EmojiButton = styled.img`
@@ -124,6 +132,9 @@ const MessageInputContainerWrapper = styled.div`
   max-width: 600px;
   background-color: #ffffff;
   padding-bottom: 60px;
+  @media (max-width: 393px) {
+    bottom: 15px;
+  }
 `;
 
 const MessageInput = styled.input`
