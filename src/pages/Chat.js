@@ -308,19 +308,27 @@ const Chat = () => {
   }, [userId]);
 
   const sendMessage = () => {
-    if (stompClient && stompClient.connected && message.trim() !== '' && partnerInfo.name) {
-      const chatMessage = {
-        sender: `${userData.name}`,
-        content: message,
-        type: 'CHAT',
-      };
-    
-      stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
-      setMessage('');
-    } else {
-      console.error("메시지를 보낼 수 없습니다. STOMP 연결 상태나 파트너 정보가 유효하지 않습니다.");
+    if (!stompClient || !stompClient.connected) {
+        console.error("STOMP 연결이 설정되지 않았습니다.");
+        return;
     }
-  };
+
+    if (!userData || !partnerInfo.name) {
+        console.error("사용자 데이터나 상대방 정보가 없습니다.");
+        return;
+    }
+
+    if (message.trim() !== '') {
+        const chatMessage = {
+            sender: `${userData.name}`,
+            content: message,
+            type: 'CHAT',
+        };
+        stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
+        setMessage('');
+    }
+};
+
 
   const handleEmojiSelect = (emoji) => {
     if (stompClient && stompClient.connected && userData && userData.name) {
@@ -415,8 +423,11 @@ const Chat = () => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="메시지를 입력하세요"
           />
-          <SendButton onClick={sendMessage} disabled={!isConnected || !partnerInfo.name || message.trim() === ''}>
-            전송
+          <SendButton 
+              onClick={sendMessage} 
+              disabled={!isConnected || !userData || !partnerInfo.name || message.trim() === ''}
+          >
+              전송
           </SendButton>
           <ImageButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
             <InsertEmoticonIcon />
