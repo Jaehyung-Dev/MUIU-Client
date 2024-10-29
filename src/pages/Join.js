@@ -656,7 +656,10 @@ export const Join = () => {
   };
 
   const handlePhoneNumberChange = (e) => {
-    setTel(e.target.value); // 전화번호 입력 상태 업데이트
+    const value = e.target.value;
+    if (/^\d{0,11}$/.test(value)) {
+      setTel(e.target.value); // 전화번호 입력 상태 업데이트
+    }
   };
 
   // 2분 타이머를 관리
@@ -961,10 +964,11 @@ export const Join = () => {
 
               <PhoneNumberDiv>
                 <ModalInput
-                  type="text"
+                  type="tel"
                   value={tel}
                   onChange={handlePhoneNumberChange}
                   placeholder="휴대전화번호 입력"
+                  inputMode="numeric" // 모바일에서 숫자 키패드 열리도록 설정
                 />
                 <SmsButton 
                   type='button' 
