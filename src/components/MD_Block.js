@@ -104,10 +104,22 @@ const MD_Block = () => {
                 if (memberSlice.isLogin && memberSlice.id) {
                     setUserId(memberSlice.id);
 
+                    // JWT 토큰 가져오기
+                    const token = sessionStorage.getItem('ACCESS_TOKEN');
+                    if (!token) {
+                        console.error('JWT token not found');
+                        return;
+                    }
+
                     // Fetch diary data using userId
-                    const response = await axios.get(`/api/diary/${memberSlice.id}`);
+                    const response = await axios.get(`http://localhost:9090/diaries/user/${memberSlice.id}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
                     if (response.status === 200) {
-                        setDiaryData(response.data);
+                        setDiaryData(response.data.item);  // 백엔드 응답 데이터에 맞게 설정
                     } else {
                         console.error('일기 데이터를 가져오는 중 오류');
                     }
@@ -121,30 +133,19 @@ const MD_Block = () => {
     }, []);
 
     return (
-        <DiaryEntry>
-            <EntryHeader>
-                <img src={good} alt="좋음" />
-                <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
-                {menuVisible && (
-                    <MenuContainer>
-                        <MenuItem>
-                            <EditIcon />
-                            <span>Edit</span>
-                        </MenuItem>
-                        <MenuItem>
-                            <DeleteIcon />
-                            <span>Delete</span>
-                        </MenuItem>
-                    </MenuContainer>
-                )}
-            </EntryHeader>
-            <TimeBlock>
-                <AccessTimeFilledIcon style={{ width: '15px' }} />
-                <EntryDateText>{diaryData.date}</EntryDateText>
-            </TimeBlock>
-            <EntryTitle>{diaryData.title}</EntryTitle>
-            <EntryContent>{diaryData.content}</EntryContent>
-        </DiaryEntry>
+        <div>
+            {diaryData.length > 0 ? (
+                diaryData.map((diary) => (
+                    <div key={diary.diary_id}>
+                        <h2>{diary.title}</h2>
+                        <p>{diary.content}</p>
+                        <p>{diary.date}</p>
+                    </div>
+                ))
+            ) : (
+                <p>No diary entries found.</p>
+            )}
+        </div>
     );
 };
 

@@ -9,7 +9,7 @@ export const WriteDiaryAPI = async (diaryData) => {
     }
 
     console.log('Sending diary data:', diaryData);
-    const response = await axios.post('/api3/diaries/write', diaryData, {
+    const response = await axios.post('http://localhost:9090/diaries/write', diaryData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -32,7 +32,7 @@ export const WriteDiaryAPI = async (diaryData) => {
 // // 오늘 일기를 이미 작성했는지 확인하는 API
 // export const CheckTodayDiaryAPI = async (userId) => {
 //   try {
-//     const response = await axios.get(`/diaries/check-today?userId=${userId}`, {
+//     const response = await axios.get(`/api/diaries/check-today?userId=${userId}`, {
 //       headers: {
 //         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
 //       },
