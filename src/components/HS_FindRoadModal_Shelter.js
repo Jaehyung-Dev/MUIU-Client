@@ -243,7 +243,7 @@ const SuggestionItem = styled.li`
 `;
 
 const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, shelterName, mode, stations }) => {
-    const [hoveredTab, setHoveredTab] = useState(null);
+    const [activeTab, setActiveTab] = useState('traffic');
 
     /* 출발, 도착지 설정을 위한 부분 */
     const [departValue, setDepartValue] = useState('');
@@ -603,40 +603,48 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
     if (!isShelterFindRoadOpen) return null;
 
     return (
-        <Modal isShelterFindRoadOpen={isShelterFindRoadOpen} onClick={closeShelterFind}>
+        <Modal
+            isShelterFindRoadOpen={isShelterFindRoadOpen}
+            onClick={() => { 
+                setActiveTab('traffic');
+                closeShelterFind();
+        }}>
             <ModalContent style={{ backgroundColor: '#F3F3F3' }} onClick={(e) => { e.stopPropagation(); }}>
-                <BackBtn onClick={closeShelterFind}><ArrowBackIosIcon style={{fontSize: '1rem'}} /></BackBtn>
+                <BackBtn
+                    onClick={() => { 
+                        setActiveTab('traffic');
+                        closeShelterFind();
+                }}>
+                    <ArrowBackIosIcon style={{fontSize: '1rem'}} />
+                </BackBtn>
                 
                 <SelectVehicle>
                     <VehicleTab 
                         id="traffic" 
-                        onMouseEnter={() => setHoveredTab('traffic')} 
-                        onMouseLeave={() => setHoveredTab(null)}
+                        onClick={() => setActiveTab('traffic')}
                     >
                         <TabImage 
-                            src={hoveredTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
+                            src={activeTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
                             alt="대중교통" 
                             className="tab-image"
                         />
                     </VehicleTab>
                     <VehicleTab 
                         id="car" 
-                        onMouseEnter={() => setHoveredTab('car')} 
-                        onMouseLeave={() => setHoveredTab(null)}
+                        onClick={() => setActiveTab('car')}
                     >
                         <TabImage 
-                            src={hoveredTab === 'car' ? carHoverIcon : carIcon} 
+                            src={activeTab === 'car' ? carHoverIcon : carIcon} 
                             alt="자동차" 
                             className="tab-image" 
                         />
                     </VehicleTab>
                     <VehicleTab 
                         id="walk" 
-                        onMouseEnter={() => setHoveredTab('walk')} 
-                        onMouseLeave={() => setHoveredTab(null)}
+                        onClick={() => setActiveTab('walk')}
                     >
                         <TabImage 
-                            src={hoveredTab === 'walk' ? walkHoverIcon : walkIcon} 
+                            src={activeTab === 'walk' ? walkHoverIcon : walkIcon} 
                             alt="도보" 
                             className="tab-image" 
                         />
@@ -705,80 +713,186 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                 </SearchingBox>
 
                 <FindingResultItems>
-                    {Array.isArray(dummyTransitData) && dummyTransitData.length > 0 ? (
-                        // 총 소요 시간 기준으로 정렬
-                        dummyTransitData
-                            .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
-                            .map((itinerary, index) => {
-                                const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
-                                const totalTime = formatTime(totalDurationInSeconds); // 총 시간 (시/분)
-                                const totalFare = itinerary.fare.regular.totalFare; // 요금
+                    {activeTab === 'traffic' ? (
+                        Array.isArray(dummyTransitData) && dummyTransitData.length > 0 ? (
+                            // 총 소요 시간 기준으로 정렬
+                            dummyTransitData
+                                .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
+                                .map((itinerary, index) => {
+                                    const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
+                                    const totalTime = formatTime(totalDurationInSeconds); // 총 시간 (시/분)
+                                    const totalFare = itinerary.fare.regular.totalFare; // 요금
 
-                                return (
-                                    <TransitRouteCard key={index}>
-                                        <Header>
-                                            <Duration>
-                                                {/* 최적 경로 아이콘 추가 */}
-                                                {index === 0
-                                                    && (
-                                                    <>
-                                                        <VerifiedIcon style={{fontSize: '0.9rem', color: '#3661B2', marginRight: '5px'}} />
-                                                        <span style={{marginRight: '10  px', fontSize: '0.9rem', fontWeight: 'bold', color: '#3661B2'}}>최적</span>
-                                                    </>
-                                                    )
-                                                }
-                                                <Clock style={{ width: '0.9rem', height: '0.9rem' }} />
-                                                <span className="font-medium" style={{ marginLeft: '10px' }}>{totalTime}</span>
-                                            </Duration>
-                                            <Cost>{totalFare.toLocaleString()}원</Cost>
-                                        </Header>
+                                    return (
+                                        <TransitRouteCard key={index}>
+                                            <Header>
+                                                <Duration>
+                                                    {/* 최적 경로 아이콘 추가 */}
+                                                    {index === 0 && (
+                                                        <>
+                                                            <VerifiedIcon style={{fontSize: '0.9rem', color: '#3661B2', marginRight: '5px'}} />
+                                                            <span style={{marginRight: '10px', fontSize: '0.9rem', fontWeight: 'bold', color: '#3661B2'}}>최적</span>
+                                                        </>
+                                                    )}
+                                                    <Clock style={{ width: '0.9rem', height: '0.9rem' }} />
+                                                    <span className="font-medium" style={{ marginLeft: '10px' }}>{totalTime}</span>
+                                                </Duration>
+                                                <Cost>{totalFare.toLocaleString()}원</Cost>
+                                            </Header>
 
-                                        <Progress>
-                                            {itinerary.legs.map((leg, legIndex) => {
-                                                const legDuration = leg.sectionTime; // 각 교통수단의 소요 시간 (초)
-                                                const progressWidth = (legDuration / totalDurationInSeconds) * 100; // 비율 계산
-                                                let progressColor;
+                                            <Progress>
+                                                {itinerary.legs.map((leg, legIndex) => {
+                                                    const legDuration = leg.sectionTime; // 각 교통수단의 소요 시간 (초)
+                                                    const progressWidth = (legDuration / totalDurationInSeconds) * 100; // 비율 계산
+                                                    let progressColor;
 
-                                                // 색상 설정
-                                                if (leg.mode === 'BUS') {
-                                                    progressColor = '#ff6f61'; // 버스 색상
-                                                } else if (leg.mode === 'SUBWAY') {
-                                                    progressColor = '#6fa3ef'; // 지하철 색상
-                                                } else if (leg.mode === 'WALK') {
-                                                    progressColor = '#90ee90'; // 도보 색상
-                                                }
+                                                    // 색상 설정
+                                                    if (leg.mode === 'BUS') {
+                                                        progressColor = '#ff6f61'; // 버스 색상
+                                                    } else if (leg.mode === 'SUBWAY') {
+                                                        progressColor = '#6fa3ef'; // 지하철 색상
+                                                    } else if (leg.mode === 'WALK') {
+                                                        progressColor = '#90ee90'; // 도보 색상
+                                                    }
 
-                                                return (
-                                                    <ProgressSegment key={legIndex} width={progressWidth} color={progressColor} />
-                                                );
-                                            })}
-                                        </Progress>
+                                                    return (
+                                                        <ProgressSegment key={legIndex} width={progressWidth} color={progressColor} />
+                                                    );
+                                                })}
+                                            </Progress>
 
-                                        {/* 교통수단 설명 부분 */}
-                                        {itinerary.legs.map((leg, legIndex) => (
-                                            <SegmentDetails key={legIndex}>
-                                                <SegmentInfo>
-                                                    {leg.mode === 'BUS' && <DirectionsBusIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
-                                                    {leg.mode === 'SUBWAY' && <TrainIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
-                                                    {leg.mode === 'WALK' && <DirectionsWalkIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
-                                                    <span style={{ marginRight: '15px' }}>
-                                                        {leg.mode === 'BUS' ? `버스 ${leg.route}` : leg.mode === 'SUBWAY' ? `지하철 ${leg.route}` : `도보`}
-                                                    </span>
-                                                    {formatTime(leg.sectionTime)}
-                                                </SegmentInfo>
-                                                <SegmentInfo style={{ marginLeft: 'calc(0.8rem + 5px)', marginTop: '5px' }}>
-                                                    {leg.start.name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{leg.end.name}
-                                                </SegmentInfo>
-                                            </SegmentDetails>
-                                        ))}
-                                    </TransitRouteCard>
-                                );
-                            })
+                                            {/* 교통수단 설명 부분 */}
+                                            {itinerary.legs.map((leg, legIndex) => (
+                                                <SegmentDetails key={legIndex}>
+                                                    <SegmentInfo>
+                                                        {leg.mode === 'BUS' && <DirectionsBusIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                        {leg.mode === 'SUBWAY' && <TrainIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                        {leg.mode === 'WALK' && <DirectionsWalkIcon style={{ fontSize: '0.8rem', marginRight: '5px' }} />}
+                                                        <span style={{ marginRight: '15px' }}>
+                                                            {leg.mode === 'BUS' ? `버스 ${leg.route}` : leg.mode === 'SUBWAY' ? `지하철 ${leg.route}` : `도보`}
+                                                        </span>
+                                                        {formatTime(leg.sectionTime)}
+                                                    </SegmentInfo>
+                                                    <SegmentInfo style={{ marginLeft: 'calc(0.8rem + 5px)', marginTop: '5px' }}>
+                                                        {leg.start.name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{leg.end.name}
+                                                    </SegmentInfo>
+                                                </SegmentDetails>
+                                            ))}
+                                        </TransitRouteCard>
+                                    );
+                                })
+                        ) : (
+                            <div>길찾기 결과가 없습니다.</div>
+                        )
+                    ) : activeTab === 'walk' ? (
+                        (() => {
+                            const departCoords = getDepartCoordinates();
+                            const arriveCoords = getArriveCoordinates();
+                    
+                            // 출발지와 도착지 좌표가 유효한지 확인
+                            if (!departCoords || !arriveCoords) {
+                                return <div>출발지 또는 도착지 좌표를 가져올 수 없습니다.</div>;
+                            }
+                    
+                            return (
+                                <>
+                                    <div id="map_wrap" className="map_wrap3">
+                                        <div id="map_div" style={{ height: '100%', width: '100%' }}></div>
+                                    </div>
+                                    <p id="result"></p>
+                    
+                                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                                    <script src={`${process.env.REACT_APP_TMAP_APP_KEY}`}></script>
+                                    <script type="text/javascript">
+                                        {`
+                                            var map;
+                                            var marker_s, marker_e;
+                    
+                                            function initTmap() {
+                                                const departCoords = { lat: ${departCoords.lat}, lng: ${departCoords.lng} };
+                                                const arriveCoords = { lat: ${arriveCoords.lat}, lng: ${arriveCoords.lng} };
+                    
+                                                map = new Tmapv2.Map("map_div", {
+                                                    center : new Tmapv2.LatLng(${shelterCoordinates.lat}, ${shelterCoordinates.lng}),
+                                                    width : "100%",
+                                                    height : "400px",
+                                                    zoom : 17,
+                                                    zoomControl : true,
+                                                    scrollwheel : true
+                                                });
+                    
+                                                // 시작 마커
+                                                marker_s = new Tmapv2.Marker({
+                                                    position : new Tmapv2.LatLng(departCoords.lat, departCoords.lng),
+                                                    icon : "/upload/tmap/marker/pin_r_m_s.png",
+                                                    iconSize : new Tmapv2.Size(24, 38),
+                                                    map : map
+                                                });
+                    
+                                                // 도착 마커
+                                                marker_e = new Tmapv2.Marker({
+                                                    position : new Tmapv2.LatLng(arriveCoords.lat, arriveCoords.lng),
+                                                    icon : "/upload/tmap/marker/pin_r_m_e.png",
+                                                    iconSize : new Tmapv2.Size(24, 38),
+                                                    map : map
+                                                });
+                    
+                                                // 경로탐색 API 요청
+                                                var headers = {}; 
+                                                headers["appKey"] = "${process.env.REACT_APP_TMAP_APP_KEY}";
+                    
+                                                $.ajax({
+                                                    method : "POST",
+                                                    headers : headers,
+                                                    url : "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json",
+                                                    async : false,
+                                                    data : {
+                                                        "startX": departCoords.lng,
+                                                        "startY": departCoords.lat,
+                                                        "endX": arriveCoords.lng,
+                                                        "endY": arriveCoords.lat,
+                                                        "reqCoordType" : "WGS84GEO",
+                                                        "resCoordType" : "EPSG3857",
+                                                        "startName" : "출발지",
+                                                        "endName" : "도착지"
+                                                    },
+                                                    success : function(response) {
+                                                        var resultData = response.features;
+                                                        var tDistance = "총 거리 : " + ((resultData[0].properties.totalDistance) / 1000).toFixed(1) + "km,";
+                                                        var tTime = " 총 시간 : " + ((resultData[0].properties.totalTime) / 60).toFixed(0) + "분";
+                    
+                                                        $("#result").text(tDistance + tTime);
+                    
+                                                        // 경로를 지도에 표시
+                                                        if (resultData.length > 0) {
+                                                            const coordinates = resultData[0].geometry.coordinates;
+                                                            const route = coordinates.map(coord => new Tmapv2.LatLng(coord[1], coord[0]));
+                    
+                                                            // 경로 그리기
+                                                            var polyline = new Tmapv2.Polyline({
+                                                                path: route,
+                                                                strokeColor: "#FF0000",
+                                                                strokeWidth: 6,
+                                                                map: map
+                                                            });
+                                                        }
+                                                    },
+                                                    error: function(request, status, error) {
+                                                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                                                    }
+                                                });
+                                            }
+                    
+                                            window.onload = initTmap;
+                                        `}
+                                    </script>
+                                </>
+                            );
+                        })()
                     ) : (
                         <div>길찾기 결과가 없습니다.</div>
                     )}
                 </FindingResultItems>
-
             </ModalContent>
         </Modal>    
     );
