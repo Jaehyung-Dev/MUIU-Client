@@ -82,7 +82,7 @@ const MenuItem = styled.div`
 
 const MD_Block = () => {
     const [menuVisible, setMenuVisible] = useState(false);
-    const [diaryData, setDiaryData] = useState({ title: '', content: '', date: '' });
+    const [diaryData, setDiaryData] = useState({ title: '', content: '', regdate: '' });
     const [userId, setUserId] = useState(null);
 
     const toggleMenu = () => {
@@ -97,29 +97,28 @@ const MD_Block = () => {
                     console.error('유저 정보 없음');
                     return;
                 }
-
+        
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
-
+        
                 if (memberSlice.isLogin && memberSlice.id) {
-                    setUserId(memberSlice.id);
-
-                    // JWT 토큰 가져오기
                     const token = sessionStorage.getItem('ACCESS_TOKEN');
                     if (!token) {
                         console.error('JWT token not found');
                         return;
                     }
-
-                    // Fetch diary data using userId
-                    const response = await axios.get(`http://localhost:9090/diaries/user/${memberSlice.id}`, {
+        
+                    // 최신 일기 요청
+                    const response = await axios.get(`http://localhost:9090/diaries/user/${memberSlice.id}/latest`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-                    if (response.status === 200) {
-                        setDiaryData(response.data.item);  // 백엔드 응답 데이터에 맞게 설정
+                    
+                    if (response.status === 200 && response.data.item) {
+                        setDiaryData(response.data.item);  // 백엔드 응답의 `item`을 설정
+                        console.log('Diary data set:', response.data.item);
                     } else {
                         console.error('일기 데이터를 가져오는 중 오류');
                     }
@@ -128,24 +127,40 @@ const MD_Block = () => {
                 console.error('오류:', error);
             }
         };
-
         fetchDiaryData();
     }, []);
 
     return (
-        <div>
-            {diaryData.length > 0 ? (
-                diaryData.map((diary) => (
-                    <div key={diary.diary_id}>
-                        <h2>{diary.title}</h2>
-                        <p>{diary.content}</p>
-                        <p>{diary.date}</p>
-                    </div>
-                ))
+        <>
+            {diaryData ? (
+                <DiaryEntry>
+                    <EntryHeader>
+                        <img src={good} alt="좋음" />
+                        <MoreVertIcon onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+                        {menuVisible && (
+                            <MenuContainer>
+                                <MenuItem>
+                                    <EditIcon />
+                                    <span>Edit</span>
+                                </MenuItem>
+                                <MenuItem>
+                                    <DeleteIcon />
+                                    <span>Delete</span>
+                                </MenuItem>
+                            </MenuContainer>
+                        )}
+                    </EntryHeader>
+                    <TimeBlock>
+                        <AccessTimeFilledIcon style={{ width: '15px' }} />
+                        <EntryDateText>{diaryData.regdate ? diaryData.regdate.split('T')[0] : ''}</EntryDateText>
+                    </TimeBlock>
+                    <EntryTitle>{diaryData.title}</EntryTitle>
+                    <EntryContent>{diaryData.content}</EntryContent>
+                </DiaryEntry>
             ) : (
-                <p>No diary entries found.</p>
+                <p>최신 일기를 불러올 수 없습니다.</p>
             )}
-        </div>
+        </>
     );
 };
 
