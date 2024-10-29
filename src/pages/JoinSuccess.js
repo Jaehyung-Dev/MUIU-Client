@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { fetchUser } from '../apis/memberApis';
 import { css } from '@emotion/react';
 
 const Main = styled.main`
@@ -129,22 +127,6 @@ const CheckmarkSVG = styled.svg`
 `;
 
 const JoinSuccess = () => {
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
-
-  useEffect(() => {
-    if (naverLoginChk) {
-      const params = new URLSearchParams(location.search);
-      const token = params.get('token');
-      if (naverLoginChk && token) {
-        sessionStorage.setItem('ACCESS_TOKEN', token);
-
-        // 사용자 정보를 가져오는 Redux 액션 디스패치
-        dispatch(fetchUser(token));
-      }
-    }
-  }, [location, dispatch, naverLoginChk]); // naverLoginChk를 의존성 배열에 추가
 
   return (
     <Main>

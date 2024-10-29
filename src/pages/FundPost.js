@@ -248,12 +248,22 @@ const FundPost = () => {
       mainImage: file || post.mainImage
     };
 
+    console.log(postData);
+
+    // FormData로 데이터 구성
+    const formData = new FormData();
+    formData.append("fundPostDto", JSON.stringify(postData));
+    // 앞서 handleImageChange에서 설정한 setFile로 인한 file값을 formData에 추가
+    if (file) formData.append("file", file);
+
+    console.log(formData);
+
     try {
       if (post.postId) {
         await updateFundPost(post.postId, postData);
         console.log('게시글 수정 성공!');
       } else {
-        await createFundPost(postData);
+        await createFundPost(formData);  // 수정된 createFundPost 호출
         console.log('게시글 등록 성공!');
       }
       navigate('/fund', { state: postData });
