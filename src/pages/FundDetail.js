@@ -250,10 +250,11 @@ const FundDetail = () => {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` // 토큰을 헤더에 포함
           }
         });
-        const post = response.data;
+        //const post = response.data;
+        console.log(`post뭐임`,post);
         
         // 서버에서 받은 데이터를 상태로 저장
-        setPost(post);
+        setPost(response.data);
 
         setCurrentAmount(post.currentAmount || 0);  // currentAmount가 null인 경우 0으로 설정
 
