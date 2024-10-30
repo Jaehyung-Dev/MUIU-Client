@@ -1,11 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import image1 from '../HS_images/병원 예시 이미지 1.jpg';
-import image2 from '../HS_images/병원 예시 이미지 2.jpg';
-import image3 from '../HS_images/병원 예시 이미지 3.jpg';
-import image4 from '../HS_images/병원 예시 이미지 4.jpg';
+import imgReady from '../HS_images/imgReady.png';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import hospitalData from '../JSON/hospitalData.json';
 
 const Modal = styled.div`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -91,7 +89,11 @@ const BackButton = styled.button`
     align-items: center;
 `;
 
-const HS_PhotoModal = ({ isOpen, onClose }) => {
+const HS_PhotoModal = ({ isOpen, onClose, hospitalName }) => {
+    const selectedHospital = hospitalData.DATA.find(hospital => hospital.dutyname === hospitalName);
+    
+    const imgUrls = selectedHospital ? selectedHospital.imgUrls : [];
+
     if (!isOpen) return null;
 
     return (
@@ -105,10 +107,13 @@ const HS_PhotoModal = ({ isOpen, onClose }) => {
                 </TabsInfoPicture>
 
                 <ImagesBox>
-                    <Image src={image1} alt="병원 예시 이미지 1" />
-                    <Image src={image2} alt="병원 예시 이미지 2" />
-                    <Image src={image3} alt="병원 예시 이미지 3" />
-                    <Image src={image4} alt="병원 예시 이미지 4" />
+                    {imgUrls.length > 0 ? (
+                        imgUrls.map((url, index) => (
+                            <Image key={index} src={url} alt={`${hospitalName} 이미지 ${index + 1}`} />
+                        ))
+                    ) : (
+                        <Image src={imgReady}/>
+                    )}
                 </ImagesBox>
             </ModalContent>
         </Modal>

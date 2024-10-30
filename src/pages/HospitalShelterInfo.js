@@ -31,18 +31,24 @@ export const HospitalShelterInfo = () => {
     const openInfoPopUp = () => setIsInfoOpen(true);
     const closeInfoPopUp = () => setIsInfoOpen(false);
 
-    const openPhotoPopUp = () => setIsPhotoOpen(true);
-    const closePhotoPopUp = () => setIsPhotoOpen(false);
+    const openPhotoPopUp = (hospitalName) => {
+        setSelectedHospital(hospitalName);
+        setIsPhotoOpen(true);
+    };
+
+    const closePhotoPopUp = () => {
+        setIsPhotoOpen(false);
+        setSelectedHospital(null);
+    };
 
     const openFindRoadPopUp = (hospitalName, mode) => {
-        setSelectedHospital(hospitalName); // 병원 이름 설정
-        setIsFindRoadOpen(true); // 모달 열기
-        setMode(mode); // 모드 설정
+        setSelectedHospital(hospitalName);
+        setIsFindRoadOpen(true);
+        setMode(mode);
     };
-    
     const closeFindRoadPopUp = () => {
         setIsFindRoadOpen(false);
-        setSelectedHospital(null); // 모달 닫을 때 선택된 병원 초기화
+        setSelectedHospital(null);
         setMode(null);
     };
 
@@ -60,8 +66,14 @@ export const HospitalShelterInfo = () => {
     const openShelterInfo = () => setIsShelterInfoOpen(true);
     const closeShelterInfo = () => setIsShelterInfoOpen(false);
 
-    const openShelterPhoto = () => setIsShelterPhotoOpen(true);
-    const closeShelterPhoto = () => setIsShelterPhotoOpen(false);
+    const openShelterPhoto = (shelterName) => {
+        setSelectedShelter(shelterName);
+        setIsShelterPhotoOpen(true);
+    };
+    const closeShelterPhoto = () => {
+        setIsShelterPhotoOpen(false);
+        setSelectedShelter(null);
+    };
 
     const openShelterFind = (shelterName, mode) => {
         setSelectedShelter(shelterName);
@@ -905,11 +917,15 @@ export const HospitalShelterInfo = () => {
                 openFindRoadPopUp={openFindRoadPopUp}
                 stations={stations.DATA}
             />
-            <HS_PhotoModal isOpen={isPhotoOpen} onClose={closePhotoPopUp} />
+            <HS_PhotoModal
+                isOpen={isPhotoOpen}
+                onClose={closePhotoPopUp}
+                hospitalName={selectedHospital}
+            />
             <HS_FindRoadModal
                 isOpen={isFindRoadOpen}
                 onClose={closeFindRoadPopUp}
-                hospitalName={selectedHospital} // 병원 이름 전달
+                hospitalName={selectedHospital}
                 mode={mode}
                 stations={stations.DATA}
             />
@@ -924,11 +940,12 @@ export const HospitalShelterInfo = () => {
             < HS_PhotoModal_Shelter
                 isShelterPhotoOpen={isShelterPhotoOpen}
                 closeShelterPhoto={closeShelterPhoto}
+                shelterName={selectedShelter}
             />
             <HS_FindRoadModal_Shelter
                 isShelterFindRoadOpen={isShelterFindRoadOpen}
                 closeShelterFind={closeShelterFind}
-                shelterName={selectedShelter} // 대피소 이름 전달
+                shelterName={selectedShelter}
                 mode={mode}
                 stations={stations.DATA}
             />

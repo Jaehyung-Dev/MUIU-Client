@@ -184,7 +184,7 @@ const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto,
     return (
         <Modal isShelterOpen={isShelterOpen} onClick={onShelterClose}>
             <ModalContent onClick={(e) => { e.stopPropagation(); }}>
-                <ImagesContainer onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>
+                <ImagesContainer onClick={(e) => { e.stopPropagation(); openShelterPhoto(shelterData.equp_nm); }}>
                     <MainImage>
                         <img src={shelterData.imgUrls[0] || imgReady} />
                     </MainImage>
@@ -243,7 +243,7 @@ const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto,
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>사진</Tab>
+                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openShelterPhoto(shelterData.equp_nm); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <ShelterName>
