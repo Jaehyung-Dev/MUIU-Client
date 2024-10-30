@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useDispatch, useSelector } from 'react-redux';
+import { getList } from '../apis/mindColumnApis';
 
 const Cards = styled.div`
     display: grid;
@@ -69,16 +71,16 @@ const ModalContent = styled.div`
         border-radius: 10px;
     }
 
-    // .close-button {
-    //     position: absolute;
-    //     top: 0.5rem;
-    //     right: 0.5rem;
-    //     font-size: 1.5rem;
-    //     background: none;
-    //     border: none;
-    //     color: #333;
-    //     cursor: pointer;
-    // }
+    .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        color: #333;
+        cursor: pointer;
+    }
 `;
 
 const NavButton = styled.button`
@@ -144,55 +146,95 @@ const Upload = styled.button`
     width: 5rem;
 `;
 
+const AdminButton = styled.div`
+    position: absolute;
+    bottom: 5rem;
+    width: 100%;
+    padding: 0 auto;
+
+    button {
+        width: 50%;
+    }
+`;
+
 export const MindColumn = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
       }, []);
 
-    const location = useLocation();
-    const selectedImageList = location.state?.selectedImageList || 'sleepless_night'; 
+    const columns = useSelector(state => state.mindColumnSlice.mindColumn);
+    useEffect(() => {
+        console.log('columns:', columns); // Redux에서 가져온 전체 데이터 확인
+        if (columns && columns.content) {
+            console.log('columns.content:', columns.content); // content가 있는지 확인
+        }
+    }, [columns]);
 
-    const imageLists = {
-        sleepless_night: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/sleepless_night(${i}).png`),
-        ptsd: Array.from({ length: 8 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/ptsd(${i}).png`),
-        panic_disorder: Array.from({ length: 10 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/panic_disorder(${i}).png`),
-        social_psychology: Array.from({ length: 9 }, (_, i) => `${process.env.PUBLIC_URL}/MC_images/social_psychology(${i}).png`),
-    };
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getList({ page: 0, size: 12 })); // 데이터를 로드
+    }, [dispatch]);
 
-    const images = imageLists[selectedImageList];
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedImages, setSelectedImages] = useState([]);
+    const [card, setCard] = useState({
+        mc_id: null,
+        mc_img_num: 0,
+        mc_title: '',
+        mcfList: [{
+            mcf_id: null,
+            mc_id: null,
+            mcf_name: '',
+            mcf_originname: '',
+            mcf_path: '',
+          },],
+        regdate: '',
+    });
 
-    const openModal = (selectedImages) => {
-        setSelectedImages(selectedImages);
+    const openModal = useCallback((card) => {
+        setCard(card);
         setCurrentImageIndex(0);
         setModalOpen(true);
-    };
-    const closeModal = () => setModalOpen(false);
-    const showNextImage = () => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % selectedImages.length);
-    const showPrevImage = () => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + selectedImages.length) % selectedImages.length);
+    }, []);
+    const closeModal = useCallback(() => {setModalOpen(false)}, []);
+    const showNextImage = useCallback(() => {setCurrentImageIndex((prevIndex) => (prevIndex + 1) % card.mc_img_num)}, [card.mc_img_num]);
+    const showPrevImage = useCallback(() => setCurrentImageIndex((prevIndex) => (prevIndex - 1 + card.mc_img_num) % card.mc_img_num), [card.mc_img_num]);
 
     const navi = useNavigate();
 
+    const handleEdit = useCallback((column) => {
+        navi('/mind-column/post', {state: {column}});
+    }, [navi]);
+
     return (
         <>
-            {/* <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload> */}
+            <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
             <Cards>
-                {Object.keys(imageLists).map((key, index) => (
-                    <Card key={index} onClick={() => openModal(imageLists[key])}>
-                        <img src={imageLists[key][0]} alt={`이미지 ${index + 1}`} />
+                {columns.content && columns.content.map((column, index) =>
+                    <Card key={index} onClick={() => openModal(column)}>
+                        <img src={`https://kr.object.ncloudstorage.com/bitcamp126/mindColumn/${column.mcfList[0].mcf_name}`} alt={`${column.mc_title}`}></img>
                     </Card>
-                ))}
+                )} 
             </Cards>
-
             <ModalOverlay $visible={isModalOpen}>
                 <ModalContent>
-                    <CloseButton onClick={closeModal}><ClearIcon fontSize="large" /></CloseButton>
-                    <img src={selectedImages[currentImageIndex]} alt="모달 이미지" />
-                    {currentImageIndex > 0 && <NavButton onClick={showPrevImage}><NavigateBeforeIcon fontSize="large" /></NavButton>}
-                    {currentImageIndex < selectedImages.length - 1 && <NavButton $right onClick={showNextImage}><NavigateNextIcon fontSize="large" /></NavButton>}
-                    <PageNumber>{`${currentImageIndex + 1} / ${selectedImages.length}`}</PageNumber>
+                    <CloseButton onClick={closeModal}>
+                        <ClearIcon fontSize='large'/>
+                    </CloseButton>
+                    <img src={`https://kr.object.ncloudstorage.com/bitcamp126/mindColumn/${card.mcfList[currentImageIndex].mcf_name}`} alt={`${card.mc_title}`}/>
+                    {currentImageIndex > 0 && 
+                        <NavButton onClick={showPrevImage}>
+                            <NavigateBeforeIcon fontSize='large'/>    
+                        </NavButton>}
+                    {currentImageIndex < card.mc_img_num - 1 &&
+                        <NavButton $right onClick={showNextImage}>
+                            <NavigateNextIcon fontSize='large'/>    
+                        </NavButton>}
+                    <AdminButton>
+                        <button onClick={() => handleEdit(card)}>수정</button>
+                        <button>삭제</button>
+                    </AdminButton>
+                    <PageNumber>{`${currentImageIndex + 1} / ${card.mc_img_num}`}</PageNumber>
                 </ModalContent>
             </ModalOverlay>
         </>
