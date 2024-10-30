@@ -193,7 +193,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
     return (
         <Modal isOpen={isOpen} onClick={onClose}>
             <ModalContent onClick={(e) => { e.stopPropagation(); }}>
-                <ImagesContainer onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>
+                <ImagesContainer onClick={(e) => { e.stopPropagation(); openPhotoPopUp(hospitalData.dutyname); }}>
                     <MainImage>
                         <img src={hospitalData.imgUrls[0] || imgReady} />
                     </MainImage>
@@ -252,7 +252,7 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
 
                 <TabsInfoPicture>
                     <Tab className="active">정보</Tab>
-                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>사진</Tab>
+                    <Tab className="tab" onClick={(e) => { e.stopPropagation(); openPhotoPopUp(hospitalData.dutyname); }}>사진</Tab>
                 </TabsInfoPicture>
 
                 <HospitalName>
