@@ -71,20 +71,3 @@ export const logout = createAsyncThunk(
         }
     }
 );
-
-export const fetchUser = createAsyncThunk(
-    'members/fetchUser', 
-    async (token, thunkAPI) => {
-        try {
-            const response = await axios.get('http://localhost:9090/members/naveruser', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            return response.data; 
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.response.data);
-        }
-    }
-);

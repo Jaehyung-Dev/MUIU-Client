@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { join, login, logout, verifySms, verifyCounselNum, fetchUser } from '../apis/memberApis';
+import { join, login, logout, verifySms, verifyCounselNum } from '../apis/memberApis';
 
 const memberSlice = createSlice({
     name: 'members',
@@ -18,6 +18,9 @@ const memberSlice = createSlice({
             state.id = id || 0;
             state.username = username || '';
             state.role = role || '';
+            if (token) {
+                sessionStorage.setItem('ACCESS_TOKEN', token);
+            }
         },
     },
     extraReducers: (builder) => {
@@ -87,28 +90,13 @@ const memberSlice = createSlice({
         builder.addCase(verifyCounselNum.fulfilled, (state, action) => {
             return {
                 ...state,
-                counselVerify: true,
             };
         });
         builder.addCase(verifyCounselNum.rejected, (state, action) => {
             alert("인증 코드 전송 실패");
             return {
                 ...state,
-                counselVerify: false,
             };
-        });
-        builder.addCase(fetchUser.fulfilled, (state, action) => {
-            return {
-                ...state,
-                isLogin: true,
-                id: action.payload.id,
-                username: action.payload.username,
-                role: action.payload.role,
-            };
-        });
-        builder.addCase(fetchUser.rejected, (state, action) => {
-            alert("사용자 정보를 가져오는 데 실패했습니다.");
-            return state;
         });
     }
 });
