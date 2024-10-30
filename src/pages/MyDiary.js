@@ -150,6 +150,9 @@ export const MyDiary = () => {
     const [userData, setUserData] = useState(null); 
 
     useEffect(() => {
+         // 페이지 진입 시 스크롤을 맨 위로 설정
+        window.scrollTo(0, 0);
+
         const fetchUserData = async () => {
             try {
                 const persistRoot = sessionStorage.getItem('persist:root');
