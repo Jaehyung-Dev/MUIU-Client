@@ -1,29 +1,10 @@
 import React, { useState } from 'react'
 import { clovaApis } from '../apis/clovaApis';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import chatBackground from '../images/Chat_Background.png';
-
-const Background = styled.div`
-  min-height: 95vh;
-  background-image: url(${chatBackground});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.7;
-`;
-
-const EndBar = styled.div`
-  height: 2.3rem;
-  background-color: #F6F6F6;
-`;
 
 const AI_Chat = () => {
 
     const [message, setMessage] = useState([]);
     const [input, setInput] = useState('');
-
-    const navi = useNavigate();
 
     const handleSendMessage = async () => {
         if(input.trim() === '')
@@ -60,29 +41,22 @@ const AI_Chat = () => {
         setInput('');
     }
   return (
-    <>
-      <Background>
-        <EndBar>
-          <button type='button' onClick={() => navi("/")}/>
-        </EndBar>
-      </Background>
-    </>
-    // <div>
-    //   <div className="chat-window">
-    //     {message.map((msg, index) => (
-    //       <div key={index} className={msg.sender === 'user' ? 'user-message' : 'ai-message'}>
-    //         {msg.text}
-    //       </div>
-    //     ))}
-    //   </div>
-    //   <input
-    //     type="text"
-    //     value={input} 
-    //     onChange={(e) => setInput(e.target.value)} 
-    //     placeholder="메시지를 입력하세요..."
-    //   />
-    //   <button onClick={handleSendMessage}>전송</button>
-    // </div>
+    <div>
+      <div className="chat-window">
+        {message.map((msg, index) => (
+          <div key={index} className={msg.sender === 'user' ? 'user-message' : 'ai-message'}>
+            {msg.text}
+          </div>
+        ))}
+      </div>
+      <input
+        type="text"
+        value={input} 
+        onChange={(e) => setInput(e.target.value)} 
+        placeholder="메시지를 입력하세요..."
+      />
+      <button onClick={handleSendMessage}>전송</button>
+    </div>
   )
 }
 

@@ -5,7 +5,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useDispatch, useSelector } from 'react-redux';
-import { getList } from '../apis/mindColumnApis';
+import { deleteCard, getList } from '../apis/mindColumnApis';
 
 const Cards = styled.div`
     display: grid;
@@ -206,6 +206,11 @@ export const MindColumn = () => {
         navi('/mind-column/post', {state: {column}});
     }, [navi]);
 
+    const handleDelete = useCallback(async (column) => {
+        await dispatch(deleteCard(column.mc_id));
+        navi('/mind-column');
+    }, [dispatch, navi]);
+
     return (
         <>
             <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
@@ -232,7 +237,7 @@ export const MindColumn = () => {
                         </NavButton>}
                     <AdminButton>
                         <button onClick={() => handleEdit(card)}>수정</button>
-                        <button>삭제</button>
+                        <button onClick={() => handleDelete(card)}>삭제</button>
                     </AdminButton>
                     <PageNumber>{`${currentImageIndex + 1} / ${card.mc_img_num}`}</PageNumber>
                 </ModalContent>
