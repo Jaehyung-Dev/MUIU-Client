@@ -248,16 +248,16 @@ const FundPost = () => {
     const formData = new FormData();
     formData.append("fundPostDto", new Blob([JSON.stringify(postData)], { type: 'application/json' }));
     uploadFiles.forEach((file, index) => {
-      formData.append('file', file); // 다중 파일인 경우 key 변경
+      formData.append('uploadFiles', file); // 다중 파일인 경우 key 변경
     });
 
     try {
       if (post.postId) {
-        await dispatch(updateFundPost({ postId: post.postId, postData }));
+         dispatch(updateFundPost({ postId: post.postId, postData }));
         console.log('게시글 수정 성공!');
         console.log('postData',postData);
       } else {
-        await dispatch(createFundPost(formData));
+         dispatch(createFundPost(formData));
         console.log('게시글 등록 성공!');
         console.log('postData',postData);
       }
