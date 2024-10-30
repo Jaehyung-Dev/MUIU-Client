@@ -52,8 +52,8 @@ const Profile = styled.div`
     }
 
     .change-profile-btn {
-        width: 80px;
-        height: 25px;
+        width: 70px;
+        height: 40px;
         margin-right: 15px;
         border-radius: 5px;
         color: #888;
@@ -406,7 +406,7 @@ export const MyPage = () => {
                     <div className="profile-name">{userData?.name}님</div>
                 </div>
                 <button className="change-profile-btn" onClick={handleProfileChangeClick}>
-                    프로필 변경
+                    프로필 <br /> 변경
                 </button>
                 <ProfileImageInput
                     id="profile-image-input"
