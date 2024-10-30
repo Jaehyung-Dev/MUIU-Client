@@ -280,9 +280,9 @@ const FundPayment = () => {
       }
     
       // 기부 로직 처리
-      console.log("기부 완료");
       navigate('/fund-payment-system', {
         state: {
+          postId,
           name: isAnonymous ? '익명 기부자' : name,
           totalAmount: totalAmount,
           targetAmount: post?.targetAmount,
