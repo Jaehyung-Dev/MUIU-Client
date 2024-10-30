@@ -188,8 +188,6 @@ const FundDetail = () => {
   
   // 케밥 - edit버튼
   const handleEditClick = (event) => {
-    console.log(menuVisible);
-    console.log('Edit 버튼이 클릭되었습니다.');
     event.stopPropagation();  // 이벤트 전파 차단
     if (!post) {
       console.error('Post가 존재하지 않습니다.');
@@ -198,9 +196,25 @@ const FundDetail = () => {
     console.log('Navigate 호출 전: ', post); // post 데이터 확인
     navigate('/fund-post', { state: { post } });  // 현재 post 데이터를 넘기면서 FundPost.js로 이동
   };  
-  const handleTest = () => {
-    console.log('Edit 버튼이 클릭되었습니다.');
-  }
+
+  // 케밥 - delete버튼
+  const handleDeleteClick = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:9090/api/fund/post/${postId}`, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+        }
+      });
+      
+      if (response.status === 200) {
+        alert('게시글이 성공적으로 삭제되었습니다.');
+        navigate('/fund'); // 게시글 목록 페이지로 이동
+      }
+    } catch (error) {
+      console.error('게시글 삭제 중 오류 발생:', error);
+      alert('게시글 삭제에 실패했습니다.');
+    }
+  };
 
   // 메뉴 외부 클릭 시 메뉴 닫기
   const handleClickOutside = (event) => {
@@ -333,17 +347,16 @@ const FundDetail = () => {
 
       {menuVisible && (
           <MenuContainer>
-            <div onMouseDown={handleEditClick}>
-              <MenuItem >
-                  <EditIcon /> 
-                  {/* mui가 부모꺼랑 조부모꺼까지 이벤트 다 뺏어감. 전파 방지 코드 추가해도 안됨여 */}
-                  <span>Edit</span>
-              </MenuItem>
-            </div>
-              <MenuItem >
-                  <DeleteIcon  />
-                  <span>Delete</span>
-              </MenuItem>
+            <MenuItem onMouseDown={handleEditClick}>
+                <EditIcon /> 
+                {/* mui가 부모꺼랑 조부모꺼까지 이벤트 다 뺏어감. 전파 방지 코드 추가해도 안됨여 */}
+                <span>Edit</span>
+            </MenuItem>
+
+            <MenuItem onMouseDown={handleDeleteClick}>
+              <DeleteIcon />
+                <span>Delete</span>
+            </MenuItem>
           </MenuContainer>
       )}
 

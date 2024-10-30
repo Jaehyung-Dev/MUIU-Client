@@ -8,7 +8,7 @@ import shareIcon from '../svg/공유.svg';
 import departHoverIcon from '../svg/출발-hover.svg';
 import arriveHoverIcon from '../svg/도착-hover.svg';
 import shareHoverIcon from '../svg/공유-hover.svg';
-import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
+import imgReady from '../HS_images/imgReady.png';
 import locationIcon from '../svg/장소위치.svg';
 import distanceIcon from '../svg/인근역.svg';
 
@@ -135,7 +135,7 @@ const TabsInfoPicture = styled.div`
 
     .tab {
         border-bottom: 2px solid #A1A1A1;
-        transition: border-bottom 0.2s; /* 부드러운 전환 효과 추가 */
+        transition: border-bottom 0.2s;
     }
 
     .active {
@@ -186,15 +186,19 @@ const HS_InfoModal_Shelter = ({ isShelterOpen, onShelterClose, openShelterPhoto,
             <ModalContent onClick={(e) => { e.stopPropagation(); }}>
                 <ImagesContainer onClick={(e) => { e.stopPropagation(); openShelterPhoto(); }}>
                     <MainImage>
-                        <img src={mainImage1} alt="병원 예시 이미지 1" />
+                        <img src={shelterData.imgUrls[0] || imgReady} />
                     </MainImage>
                     <SmallImages>
-                        <SmallImagesEle>
-                            <img src={mainImage1} alt="병원 예시 이미지 2" />
-                        </SmallImagesEle>
-                        <SmallImagesEle isSecond>
-                            <img src={mainImage1} alt="병원 예시 이미지 3" />
-                        </SmallImagesEle>
+                        {shelterData.imgUrls[1] && (
+                            <SmallImagesEle>
+                                <img src={shelterData.imgUrls[1]} />
+                            </SmallImagesEle>
+                        )}
+                        {shelterData.imgUrls[2] && (
+                            <SmallImagesEle isSecond>
+                                <img src={shelterData.imgUrls[2]} />
+                            </SmallImagesEle>
+                        )}
                     </SmallImages>
                 </ImagesContainer>
 

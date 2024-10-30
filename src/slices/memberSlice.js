@@ -85,7 +85,6 @@ const memberSlice = createSlice({
             };
         });
         builder.addCase(verifyCounselNum.fulfilled, (state, action) => {
-            alert("인증 코드 전송 성공");
             return {
                 ...state,
                 counselVerify: true,

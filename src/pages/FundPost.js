@@ -6,8 +6,9 @@ import 'react-quill/dist/quill.snow.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
-import { createFundPost, updateFundPost, uploadImage } from '../apis/fundApis';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createFundPost, updateFundPost } from '../apis/fundApis';
+import { resetImageUrl, clearError } from '../slices/fundSlice'; 
 
 const Main = styled.main`
   width: 100%;  
@@ -186,57 +187,53 @@ const FundPost = () => {
   const location = useLocation();
   const post = location.state?.post || {};
   const userId = useSelector((state) => state.memberSlice.id);
+  const { imageUploadUrl = null, loading = false, error = null } = useSelector((state) => state.fund || {});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [title, setTitle] = useState(post.title || '');
   const [team, setTeam] = useState(post.teamName || '');
-  const [file, setFile] = useState(post.mainImage || null); // 클라우드 URL로 활용
+  const [file, setFile] = useState(post.mainImage || null); 
   const [imagePreview, setImagePreview] = useState(post.mainImage || null);
   const [fundStart, setFundStart] = useState(post.fundStartDate ? new Date(post.fundStartDate) : null);
   const [fundEnd, setFundEnd] = useState(post.fundEndDate ? new Date(post.fundEndDate) : null);
   const [targetAmount, setTargetAmount] = useState(post.targetAmount || '');
   const [content, setContent] = useState(post.description || '');
-  const quillRef = useRef(null); 
+  const quillRef = useRef(null);
+
+  // 파일 미리보기와 추가된 파일 배열 관리
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const imageLoader = (file) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      let img = document.createElement('img');
+      img.src = e.target.result;
+      setImagePreview(img.src);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    selectedFiles.forEach((file) => {
+      imageLoader(file);
+    });
+    setUploadFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    // 이미지 버튼 감지
-    // const toolbar = document.querySelector('.ql-image');
-    // const handleButtonClick = (e) => {
-    //   e.preventDefault(); 
-    //   e.stopImmediatePropagation();  // 기본 동작과 중복 클릭 방지
-    //   handleImageUpload();
-    // };
-
-    // if (toolbar) {
-    //   toolbar.addEventListener('click', handleButtonClick);
-    // }
-
-    // return () => {
-    //   if (toolbar) {
-    //     toolbar.removeEventListener('click', handleButtonClick);
-    //   }
-    // };
-  }, []);
-
-  // 파일 선택 시 클라우드 업로드 및 미리보기 생성
-  const handleImageChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setImagePreview(URL.createObjectURL(selectedFile));
-      try {
-        const imageUrl = await uploadImage(selectedFile);
-        setFile(imageUrl);
-      } catch (error) {
-        console.error("이미지 업로드 실패:", error);
-      }
+    if (imageUploadUrl) {
+      setFile(imageUploadUrl);
     }
-  };
-
+    return () => {
+      dispatch(resetImageUrl());
+      dispatch(clearError());
+    };
+  }, [imageUploadUrl, dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const postData = {
       userId,
       title,
@@ -245,32 +242,31 @@ const FundPost = () => {
       fundStartDate: fundStart,
       fundEndDate: fundEnd,
       targetAmount,
-      mainImage: file || post.mainImage
+      mainImage: file || post.mainImage,
     };
 
-    console.log(postData);
-
-    // FormData로 데이터 구성
     const formData = new FormData();
-    formData.append("fundPostDto", JSON.stringify(postData));
-    // 앞서 handleImageChange에서 설정한 setFile로 인한 file값을 formData에 추가
-    if (file) formData.append("file", file);
-
-    console.log(formData);
+    formData.append("fundPostDto", new Blob([JSON.stringify(postData)], { type: 'application/json' }));
+    uploadFiles.forEach((file, index) => {
+      formData.append('file', file); // 다중 파일인 경우 key 변경
+    });
 
     try {
       if (post.postId) {
-        await updateFundPost(post.postId, postData);
+        await dispatch(updateFundPost({ postId: post.postId, postData }));
         console.log('게시글 수정 성공!');
+        console.log('postData',postData);
       } else {
-        await createFundPost(formData);  // 수정된 createFundPost 호출
+        await dispatch(createFundPost(formData));
         console.log('게시글 등록 성공!');
+        console.log('postData',postData);
       }
       navigate('/fund', { state: postData });
     } catch (error) {
       console.error('게시글 처리 실패:', error);
     }
   };
+
 
   return (
     <Main>
@@ -285,6 +281,7 @@ const FundPost = () => {
           required
         />
 
+        {/* 이미지 업로드 */}
         <label className="file-label">
           {/* 이미지 미리보기와 선택 버튼 분기 */}
           {imagePreview ? (

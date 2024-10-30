@@ -119,7 +119,7 @@ const NewConsultation = () => {
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
 
-                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },
@@ -127,7 +127,8 @@ const NewConsultation = () => {
                 });
                 
                 setUserData({
-                    name: response.data.item.name
+                    name: response.data.item.name,
+                    role: response.data.item.role
                 });
             } catch (error) {
                 console.error('오류:', error);
@@ -150,7 +151,18 @@ const NewConsultation = () => {
                 <img src={`${process.env.PUBLIC_URL}/images/AI-header-img.png`} alt="Room Image" />
             </ImageBanner>
             <Title>비대면 상담 진행</Title>
-            <ConsultationSubText>내담자 {userData?.name}{userData ? getPostposition(userData.name) : '본인은'} 성실하게 상담에 임할 것을 약속합니다.</ConsultationSubText>
+            <ConsultationSubText>
+            {userData?.role === 'ROLE_COUNSELOR' ? (
+                <>
+                {userData?.name}님의 최근 상담 이력: 2024-02-10
+                </>
+            ) : (
+                <>
+                내담자 {userData?.name}{userData ? getPostposition(userData.name) : '본인은'} 성실하게 상담에 임할 것을 약속합니다.
+                </>
+            )}
+            </ConsultationSubText>
+
             <ShortHr />
 
             <OptionsContainer>

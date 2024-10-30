@@ -6,6 +6,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useSelector } from 'react-redux';
+import { User } from 'lucide-react';
 
 const HeaderContainer = styled.header`
     display: flex;
@@ -92,6 +94,10 @@ const EmojiOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   z-index: 1000;
+  @media (max-width: 393px) {
+    width: 370px;
+    bottom: 135px;
+  }
 `;
 
 const EmojiPicker = styled.div`
@@ -99,6 +105,10 @@ const EmojiPicker = styled.div`
   grid-template-columns: repeat(6, 70px);
   gap: 10px;
   justify-content: center;
+  @media (max-width: 393px) {
+    grid-template-columns: repeat(6, 50px);
+    gap: 10px;
+  }
 `;
 
 const EmojiButton = styled.img`
@@ -119,11 +129,14 @@ const MessageInputContainer = styled.div`
 
 const MessageInputContainerWrapper = styled.div`
   position: fixed;
-  bottom: 70px;
+  bottom: 75px;
   width: 100%;
   max-width: 600px;
   background-color: #ffffff;
   padding-bottom: 60px;
+  @media (max-width: 393px) {
+    bottom: 15px;
+  }
 `;
 
 const MessageInput = styled.input`
@@ -186,11 +199,7 @@ const Chat = () => {
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);
   const [partnerInfo, setPartnerInfo] = useState({ name: '', role: '' });
-  const userId = JSON.parse(sessionStorage.getItem('persist:root')).memberSlice.id;
-
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  const [chatRoomId, setChatRoomId] = useState(null);
 
   // Emoji 이미지 경로
   const emojiImages = [
@@ -214,37 +223,85 @@ const Chat = () => {
     'surprise-emoji.png',
   ];
 
-  useEffect(() => {
-    const socket = new SockJS('http://localhost:9090/ws');
-    const client = Stomp.over(socket);
+  const userId = (() => {
+    const persistRoot = sessionStorage.getItem('persist:root');
+    if (persistRoot) {
+      const parsedRoot = JSON.parse(persistRoot);
+      const memberSlice = JSON.parse(parsedRoot.memberSlice);
+      return memberSlice?.id || null;
+    }
+    return null;
+  })();
 
+  const userRole = useSelector((state) => state.memberSlice.role);
+
+  const handleBackClick = () => {
+    leaveChatRoom();
+    navigate(-1);
+  };
+
+  useEffect(() => {
+    if(chatRoomId) {
+    const socket = new SockJS('http://localhost:9090/ws'); // 서버의 WebSocket 엔드포인트 확인
+    const client = Stomp.over(socket);
+  
+    // 자동 재연결 설정
+    client.reconnectDelay = 5000;
+  
     client.connect({}, () => {
       console.log('STOMP 클라이언트가 성공적으로 연결되었습니다.');
-
-      client.subscribe('/topic/public', (message) => {
+      setStompClient(client);
+      setIsConnected(true); // 연결 상태 업데이트
+  
+      // 채팅 메시지 구독 (구독 경로가 서버 설정과 일치해야 함)
+      client.subscribe(`/topic/${chatRoomId}/messages`, (message) => {
+        console.log(message)
         const receivedMessage = JSON.parse(message.body);
         setMessages((prev) => [...prev, receivedMessage]);
       });
-
-      setStompClient(client);
-      setIsConnected(true);
+      
     }, (error) => {
       console.error('STOMP 연결 오류:', error);
       setIsConnected(false);
     });
-
+  
     return () => {
-      if (client) {
-        client.disconnect(() => {
-          console.log('STOMP 클라이언트가 연결 해제되었습니다.');
-          setIsConnected(false);
-        });
+      if (client && client.connected) {
+        console.log("Sending idle status update for memberId:", userId);
+        client.send('/app/chat/exit', {}, JSON.stringify({ memberId: userId }));
+        client.disconnect(() => console.log('STOMP 클라이언트가 연결 해제되었습니다.'));
+      } else {
+        console.warn("STOMP 연결이 설정되지 않아 'idle' 상태 전송을 건너뜁니다.");
       }
-    };
+    };}
+  }, [userId, chatRoomId]);
+  
+  const createOrEnterChatRoom = async () => {
+    try {
+        const apiUrl = userRole === 'ROLE_COUNSELOR' ? 'http://localhost:9090/chat/create' : 'http://localhost:9090/chat/enter';
+        const response = await axios.post(apiUrl, { id: userId });
+        
+        setChatRoomId(response.data.id);
+        setPartnerInfo({
+            name: userRole === 'ROLE_COUNSELOR' ? response.data.clientName : response.data.counselorName,
+            role: userRole === 'ROLE_COUNSELOR' ? '내담자' : '상담사'
+        });
+    } catch (error) {
+        console.log("채팅방 생성 또는 입장 중 오류:", error);
+    }
+};
+
+  // 연결이 완료된 후에만 상태를 전송
+  useEffect(() => {
+      createOrEnterChatRoom(); 
   }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) {
+        console.error("userId가 없습니다. 사용자 정보를 불러올 수 없습니다.");
+        return;
+      }
       try {
         const response = await axios.get(`http://localhost:9090/members/${userId}/name`, {
           headers: {
@@ -252,82 +309,123 @@ const Chat = () => {
           },
           withCredentials: true,
         });
-
         setUserData({
-          name: response.data.item.name.slice(1),
+          name: response.data.item.name,
+          role: response.data.item.role,
         });
       } catch (error) {
-        console.error('오류:', error);
+        console.error("오류:", error);
       }
     };
     fetchUserData();
-  }, []);
+  }, [userId]);
+  
+
+useEffect(() => {
+    if (partnerInfo && partnerInfo.id) {
+        handleConnectChat(); // 상대방이 매칭될 때만 연결
+    }
+}, [partnerInfo]);
+
+const handleConnectChat = () => {
+    if (stompClient && stompClient.connected) {
+        // stompClient.send('/app/chat/connect', {}, JSON.stringify({ memberId: userId }));
+    }
+};
+
+  
+
 
   const sendMessage = () => {
-    if (stompClient && stompClient.connected && message.trim() !== '') {
-      const chatMessage = {
-        sender: `${userData.name}`,
-        content: message,
-        type: 'CHAT',
-      };
-  
-      stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
-      setMessage('');
-    } else {
-      console.error("STOMP 연결이 설정되지 않았습니다. 메시지를 보낼 수 없습니다.");
+    if (!stompClient || !stompClient.connected) {
+        console.error("STOMP 연결이 설정되지 않았습니다.");
+        return;
+    }
+
+    if (message.trim() !== '') {
+        const chatMessage = {
+            sender: `${userData.name}`,
+            content: message,
+            type: 'CHAT', 
+            chatRoomId: chatRoomId
+        };
+        stompClient.send(`/app/chat.sendMessage/${chatRoomId}`, {}, JSON.stringify(chatMessage));
+        setMessage('');
     }
   };
-  
+
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prev) => !prev);
+  };
 
   const handleEmojiSelect = (emoji) => {
-    if (stompClient && stompClient.connected) {
+    if (stompClient && stompClient.connected && userData && userData.name) {
       const chatMessage = {
         sender: `${userData.name}`,
         content: emoji,
         type: 'EMOJI',
       };
-  
-      stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
+    
+      stompClient.send(`/app/chat.sendMessage/${chatRoomId}`, {}, JSON.stringify(chatMessage));
       setShowEmojiPicker(false);
     } else {
-      console.error("STOMP 연결이 설정되지 않았습니다. 메시지를 보낼 수 없습니다.");
+      console.error("STOMP 연결이 설정되지 않았거나 사용자 데이터가 없습니다. 메시지를 보낼 수 없습니다.");
     }
   };
 
-  useEffect(() => {
-    // 채팅이 로드되거나 새 메시지가 올 때 스크롤을 최하단으로 이동
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-
+  // useEffect(() => {
+  //   if (stompClient && stompClient.connected) {
+  //     console.log("Sending 'waiting' status for memberId:", userId);
+  //     stompClient.send('/app/chat/enter', {}, JSON.stringify({ memberId: userId }));
+  //   } else {
+  //     console.warn("STOMP 연결이 설정되지 않아 'waiting' 상태 전송을 건너뜁니다.");
+  //   }
+  
+  //   return () => {
+  //     if (stompClient && stompClient.connected) {
+  //       console.log("Sending 'idle' status for memberId:", userId);
+  //       stompClient.send('/app/chat/exit', {}, JSON.stringify({ memberId: userId }));
+  //     } else {
+  //       console.warn("STOMP 연결이 설정되지 않아 'idle' 상태 전송을 건너뜁니다.");
+  //     }
+  //   };
+  // }, [stompClient, userId]);  
+  
   useEffect(() => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'auto' });
+      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
+  const leaveChatRoom = () => {
+    if (stompClient && stompClient.connected) {
+      stompClient.send('/app/chat/exit', {}, JSON.stringify({ memberId: userId }));
+      console.log('사용자가 채팅방을 떠났습니다. 상태가 IDLE로 전환되었습니다.');
+      stompClient.disconnect();
+    } else {
+      console.warn("STOMP 연결이 설정되지 않아 채팅방 나가기를 건너뜁니다.");
+    }
+  };
+  
   useEffect(() => {
-    const fetchPartnerInfo = async () => {
-      try {
-        const response = await axios.get(`http://localhost:9090/chat/partner/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-          },
-          withCredentials: true,
-        });
-        setPartnerInfo({
-          name: response.data.item.name,
-          role: response.data.item.role
-        });
-        console.log("연결 성공:", response.data.item.name, response.data.item.role);
-      } catch (error) {
-        console.error("상대방 정보 불러오기 실패: 연결 실패", error);
+    const handleUnload = () => leaveChatRoom();
+  
+    // 창을 닫거나 새로고침할 때 leaveChatRoom 호출
+    window.addEventListener('beforeunload', handleUnload);
+  
+    // 다른 탭으로 이동할 때 상태를 IDLE로 변경
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        leaveChatRoom();
       }
-    };   
-    fetchPartnerInfo();
-  }, []);
+    });
+  
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      document.removeEventListener('visibilitychange', handleUnload);
+    };
+  }, [stompClient, userId]);
+  
 
   return (
     <>
@@ -335,7 +433,11 @@ const Chat = () => {
         <BackButton onClick={handleBackClick}>
           <ArrowBackIosIcon />
         </BackButton>
-        <Title>{partnerInfo ? `${partnerInfo.name} ${partnerInfo.role}` : "연결 중..."}</Title>
+        <Title>
+            {partnerInfo && partnerInfo.name ? 
+                `${partnerInfo.name} ${partnerInfo.role}` 
+                : "연결 중..."}
+          </Title>
       </HeaderContainer>
       <ChatContainer ref={chatContainerRef}>
         {messages.map((msg, index) => (
@@ -373,10 +475,13 @@ const Chat = () => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="메시지를 입력하세요"
           />
-          <SendButton onClick={sendMessage} disabled={!isConnected || !partnerInfo}> {/* 버튼 활성화 조건 수정 */}
-            전송
+          <SendButton 
+              onClick={sendMessage} 
+              disabled={message.trim() === ''}
+          >
+              전송
           </SendButton>
-          <ImageButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+          <ImageButton onClick={toggleEmojiPicker}>
             <InsertEmoticonIcon />
           </ImageButton>
         </MessageInputContainer>

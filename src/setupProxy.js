@@ -19,12 +19,12 @@ module.exports = function(app) {
         })
     );
 
-    /* diaryWriteApis proxy 설정 */
-    app.use(
-        '/api3', // api path parameter
-        createProxyMiddleware({
-            target: 'http://localhost:9090', // endpoint
-            changeOrigin: true,
-        })
-    );
+    // /* diaryWriteApis proxy 설정 */
+    // app.use(
+    //     '/api3', // api path parameter
+    //     createProxyMiddleware({
+    //         target: 'http://localhost:9090', // endpoint
+    //         changeOrigin: true,
+    //     })
+    // );
 };

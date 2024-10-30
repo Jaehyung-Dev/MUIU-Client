@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import angry from '../svg/angry.svg'
-import depress from '../svg/depress.svg'
-import normal from '../svg/normal.svg'
-import good from '../svg/good.svg'
-import happy from '../svg/happy.svg'
+import angry from '../svg/angry.svg';
+import depress from '../svg/depress.svg';
+import normal from '../svg/normal.svg';
+import good from '../svg/good.svg';
+import happy from '../svg/happy.svg';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const DiaryBackground = styled.div`
@@ -37,7 +36,8 @@ const FeelContainer = styled.div`
     &:hover {
         cursor: pointer;
     }
-`
+`;
+
 const CoverFeelDiv = styled.div`
     box-sizing: border-box;
     width: 85%;
@@ -50,7 +50,7 @@ const CoverFeelDiv = styled.div`
     @media screen and (max-width: 600px) {
         margin: 1rem;
     }
-`
+`;
 
 const DiaryName = styled.p`
     font-weight: bold;
@@ -59,11 +59,12 @@ const DiaryName = styled.p`
     text-align: center;
     margin-top: 2rem;
     margin-bottom: 1rem;
+
     @media screen and (max-width: 600px) {
         margin-top: 0;
         font-size: 1.2rem;
     }
-`
+`;
 
 const DiaryToday = styled.p`
     font-size: 1.7rem;
@@ -71,11 +72,12 @@ const DiaryToday = styled.p`
     font-weight: bold;
     text-align: center;
     margin: 1rem 0 2rem 0;
+
     @media screen and (max-width: 600px) {
         font-size: 1.8rem;
         margin: 0.5rem 0 2rem 0;
     }
-`
+`;
 
 const FeelDivCover = styled.div`
     width: 100%;
@@ -84,7 +86,7 @@ const FeelDivCover = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 2rem;
-`
+`;
 
 const FeelDiv = styled.div`
     margin: 0.2rem;
@@ -110,6 +112,7 @@ const FeelDiv = styled.div`
                 return 'gray';
         }
     }};
+
     @media screen and (max-width: 600px) {
         width: 40%;
         height: 10vh;
@@ -120,7 +123,8 @@ const FeelDiv = styled.div`
         height: 8vh;
         margin-top: 0.5rem;
     }
-`
+`;
+
 const DiaryTextCover = styled.div`
     width: 85%;
     height: 5vh;
@@ -130,18 +134,18 @@ const DiaryTextCover = styled.div`
     p {
         margin: 0 0.5rem 0 0.5rem;
     }
-`
+`;
 
 const DiaryViewAll = styled.a`
     text-decoration: none;
-    fontSize: 0.8rem;
+    font-size: 0.8rem;
     color: gray;
-    fontWeight: bold;
+    font-weight: bold;
     margin: 0 0.5rem 0 0.5rem;
 `
 
 export const MyDiary = () => {
-    const navi = useNavigate();
+    const navigate = useNavigate();
 
     const [userData, setUserData] = useState(null); 
 
@@ -171,38 +175,38 @@ export const MyDiary = () => {
 
     return (
         <DiaryBackground>
-            <FeelContainer onClick={() => navi('/my-diary-write')}>
+            <FeelContainer onClick={() => navigate('/my-diary-write')}>
                 <CoverFeelDiv>
                     <DiaryName>
                         안녕하세요 {userData?.name || '이용자'}님,
                     </DiaryName>
                     <DiaryToday>
-                        오늘의 하루는<br/> 어떠셨나요?
+                        오늘의 하루는<br /> 어떠셨나요?
                     </DiaryToday>
                     <FeelDivCover>
-                        <FeelDiv mood='dissatisfied'>
-                            <img src={angry} />
+                        <FeelDiv mood="dissatisfied">
+                            <img src={angry} alt="angry" />
                         </FeelDiv>
-                        <FeelDiv mood='bad'>
-                            <img src={depress} />
+                        <FeelDiv mood="bad">
+                            <img src={depress} alt="depress" />
                         </FeelDiv>
-                        <FeelDiv mood='soso'>
-                            <img src={normal} />
+                        <FeelDiv mood="soso">
+                            <img src={normal} alt="normal" />
                         </FeelDiv>
-                        <FeelDiv mood='good'>
-                            <img src={good} />
+                        <FeelDiv mood="good">
+                            <img src={good} alt="good" />
                         </FeelDiv>
-                        <FeelDiv mood='happy'>
-                            <img src={happy} />
+                        <FeelDiv mood="happy">
+                            <img src={happy} alt="happy" />
                         </FeelDiv>
                     </FeelDivCover>
                 </CoverFeelDiv>
             </FeelContainer>
             <DiaryTextCover>
                 <p style={{ fontSize: '1.4rem', color: 'gray', fontWeight: 'bold' }}>최근 일기</p>
-                <DiaryViewAll href='my-diary-collection'>모두 보기</DiaryViewAll>
+                <DiaryViewAll href="my-diary-collection">모두 보기</DiaryViewAll>
             </DiaryTextCover>
-            <MD_Block/>
+            <MD_Block />
         </DiaryBackground>
     );
 };

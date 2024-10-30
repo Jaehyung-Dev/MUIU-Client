@@ -8,9 +8,7 @@ import shareIcon from '../svg/공유.svg';
 import departHoverIcon from '../svg/출발-hover.svg';
 import arriveHoverIcon from '../svg/도착-hover.svg';
 import shareHoverIcon from '../svg/공유-hover.svg';
-import mainImage1 from '../HS_images/병원 예시 이미지 1.jpg';
-import mainImage2 from '../HS_images/병원 예시 이미지 2.jpg';
-import mainImage3 from '../HS_images/병원 예시 이미지 3.jpg';
+import imgReady from '../HS_images/imgReady.png';
 import locationIcon from '../svg/장소위치.svg';
 import distanceIcon from '../svg/인근역.svg';
 import phoneIcon from '../svg/전화번호.svg';
@@ -197,15 +195,19 @@ const HS_InfoModal = ({ isOpen, onClose, openPhotoPopUp, openFindRoadPopUp, hosp
             <ModalContent onClick={(e) => { e.stopPropagation(); }}>
                 <ImagesContainer onClick={(e) => { e.stopPropagation(); openPhotoPopUp(); }}>
                     <MainImage>
-                        <img src={mainImage1} alt="병원 예시 이미지 1" />
+                        <img src={hospitalData.imgUrls[0] || imgReady} />
                     </MainImage>
                     <SmallImages>
-                        <SmallImagesEle>
-                            <img src={mainImage2} alt="병원 예시 이미지 2" />
-                        </SmallImagesEle>
-                        <SmallImagesEle isSecond>
-                            <img src={mainImage3} alt="병원 예시 이미지 3" />
-                        </SmallImagesEle>
+                        {hospitalData.imgUrls[1] && (
+                            <SmallImagesEle>
+                                <img src={hospitalData.imgUrls[1]} />
+                            </SmallImagesEle>
+                        )}
+                        {hospitalData.imgUrls[2] && (
+                            <SmallImagesEle isSecond>
+                                <img src={hospitalData.imgUrls[2]} />
+                            </SmallImagesEle>
+                        )}
                     </SmallImages>
                 </ImagesContainer>
 
