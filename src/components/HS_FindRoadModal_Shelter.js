@@ -17,7 +17,6 @@ import findIcon from '../svg/길찾기-hover.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import shelterData from '../JSON/shelterData.json';
-import ReactDOMServer from 'react-dom/server';
 
 const Modal = styled.div`
     display: ${(props) => (props.isShelterFindRoadOpen ? 'block' : 'none')};
@@ -325,7 +324,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
         }
     }, [shelterName, mode]);
     
-
+    
     // 출발지 입력 핸들러
     const handleDepartInputChange = (event) => {
         const value = event.target.value;
@@ -476,36 +475,41 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
         }
     };
     
-    // 도보 길찾기
-    const [walkData, setWalkData] = useState(null);
-    const mapRef = useRef(null);
-    const [map, setMap] = useState(null);
+    // 도보 길찾기 관련 상태 변수
+    const [walkData, setWalkData] = useState(null); // 도보 경로 데이터를 저장할 상태
+    const mapRef = useRef(null); // 지도 DOM 요소에 대한 참조
+    const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 상태
 
+    // 지도 초기화 및 출발지 중심 설정
     useEffect(() => {
-        const { Tmapv2 } = window;
-    
+        const { naver } = window;
+
         if (mapRef.current && !map) {
-            const mapInstance = new Tmapv2.Map(mapRef.current, {
-                center: new Tmapv2.LatLng(userLocation.latitude, userLocation.longitude),
-                width: "100%",
-                height: "500px",
-                zoom: 15,
-            });
-    
-            setMap(mapInstance);
+            const departCoords = getDepartCoordinates(); // 출발지 좌표 가져오기
+            
+            if (departCoords) {
+                const mapInstance = new naver.maps.Map(mapRef.current, {
+                    center: new naver.maps.LatLng(departCoords.lat, departCoords.lng), // 출발지 좌표로 중심 설정
+                    zoom: 15,
+                    width: "100%",
+                    height: "500px",
+                });
+
+                setMap(mapInstance);
+
+                // 보행자 경로가 있을 경우 경로 표시
+                if (walkData && walkData.length > 0) {
+                    displayWalkRoute(walkData, mapInstance); // 경로 표시
+                }
+            }
         }
-    }, [mapRef, map]);
-    
-    useEffect(() => {
-        if (map && walkData) {
-            displayWalkRoute(walkData, map);
-        }
-    }, [walkData, map]);
-    
+    }, [ mapRef, map, departValue, walkData ]); // 출발지가 변경될 때마다 업데이트
+
+    // 도보 경로 API 호출
     const fetchWalkRoutes = async (departCoords, arriveCoords) => {
         const appKey = process.env.REACT_APP_TMAP_APP_KEY;
         const url = 'https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1';
-        
+
         const body = {
             startX: departCoords.lng,
             startY: departCoords.lat,
@@ -518,7 +522,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
         };
 
         console.log('보행자 경로 요청 데이터:', body);
-        
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -541,89 +545,63 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             console.log('보행자 경로 API 응답 데이터:', data);
 
             if (data && data.features && data.features.length > 0) {
-                setWalkData(data.features);
+                setWalkData(data.features); // 도보 경로 데이터 저장
             }
         } catch (error) {
             console.error('API 요청 오류:', error);
         }
     };
 
-    useEffect(() => {
-        const { Tmapv2 } = window;
-
-        if (mapRef.current) {
-            initTmap();
-        }
-    }, []);
-
-    const initTmap = () => {
-        const { Tmapv2 } = window;
-        const map = new Tmapv2.Map(mapRef.current, {
-            center: new Tmapv2.LatLng(userLocation.latitude, userLocation.longitude),
-            width: "100%",
-            height: "500px",
-            zoom: 15,
-        });
-
-        setMap(map); // map 상태 업데이트
-
-        // 보행자 경로가 있을 경우
-        if (walkData && walkData.length > 0) {
-            displayWalkRoute(walkData, map);
-        }
-    };
-
-    // walkData가 변경될 때마다 경로 표시
-    useEffect(() => {
-        if (map && walkData) {
-            displayWalkRoute(walkData, map);
-        }
-    }, [walkData, map]);
-
+    // 도보 경로 표시 함수
     const displayWalkRoute = (features, map) => {
-        const { Tmapv2 } = window;
-
-        const startCoords = features[0].geometry.coordinates;
-        const endCoords = features[features.length - 1].geometry.coordinates;
-
-        const startMarker = new Tmapv2.Marker({
-            position: new Tmapv2.LatLng(startCoords[1], startCoords[0]),
-            map: map,
-            icon: {
-                url: '/HS_images/startMarker.svg', // public 폴더 기준 수정
-                size: new Tmapv2.Size(30, 30),
-                anchor: new Tmapv2.Point(15, 30)
-            }
-        });
-
-        const endMarker = new Tmapv2.Marker({
-            position: new Tmapv2.LatLng(endCoords[1], endCoords[0]),
-            map: map,
-            icon: {
-                url: '/HS_images/endMarker.svg', // public 폴더 기준 수정
-                size: new Tmapv2.Size(30, 30),
-                anchor: new Tmapv2.Point(15, 30)
-            }
-        });
-
-        const path = [];
+        const { naver } = window;
+    
+        const path = []; // 경로 좌표 저장 배열
+    
         features.forEach(feature => {
             if (feature.geometry.type === 'LineString') {
+                // LineString의 경우, 각 좌표를 path에 추가
                 feature.geometry.coordinates.forEach(coord => {
-                    path.push(new Tmapv2.LatLng(coord[1], coord[0]));
+                    // 각 coord는 [longitude, latitude] 형식으로 되어 있으므로, 순서를 맞추어 추가
+                    path.push(new naver.maps.LatLng(coord[1], coord[0])); // [latitude, longitude]로 변환
                 });
+            } else if (feature.geometry.type === 'Point') {
+                // Point 타입의 경우, 해당 좌표를 path에 추가할 수도 있습니다.
+                path.push(new naver.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]));
             }
         });
-
-        new Tmapv2.Polyline({
+    
+        if (path.length === 0) return; // 경로가 비어있으면 함수 종료
+    
+        // 시작 마커 생성
+        const startMarker = new naver.maps.Marker({
+            position: path[0], // 첫 번째 좌표를 시작 좌표로 설정
+            map: map,
+            icon: {
+                url: '../HS_images/startMarker.svg', // 마커 이미지 경로
+                size: new naver.maps.Size(30, 30),
+                anchor: new naver.maps.Point(15, 30),
+            },
+        });
+    
+        // 도착 마커 생성
+        const endMarker = new naver.maps.Marker({
+            position: path[path.length - 1], // 마지막 좌표를 도착 좌표로 설정
+            map: map,
+            icon: {
+                url: '../HS_images/endMarker.svg', // 마커 이미지 경로
+                size: new naver.maps.Size(30, 30),
+                anchor: new naver.maps.Point(15, 30),
+            },
+        });
+    
+        // 경로 선 표시
+        new naver.maps.Polyline({
             path: path,
-            strokeColor: '#FF0000',
-            strokeWeight: 5,
+            strokeColor: '#FF0000', // 선 색상
+            strokeWeight: 5, // 선 두께
             map: map,
         });
-
-        const bounds = new Tmapv2.LatLngBounds();
-        path.forEach(coord => bounds.extend(coord));
     };
 
     const handleFindingClick = () => {
@@ -634,7 +612,9 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             if (activeTab === 'traffic') {
                 fetchTransitRoutes(departCoords, arriveCoords);
             } else if (activeTab === 'walk') {
-                fetchWalkRoutes(departCoords, arriveCoords); // 보행자 경로 요청
+                fetchWalkRoutes(departCoords, arriveCoords);
+            } else if (activeTab === 'car') {
+                console.log('자동차 모드 확인');
             } else {
                 console.error('지원하지 않는 탭입니다:', activeTab);
             }
@@ -945,9 +925,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                         )
                     ) : activeTab === 'walk' && walkData ? (
                         <>
-                            <div id='map_div' ref={mapRef} style={{ width: '%', height: '650px' }}>
-                                {displayWalkRoute(walkData)}
-                            </div>
+                            <div ref={mapRef} style={{ width: '100%', height: '650px' }} />
                         </>
                     ) : (
                         <div>길찾기 결과가 없습니다.</div>
