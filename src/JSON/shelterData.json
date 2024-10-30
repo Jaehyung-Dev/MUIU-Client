@@ -14,7 +14,8 @@
         "CD_AREA": "지역코드",
         "SGG_NM": "시군구명",
         "LOC_SFPR_A": "상세주소",
-        "NO_EQUP_SE": "시설일련번호"
+        "NO_EQUP_SE": "시설일련번호",
+        "IMGURLS": "시설이미지"
     },
     "DATA": [
         {
@@ -9631,7 +9632,7 @@
             "no_equp_se": "2",
             "loc_sfpr_a": "서울특별시 강남구 신사동",
             "xcord": 127.024278,
-            "imgUrls": []
+            "imgUrls": ["https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20150831_263%2F1441015631425Akbbu_JPEG%2F116351545726206_0.jpg"]
         },
         {
             "ycord": 37.524249,
