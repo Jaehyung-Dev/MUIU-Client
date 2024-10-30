@@ -721,9 +721,9 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                             dummyTransitData
                                 .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
                                 .map((itinerary, index) => {
-                                    const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
-                                    const totalTime = formatTime(totalDurationInSeconds); // 총 시간 (시/분)
-                                    const totalFare = itinerary.fare.regular.totalFare; // 요금
+                                    const totalDurationInSeconds = itinerary.totalTime;
+                                    const totalTime = formatTime(totalDurationInSeconds);
+                                    const totalFare = itinerary.fare.regular.totalFare;
 
                                     return (
                                         <TransitRouteCard key={index}>
@@ -790,12 +790,12 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                         (() => {
                             const departCoords = getDepartCoordinates();
                             const arriveCoords = getArriveCoordinates();
-        
+
                             // 출발지와 도착지 좌표가 유효한지 확인
                             if (!departCoords || !arriveCoords) {
                                 return <div>출발지 또는 도착지 좌표를 가져올 수 없습니다.</div>;
                             }
-        
+
                             return (
                                 <HS_Walk_Shelter 
                                     departCoords={departCoords} 
@@ -809,7 +809,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                     )}
                 </FindingResultItems>
             </ModalContent>
-        </Modal>    
+        </Modal>
     );
 };
 
