@@ -18,6 +18,8 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import shelterData from '../JSON/shelterData.json';
 
+import HS_Walk_Shelter from '../components/HS_Walk_Shelter';
+
 const Modal = styled.div`
     display: ${(props) => (props.isShelterFindRoadOpen ? 'block' : 'none')};
     position: fixed;
@@ -788,105 +790,18 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                         (() => {
                             const departCoords = getDepartCoordinates();
                             const arriveCoords = getArriveCoordinates();
-                    
+        
                             // 출발지와 도착지 좌표가 유효한지 확인
                             if (!departCoords || !arriveCoords) {
                                 return <div>출발지 또는 도착지 좌표를 가져올 수 없습니다.</div>;
                             }
-                    
+        
                             return (
-                                <>
-                                    <div id="map_wrap" className="map_wrap3">
-                                        <div id="map_div" style={{ height: '100%', width: '100%' }}></div>
-                                    </div>
-                                    <p id="result"></p>
-                    
-                                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-                                    <script src={`${process.env.REACT_APP_TMAP_APP_KEY}`}></script>
-                                    <script type="text/javascript">
-                                        {`
-                                            var map;
-                                            var marker_s, marker_e;
-                    
-                                            function initTmap() {
-                                                const departCoords = { lat: ${departCoords.lat}, lng: ${departCoords.lng} };
-                                                const arriveCoords = { lat: ${arriveCoords.lat}, lng: ${arriveCoords.lng} };
-                    
-                                                map = new Tmapv2.Map("map_div", {
-                                                    center : new Tmapv2.LatLng(${shelterCoordinates.lat}, ${shelterCoordinates.lng}),
-                                                    width : "100%",
-                                                    height : "400px",
-                                                    zoom : 17,
-                                                    zoomControl : true,
-                                                    scrollwheel : true
-                                                });
-                    
-                                                // 시작 마커
-                                                marker_s = new Tmapv2.Marker({
-                                                    position : new Tmapv2.LatLng(departCoords.lat, departCoords.lng),
-                                                    icon : "/upload/tmap/marker/pin_r_m_s.png",
-                                                    iconSize : new Tmapv2.Size(24, 38),
-                                                    map : map
-                                                });
-                    
-                                                // 도착 마커
-                                                marker_e = new Tmapv2.Marker({
-                                                    position : new Tmapv2.LatLng(arriveCoords.lat, arriveCoords.lng),
-                                                    icon : "/upload/tmap/marker/pin_r_m_e.png",
-                                                    iconSize : new Tmapv2.Size(24, 38),
-                                                    map : map
-                                                });
-                    
-                                                // 경로탐색 API 요청
-                                                var headers = {}; 
-                                                headers["appKey"] = "${process.env.REACT_APP_TMAP_APP_KEY}";
-                    
-                                                $.ajax({
-                                                    method : "POST",
-                                                    headers : headers,
-                                                    url : "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json",
-                                                    async : false,
-                                                    data : {
-                                                        "startX": departCoords.lng,
-                                                        "startY": departCoords.lat,
-                                                        "endX": arriveCoords.lng,
-                                                        "endY": arriveCoords.lat,
-                                                        "reqCoordType" : "WGS84GEO",
-                                                        "resCoordType" : "EPSG3857",
-                                                        "startName" : "출발지",
-                                                        "endName" : "도착지"
-                                                    },
-                                                    success : function(response) {
-                                                        var resultData = response.features;
-                                                        var tDistance = "총 거리 : " + ((resultData[0].properties.totalDistance) / 1000).toFixed(1) + "km,";
-                                                        var tTime = " 총 시간 : " + ((resultData[0].properties.totalTime) / 60).toFixed(0) + "분";
-                    
-                                                        $("#result").text(tDistance + tTime);
-                    
-                                                        // 경로를 지도에 표시
-                                                        if (resultData.length > 0) {
-                                                            const coordinates = resultData[0].geometry.coordinates;
-                                                            const route = coordinates.map(coord => new Tmapv2.LatLng(coord[1], coord[0]));
-                    
-                                                            // 경로 그리기
-                                                            var polyline = new Tmapv2.Polyline({
-                                                                path: route,
-                                                                strokeColor: "#FF0000",
-                                                                strokeWidth: 6,
-                                                                map: map
-                                                            });
-                                                        }
-                                                    },
-                                                    error: function(request, status, error) {
-                                                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                                                    }
-                                                });
-                                            }
-                    
-                                            window.onload = initTmap;
-                                        `}
-                                    </script>
-                                </>
+                                <HS_Walk_Shelter 
+                                    departCoords={departCoords} 
+                                    arriveCoords={arriveCoords} 
+                                    shelterCoordinates={shelterCoordinates} 
+                                />
                             );
                         })()
                     ) : (
