@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; 
 import styled, { keyframes } from 'styled-components'; 
@@ -181,26 +182,52 @@ const NaverPayIcon = () => (
 
 const FundPaymentSystem = () => {
   const location = useLocation();
-  const { totalAmount, name } = location.state || { totalAmount: 0, name: '익명' }; // state에서 totalAmount 받기, 없을 경우 기본값 0
+  const navigate = useNavigate(); 
+  const { totalAmount, name, postId } = location.state || { totalAmount: 0, name: '익명', postId: null }; // state에서 totalAmount 받기, 없을 경우 기본값 0
   const [percentage, setPercentage] = useState(0);
-  const [targetAmount] = useState(1000000);
-  const [currentAmount] = useState(400000);
+  const [post, setPost] = useState(null); 
   const [newPercentage, setNewPercentage] = useState(0);
+  
 
   useEffect(() => {
     // 페이지 로드 시 스크롤을 맨 위로 이동
     window.scrollTo(0, 0);
 
-    // 현재 달성 퍼센트 계산
-    const calculatedPercentage = (currentAmount / targetAmount) * 100;
-    setPercentage(calculatedPercentage);
+    const fetchPostData = async () => {
+      try {
+          const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+            headers: {
+              'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`  // 토큰을 헤더에 추가
+            }
+          });
+          const postData = response.data;
+          setPost(postData);
+          setNewPercentage(((postData.currentAmount + totalAmount) / postData.targetAmount) * 100);
+      } catch (error) {
+          console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+    if (postId) fetchPostData();
+  }, [postId, totalAmount]);
 
-    // 새로운 후원 금액을 포함한 달성 퍼센트 계산
-    const newCalculatedPercentage = ((currentAmount + totalAmount) / targetAmount) * 100;
-    setNewPercentage(newCalculatedPercentage);
+  // 결제 성공 시 결제 내역 저장 함수
+  const savePaymentRecord = async () => {
+    try {
+      await axios.post(`http://localhost:9090/api/fund/payment`, {
+        postId, // 결제 대상 게시글 ID
+        amount: totalAmount,
+        donorName: name,
+      });
+      console.log("결제 내역이 성공적으로 저장되었습니다.");
+    } catch (error) {
+      console.error("결제 내역 저장 중 오류 발생:", error);
+    }
+  };
 
-    
-  }, [currentAmount, targetAmount, totalAmount]);
+  // 네이버페이 및 토스페이 결제 성공 시 호출
+  const handlePaymentSuccess = () => {
+    savePaymentRecord();
+  };
   
   //네이버페이가 제공한 JavaScript SDK를 리액트 컴포넌트에 통합
   useEffect(() => {
@@ -224,11 +251,11 @@ const FundPaymentSystem = () => {
           oPay.open({
               merchantUserKey: "test-user-1234", // 테스트 사용자 식별 키
               merchantPayKey: "test-order-5678", // 테스트 주문 번호
-              productName: "기부", // 상품 이름
+              productName: post?.title || "마음이음 기부", // 상품 이름
               totalPayAmount: totalAmount, // 결제 금액
               taxScopeAmount: totalAmount, // 과세 대상 금액
               taxExScopeAmount: 0, // 면세 대상 금액
-              returnUrl: "/fund-payment-success" 
+              returnUrl: "http://localhost:3000/fund-payment-success" 
             });
           });
         }
@@ -267,9 +294,9 @@ const FundPaymentSystem = () => {
 
   return (
     <Main>
-      <PostImg src={fundPostImg} alt="호우피해 이미지" />
+      <PostImg src={post?.mainImage || fundPostImg} alt="기부 메인 이미지" />
       <PostBox>
-        <PostTitle>폭우가 덮친 밤, 호우피해 주민들의 악몽을 깨워주세요</PostTitle>
+        <PostTitle>{post?.title || "기부 제목을 불러오는 중입니다..."}</PostTitle>
         <FundRecipient>사랑의열매 사회복지공동모금회</FundRecipient>
         <FlyImage 
           src={`${process.env.PUBLIC_URL}/images/Emoji/flying-emoji.png`} 
@@ -282,20 +309,22 @@ const FundPaymentSystem = () => {
             {name}님의 후원으로 인해 <br/>
             {Math.floor(newPercentage)}% 달성 예정!
           </ProgressText>
-          <TargetText>목표 금액: {targetAmount.toLocaleString()}원</TargetText>
+          <TargetText>목표 금액: {post?.targetAmount?.toLocaleString()}원</TargetText>
         </ProgressContainer>
       </PostBox>
 
       <button 
         id="naverPayBtn" 
-        className="fund-btn">
+        className="fund-btn"
+        onClick={handlePaymentSuccess} >
         <NaverPayIcon />
         네이버페이로 {totalAmount.toLocaleString()}원 결제하기
       </button>
 
       <button  
         id="tossPayBtn" 
-        className="fund-btn">
+        className="fund-btn"
+        onClick={handlePaymentSuccess}>
         <img src={`${process.env.PUBLIC_URL}/images/Toss_Logo_White.png`}  alt="Toss Logo" />
         토스페이로 {totalAmount.toLocaleString()}원 결제하기
       </button>

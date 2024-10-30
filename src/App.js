@@ -127,7 +127,7 @@ function App() {
               <Route path="fund" element={<Fund />} />
               <Route path="/fund-detail/:postId" element={<FundDetail />} /> {/* 동적 라우트 */}
               <Route path="/fund-payment/:postId" element={<FundPayment />} />
-              <Route path="fund-payment-system" element={<FundPaymentSystem />} />
+              <Route path="/fund-payment-system" element={<FundPaymentSystem />} />
               <Route path="fund-payment-success" element={<FundPaymentSuccess />} />
               <Route path="fund-post" element={<FundPost />} />
               <Route path="hospital-shelter-info" element={<HospitalShelterInfo />} />
