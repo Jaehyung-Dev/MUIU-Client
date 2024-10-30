@@ -26,12 +26,14 @@ const MindColumnPost = () => {
     isNew: false,
   })) : []);
 
+  const [deletedFiles, setDeletedFiles] = useState([]); 
+
   const handleImageOrderChange = useCallback((oldIndex, newIndex) => {
     const updatedList = [...images];
     const [movedItem] = updatedList.splice(oldIndex, 1);
     updatedList.splice(newIndex, 0, movedItem);
     setImages(updatedList);
-  }, [setImages]);
+  }, [images]);
 
   const handleAddImage = useCallback((e) => {
     const files = e.target.files;
@@ -46,16 +48,39 @@ const MindColumnPost = () => {
   }, []);
 
   const handleDeleteImage = useCallback((index) => {
+    const imageToDelete = images[index];
+    if (!imageToDelete.isNew) {
+      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, imageToDelete.mcf_id]);
+    }
     setImages(images.filter((_, i) => i !== index));
-  }, [setImages]);
+  }, [images]);
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    const data = {
+    const data = new FormData();
+
+    const imageMetadata = images.map((image) => ({
+      mcfId: image.mcf_id,
+      mcfName: image.isNew ? image.file.name : image.mcf_name,
+      isNew: image.isNew,
+    }));
+
+    data.append("mindColumnDto", JSON.stringify({
       mc_title: title,
-      mcfList: images,
-    };
+      id: editingColumn?.mc_id,
+      mcfList: imageMetadata,
+    }));
+
+    images.forEach((image, index) => {
+      if(image.isNew && image.file) {
+        data.append("mcfList", image.file);
+      }
+    });
+
+    deletedFiles.forEach(id => {
+      data.append("deletedFiles", id);
+    });
 
     try {
       if (editingColumn) {
@@ -69,7 +94,7 @@ const MindColumnPost = () => {
     } catch (error) {
       console.error('Error while submitting:', error);
     }
-  }, [navi]);
+  }, [title, images, deletedFiles, editingColumn, dispatch, navi]);
 
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
