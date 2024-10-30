@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import image1 from '../HS_images/병원 예시 이미지 1.jpg';
-import image2 from '../HS_images/병원 예시 이미지 2.jpg';
-import image3 from '../HS_images/병원 예시 이미지 3.jpg';
-import image4 from '../HS_images/병원 예시 이미지 4.jpg';
+import imgReady from '../HS_images/imgReady.png';
+import shelterData from '../JSON/shelterData.json';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Modal = styled.div`
@@ -91,7 +89,11 @@ const BackButton = styled.button`
     align-items: center;
 `;
 
-const HS_PhotoModal_Shelter = ({ isShelterPhotoOpen, closeShelterPhoto }) => {
+const HS_PhotoModal_Shelter = ({ isShelterPhotoOpen, closeShelterPhoto, shelterName }) => {
+    const selectedShelter = shelterData.DATA.find(shelter => shelter.equp_nm === shelterName);
+
+    const imgUrls = selectedShelter ? selectedShelter.imgUrls : [];
+
     if (!isShelterPhotoOpen) return null;
 
     return (
@@ -105,10 +107,13 @@ const HS_PhotoModal_Shelter = ({ isShelterPhotoOpen, closeShelterPhoto }) => {
                 </TabsInfoPicture>
 
                 <ImagesBox>
-                    <Image src={image1} alt="병원 예시 이미지 1" />
-                    <Image src={image2} alt="병원 예시 이미지 2" />
-                    <Image src={image3} alt="병원 예시 이미지 3" />
-                    <Image src={image4} alt="병원 예시 이미지 4" />
+                    {imgUrls.length > 0 ? (
+                        imgUrls.map((url, index) => (
+                            <Image key={index} src={url} alt={`${shelterName} 이미지 ${index + 1}`} />
+                        ))
+                    ) : (
+                        <Image src={imgReady}/>
+                    )}
                 </ImagesBox>
             </ModalContent>
         </Modal>

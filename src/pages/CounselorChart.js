@@ -7,7 +7,7 @@ import {
     Title,
     Tooltip,
 } from 'chart.js';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Bar } from 'react-chartjs-2';
@@ -15,6 +15,7 @@ import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
+import axios from 'axios';
 import styled from 'styled-components';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -97,14 +98,42 @@ const NavItem = styled.div`
     color: ${(props) => (props.active ? '#fbb03b' : '#999')};
 `;
 
+
+
 const DiaryApp = () => {
     const [period, setPeriod] = useState('weekly'); // 기본 기간: 주간
+    const [userData, setUserData] = useState(null);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const persistRoot = sessionStorage.getItem('persist:root');
+                const parsedRoot = JSON.parse(persistRoot);
+                const memberSlice = JSON.parse(parsedRoot.memberSlice);
+
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+                    },
+                    withCredentials: true,
+                });
+                
+                setUserData({
+                    name: response.data.item.name.slice(1)
+                });
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+    
 
     // Chart 데이터 설정
     const getData = () => {
         switch (period) {
             case 'weekly':
                 return {
+                    
                     labels: ['월', '화', '수', '목', '금', '토', '일'],
                     datasets: [
                         {
@@ -207,10 +236,10 @@ const DiaryApp = () => {
             legend: {
                 position: 'top',
             },
-            title: {
-                display: true,
-                text: '이번주, 반재형님의 기분을 확인해봐요',
-            },
+            // title: {
+            //     display: true,
+            //     text: `이번주, ${userData?.name || '이용자'}님의 기분을 확인해봐요`, // 템플릿 리터럴 사용
+            // },
         },
         responsive: true,
         scales: {
@@ -251,7 +280,7 @@ const DiaryApp = () => {
 
             {/* 그래프 섹션 */}
             <GraphContainer>
-                <GraphTitle>{period === 'weekly' ? '이번주' : period === 'monthly' ? '이번달' : '이번년'} 반재형님의 기분을 확인해봐요</GraphTitle>
+                <GraphTitle>{period === 'weekly' ? '이번주' : period === 'monthly' ? '이번달' : '이번년'} {userData?.name || '이용자'}님의 기분을 확인해봐요</GraphTitle>
                 <Bar data={getData()} options={options} />
             </GraphContainer>
 
