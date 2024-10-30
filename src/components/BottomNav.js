@@ -131,10 +131,10 @@ const BottomNav = () => {
     const location = useLocation();
     const [isActive, setIsActive] = useState(false);
     const role = useSelector((state) => {
-        console.log(state); // 스토어 상태 확인
-        return state.members ? state.members.role : null; // 안전하게 접근
+        console.log("User role:", state.memberSlice.role); // 정확한 경로로 접근 확인
+        return state.memberSlice.role || null; // role에 안전하게 접근
     });
-
+    
     const handleCircleClick = () => {
         setIsActive(!isActive);
         console.log(role);
@@ -164,7 +164,7 @@ const BottomNav = () => {
                     <img src={redCall} alt="중앙 아이콘" />
                 </CenterNavItem>
                 {/* 상담사일 경우 상담사 일기 페이지로 이동, 아닐 경우 일반 일기 페이지로 이동 */}
-                {role === 'ROLE_USER' ? (
+                {role === 'ROLE_COUNSELOR' ? (
                     <NavItem to="/counselor-diary" $active={location.pathname === '/counselor-diary'}>
                         <AutoStoriesOutlinedIcon className="icon" />
                         <span>상담사 일기</span>

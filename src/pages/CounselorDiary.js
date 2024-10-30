@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // 드롭다운 화살표 아이콘 추가
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -27,30 +27,45 @@ const FilterSection = styled.div`
     max-width: 600px;
     display: flex;
     align-items: center;
-    justify-content: space-between; // 아이템 간격을 조정
+    justify-content: space-between; 
 `;
 
-// 드롭다운 텍스트 스타일
-const FilterText = styled.div`
+// 드롭다운을 버튼처럼 보이도록 스타일
+const StyledDropdownButton = styled.div`
     font-size: 1rem;
-    color: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background-color: #fbb03b;
+    color: white;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    cursor: pointer;
+    gap: 5px;
+    position: relative;
+    &:hover {
+        background-color: #e99a2b;
+    }
 `;
 
-// 드롭다운 스타일
-const Dropdown = styled.select`
-    font-size: 1rem;
-    color: #333;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+// 드롭다운 옵션 리스트 스타일
+const DropdownOptions = styled.div`
+    position: absolute;
+    top: 2.5rem;
+    left: 0;
     background-color: white;
-    margin-left: 10px; // 드롭다운과 텍스트 간의 간격
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    z-index: 100;
+`;
+
+const DropdownOption = styled.div`
+    padding: 0.5rem;
     cursor: pointer;
+    color: #333;
     &:hover {
-        border-color: #fbb03b;
+        background-color: #f0f0f0;
     }
 `;
 
@@ -79,6 +94,7 @@ const Card = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 50px;
@@ -86,7 +102,7 @@ const Card = styled.div`
     color: #333;
     cursor: pointer;
     &:hover {
-        background-color: #f0f0f0; // hover 효과
+        background-color: #f0f0f0;
     }
 `;
 
@@ -112,10 +128,10 @@ const NavItem = styled.div`
     color: ${(props) => (props.active ? '#fbb03b' : '#999')};
 `;
 
-// 메인 컴포넌트
 const DiaryApp = () => {
     const navigate = useNavigate();
-    const [sortOrder, setSortOrder] = useState('name'); // 기본 정렬 기준: 이름순
+    const [sortOrder, setSortOrder] = useState('name');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const MyDiaryCollection = () => {
         navigate('/my-diary-collection'); 
@@ -125,31 +141,57 @@ const DiaryApp = () => {
         navigate('/my-diary'); 
     };
 
-    // 정렬 기능
-    const handleSortChange = (e) => {
-        const value = e.target.value;
-        setSortOrder(value);
-        // 정렬 로직 추가 (예: API 호출, 상태 업데이트 등)
-        console.log(`Selected sort order: ${value}`);
+    const CounselorChart = () => {
+        navigate('/counselor-chart'); 
     };
+
+    const handleSortChange = (order) => {
+        setSortOrder(order);
+        setIsDropdownOpen(false);
+        console.log(`Selected sort order: ${order}`);
+    };
+
+    // 각 이름과 고정된 날짜 설정
+    const namesWithDates = [
+        { name: '송민교', date: new Date(2023, 10, 1) },  // 2023년 11월 1일
+        { name: '김서연', date: new Date(2023, 10, 2) },  // 2023년 11월 2일
+        { name: '민수정', date: new Date(2023, 10, 3) },  // 2023년 11월 3일
+        { name: '정다은', date: new Date(2023, 10, 4) },  // 2023년 11월 4일
+        { name: '김대휘', date: new Date(2023, 10, 5) },  // 2023년 11월 5일
+        { name: '힌서준', date: new Date(2023, 10, 6) },  // 2023년 11월 6일
+        { name: '반재형', date: new Date(2023, 10, 7) },  // 2023년 11월 7일
+    ];
+
+    // 정렬 로직
+    const sortedData = [...namesWithDates].sort((a, b) => {
+        if (sortOrder === 'name') return a.name.localeCompare(b.name);
+        if (sortOrder === 'time') return b.date - a.date;
+    });
 
     return (
         <Container>
             {/* 필터 섹션 */}
             <FilterSection>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Dropdown value={sortOrder} onChange={handleSortChange}>
-                        <option value="name">이름순</option>
-                        <option value="time">시간순</option>
-                    </Dropdown>
-                </div>
+                <StyledDropdownButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    {sortOrder === 'name' ? '이름순' : '시간순'} <ArrowDropDownIcon />
+                    {isDropdownOpen && (
+                        <DropdownOptions>
+                            <DropdownOption onClick={() => handleSortChange('name')}>이름순</DropdownOption>
+                            <DropdownOption onClick={() => handleSortChange('time')}>시간순</DropdownOption>
+                        </DropdownOptions>
+                    )}
+                </StyledDropdownButton>
                 <FilterButton onClick={MyDiaryCollection}>모두 보기</FilterButton>
+                <FilterButton onClick={CounselorChart}>상담사 차트 보기</FilterButton>
             </FilterSection>
 
             {/* 카드 그리드 */}
             <CardGrid>
-                {Array.from({ length: 8 }).map((_, index) => (
-                    <Card key={index} onClick={MyDiary}>반재형</Card>
+                {sortedData.map((entry, index) => (
+                    <Card key={index} onClick={MyDiary}>
+                        <div>{entry.name}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#999' }}>{entry.date.toLocaleDateString()}</div>
+                    </Card>
                 ))}
             </CardGrid>
 
