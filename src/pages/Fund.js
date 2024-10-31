@@ -148,6 +148,7 @@ const FundCard = ({ imageSrc, altText, title, date, link, postId }) => {
 const Fund = () => {
   const location = useLocation();
   const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
+  const [role, setRole] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -171,11 +172,27 @@ const Fund = () => {
         console.error('Error fetching posts:', error);
       }
     };
+
+    // 서버에서 role값 가져옴
+    const fetchUserRole = async () => {
+      try {
+        const response = await axios.get('http://localhost:9090/api/user/role', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+          },
+          withCredentials: true
+        });
+        setRole(response.data.role); // role 값 설정
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+      }
+    };
   
 
     console.log(`posts:`,posts); // 서버로부터 받아온 모든 posts 데이터를 확인
 
     fetchPosts();
+    fetchUserRole();
   }, [location.state]); // location.state가 변경될 때마다 실행
 
   return (
@@ -216,9 +233,12 @@ const Fund = () => {
       ))}
 
 
-      <div className="write-button-container">
-        <Link to="/fund-post" className="write-button">글 작성하기</Link>
-      </div>
+      {/* role이 ROLE_COUNSELOR일 때만 글 작성 버튼을 렌더링 */}
+      {role === 'ROLE_COUNSELOR' && (
+        <div className="write-button-container">
+          <Link to="/fund-post" className="write-button">글 작성하기</Link>
+        </div>
+      )}
 
     </Main>
   );

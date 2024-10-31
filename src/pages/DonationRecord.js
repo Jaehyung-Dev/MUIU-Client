@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -96,6 +97,7 @@ const CardContent = styled.div`
 const DonationRecord = () => {
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [donationRecords, setDonationRecords] = useState([]);
 
     const handleBackClick = () => {
         navigate(-1);
@@ -104,6 +106,24 @@ const DonationRecord = () => {
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
+
+    useEffect(() => {
+        // 기부 내역 데이터를 백엔드에서 가져오기
+        const fetchDonationRecords = async () => {
+            try {
+                const response = await axios.get('http://localhost:9090/api/fund/records', {
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+                    }
+                });
+                setDonationRecords(response.data);
+            } catch (error) {
+                console.error("기부 내역을 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchDonationRecords();
+    }, []);
 
     return (
         <div>
@@ -125,25 +145,16 @@ const DonationRecord = () => {
                 <ConsultationListWrapper>
                     <InnerContainer>
                         <ConsultationList>
-                                <>
-                                    <ConsultationCard>
-                                        <CardContent>
-                                            <strong>호우피해 긴급모금</strong>
-                                            <p>일시: 2024년 9월 21일</p>
-                                            <p>금액: 10000₩</p>
-                                            <p>후원자명: 익명</p>
-                                        </CardContent>
-                                    </ConsultationCard>
-
-                                    <ConsultationCard>
-                                        <CardContent>
-                                            <strong>산불피해 긴급모금</strong>
-                                            <p>일시: 2024년 10월 1일</p>
-                                            <p>금액: 100000₩</p>
-                                            <p>후원자명: 폼폼</p>
-                                        </CardContent>
-                                    </ConsultationCard>
-                                </>
+                            {donationRecords.map((record) => (
+                                <ConsultationCard key={record.fundId}>
+                                    <CardContent>
+                                        <strong>{record.title}</strong>
+                                        <p>일시: {new Date(record.fundDate).toLocaleDateString()}</p>
+                                        <p>금액: {record.amount.toLocaleString()}₩</p>
+                                        <p>후원자명: {record.username}</p>
+                                    </CardContent>
+                                </ConsultationCard>
+                            ))}
                         </ConsultationList>
                     </InnerContainer>
                 </ConsultationListWrapper>
