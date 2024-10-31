@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -8,9 +9,9 @@ import depress from '../svg/depress.svg';
 import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
-import { WriteDiaryAPI } from '../apis/diaryWriteApis'; 
-import { jwtDecode } from 'jwt-decode'; // 잘못된 import 해결
-import { useNavigate } from 'react-router-dom';
+import { WriteDiaryAPI } from '../apis/diaryWriteApis';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Container = styled.div`
   margin-top: -10px;
@@ -20,7 +21,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  
   @media (min-width: 393px) {
     height: 92vh;
   }
@@ -175,17 +176,29 @@ const MyDiaryWrite = () => {
   const [selectedMood, setSelectedMood] = useState('');
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isEditing = location.state && location.state.diaryData && location.state.diaryData.diary_id;
 
   useEffect(() => {
-     // 페이지 진입 시 스크롤을 맨 위로 설정
-     window.scrollTo(0, 0);
-     
-    const token = sessionStorage.getItem('ACCESS_TOKEN'); // 세션 스토리지에서 JWT 토큰 가져오기
+    window.scrollTo(0, 0);
+
+    // 세션 스토리지에서 JWT 토큰 가져오기 및 디코딩
+    const token = sessionStorage.getItem('ACCESS_TOKEN');
     if (token) {
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
     }
-  }, []);
+
+    // MD_Block에서 전달된 데이터 가져오기
+    if (location.state && location.state.diaryData) {
+      const { title, content, mood } = location.state.diaryData;
+      setTitle(title || '');
+      setContent(content || '');
+      setMood(mood || '');
+      setSelectedMood(mood || '');
+    }
+  }, [location.state]);
 
   const handleMoodClick = (selectedMood) => {
     setMood(selectedMood);
@@ -193,19 +206,8 @@ const MyDiaryWrite = () => {
   };
 
   const handleSaveDiary = async () => {
-    // 유효성 검사
-    if (!title) {
-      alert('제목을 입력해주세요.');
-      return;
-    }
-
-    if (!content) {
-      alert('내용을 입력해주세요.');
-      return;
-    }
-
-    if (!mood) {
-      alert('기분을 선택해주세요.');
+    if (!title || !content || !mood) {
+      alert('제목, 내용, 그리고 기분을 모두 입력해주세요.');
       return;
     }
 
@@ -214,20 +216,16 @@ const MyDiaryWrite = () => {
       title,
       content,
       mood,
+      regdate: new Date().toISOString(),
     };
 
     try {
       const response = await WriteDiaryAPI(diaryData);
-      console.log('서버 응답:', response);
       alert('일기가 저장되었습니다.');
       navigate('/my-diary-collection'); // 저장 후 페이지 이동
-
-      if (response.status === 201) {
-        alert('일기가 저장되었습니다.');
-        navigate('/my-diary-collection'); // 저장 후 페이지 이동
-      }
     } catch (error) {
       console.error('일기 저장 중 오류:', error);
+      alert('일기 저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -242,27 +240,25 @@ const MyDiaryWrite = () => {
         <KeyboardArrowRightIcon style={{ cursor: 'pointer' }} />
       </DatePicker>
       <DiaryEntry>
-        <div>
-          <DiaryTitle>
-            <input
-              type='text'
-              name='title'
-              placeholder='제목'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </DiaryTitle>
-          <hr />
-          <DiaryContent>
-            <textarea
-              name='content'
-              placeholder='내용'
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              spellCheck="false"
-            ></textarea>
-          </DiaryContent>
-        </div>
+        <DiaryTitle>
+          <input
+            type='text'
+            name='title'
+            placeholder='제목'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </DiaryTitle>
+        <hr />
+        <DiaryContent>
+          <textarea
+            name='content'
+            placeholder='내용'
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            spellCheck="false"
+          ></textarea>
+        </DiaryContent>
       </DiaryEntry>
       <EmotionSection>
         <EmotionDiv

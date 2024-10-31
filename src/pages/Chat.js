@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useSelector } from 'react-redux';
-import { User } from 'lucide-react';
 
 const HeaderContainer = styled.header`
     display: flex;
@@ -60,8 +59,8 @@ const Message = styled.div`
   word-wrap: break-word;
   width: fit-content;
   white-space: pre-wrap;
-  margin-left: ${({ $isUser }) => ($isUser ? 'auto' : '15px')}; /* 사용자 메시지의 좌측 여백 */
-  margin-right: ${({ $isUser }) => ($isUser ? '15px' : 'auto')}; /* 상대 메시지의 우측 여백 */
+  margin-left: ${({ $isUser }) => ($isUser ? 'auto' : '15px')};
+  margin-right: ${({ $isUser }) => ($isUser ? '15px' : 'auto')};
   margin-top: 5px;
   margin-bottom: 5px;
 `;
@@ -78,12 +77,12 @@ const ChatContainer = styled.div`
   width: 100%;
   max-width: 600px;
   position: relative;
-  height: calc(100vh); /* 헤더 높이 제외한 화면 전체 높이 */
+  height: calc(100vh);
   background-color: #f2f2f2;
-  padding-top: 170px; /* 헤더 아래로 여유 공간 */
+  padding-top: 170px;
   padding-bottom: 100px;
   box-sizing: border-box;
-  overflow-y: auto; /* 스크롤 가능하게 설정 */
+  overflow-y: auto;
 `;
 
 
@@ -188,6 +187,13 @@ const ImageButton = styled.button`
   }
 `;
 
+const SystemMessage = styled.div`
+  text-align: center;
+  font-size: 15px;
+  color: #888;
+  margin: 10px 0;
+`;
+
 const Chat = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
@@ -198,8 +204,10 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);
-  const [partnerInfo, setPartnerInfo] = useState({ name: '', role: '' });
   const [chatRoomId, setChatRoomId] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [clientName, setClientName] = useState('');
+  const [counselorName, setCounselorName] = useState('');
 
   // Emoji 이미지 경로
   const emojiImages = [
@@ -242,21 +250,27 @@ const Chat = () => {
 
   useEffect(() => {
     if(chatRoomId) {
-    const socket = new SockJS('http://localhost:9090/ws'); // 서버의 WebSocket 엔드포인트 확인
+    const socket = new SockJS('http://localhost:9090/ws');
     const client = Stomp.over(socket);
   
-    // 자동 재연결 설정
     client.reconnectDelay = 5000;
   
     client.connect({}, () => {
       console.log('STOMP 클라이언트가 성공적으로 연결되었습니다.');
       setStompClient(client);
-      setIsConnected(true); // 연결 상태 업데이트
+      setIsConnected(true);
   
-      // 채팅 메시지 구독 (구독 경로가 서버 설정과 일치해야 함)
       client.subscribe(`/topic/${chatRoomId}/messages`, (message) => {
-        console.log(message)
+        console.log('메시지 수신:', message);
+        console.log(message);
         const receivedMessage = JSON.parse(message.body);
+        console.log(receivedMessage);
+        if (!clientName && receivedMessage.clientName) {
+          setClientName(receivedMessage.clientName);
+      }
+      if (!counselorName && receivedMessage.counselorName) {
+          setCounselorName(receivedMessage.counselorName);
+      }
         setMessages((prev) => [...prev, receivedMessage]);
       });
       
@@ -280,18 +294,22 @@ const Chat = () => {
     try {
         const apiUrl = userRole === 'ROLE_COUNSELOR' ? 'http://localhost:9090/chat/create' : 'http://localhost:9090/chat/enter';
         const response = await axios.post(apiUrl, { id: userId });
-        
+
         setChatRoomId(response.data.id);
-        setPartnerInfo({
-            name: userRole === 'ROLE_COUNSELOR' ? response.data.clientName : response.data.counselorName,
-            role: userRole === 'ROLE_COUNSELOR' ? '내담자' : '상담사'
-        });
+        if(response.data.enter) {
+          setConnected(true);
+        }
     } catch (error) {
         console.log("채팅방 생성 또는 입장 중 오류:", error);
     }
 };
 
-  // 연결이 완료된 후에만 상태를 전송
+  useEffect(() => {
+    if(connected && stompClient) {
+      stompClient.send(`/app/chat.connect/${chatRoomId}`, {});
+    }
+  }, [connected, stompClient, chatRoomId]);
+
   useEffect(() => {
       createOrEnterChatRoom(); 
   }, []);
@@ -319,22 +337,6 @@ const Chat = () => {
     };
     fetchUserData();
   }, [userId]);
-  
-
-useEffect(() => {
-    if (partnerInfo && partnerInfo.id) {
-        handleConnectChat(); // 상대방이 매칭될 때만 연결
-    }
-}, [partnerInfo]);
-
-const handleConnectChat = () => {
-    if (stompClient && stompClient.connected) {
-        // stompClient.send('/app/chat/connect', {}, JSON.stringify({ memberId: userId }));
-    }
-};
-
-  
-
 
   const sendMessage = () => {
     if (!stompClient || !stompClient.connected) {
@@ -368,29 +370,9 @@ const handleConnectChat = () => {
     
       stompClient.send(`/app/chat.sendMessage/${chatRoomId}`, {}, JSON.stringify(chatMessage));
       setShowEmojiPicker(false);
-    } else {
-      console.error("STOMP 연결이 설정되지 않았거나 사용자 데이터가 없습니다. 메시지를 보낼 수 없습니다.");
-    }
+    } 
   };
 
-  // useEffect(() => {
-  //   if (stompClient && stompClient.connected) {
-  //     console.log("Sending 'waiting' status for memberId:", userId);
-  //     stompClient.send('/app/chat/enter', {}, JSON.stringify({ memberId: userId }));
-  //   } else {
-  //     console.warn("STOMP 연결이 설정되지 않아 'waiting' 상태 전송을 건너뜁니다.");
-  //   }
-  
-  //   return () => {
-  //     if (stompClient && stompClient.connected) {
-  //       console.log("Sending 'idle' status for memberId:", userId);
-  //       stompClient.send('/app/chat/exit', {}, JSON.stringify({ memberId: userId }));
-  //     } else {
-  //       console.warn("STOMP 연결이 설정되지 않아 'idle' 상태 전송을 건너뜁니다.");
-  //     }
-  //   };
-  // }, [stompClient, userId]);  
-  
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -402,19 +384,20 @@ const handleConnectChat = () => {
       stompClient.send('/app/chat/exit', {}, JSON.stringify({ memberId: userId }));
       console.log('사용자가 채팅방을 떠났습니다. 상태가 IDLE로 전환되었습니다.');
       stompClient.disconnect();
+      
+      axios.post(`http://localhost:9090/chat/exit/${chatRoomId}`)
+        .then(() => console.log('Chat room status updated to exit'))
+        .catch((error) => console.error('Failed to update chat room status:', error));
     } else {
       console.warn("STOMP 연결이 설정되지 않아 채팅방 나가기를 건너뜁니다.");
     }
   };
   
+  
   useEffect(() => {
     const handleUnload = () => leaveChatRoom();
-  
-    // 창을 닫거나 새로고침할 때 leaveChatRoom 호출
-    window.addEventListener('beforeunload', handleUnload);
-  
-    // 다른 탭으로 이동할 때 상태를 IDLE로 변경
-    document.addEventListener('visibilitychange', () => {
+      window.addEventListener('beforeunload', handleUnload);
+      document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         leaveChatRoom();
       }
@@ -434,22 +417,26 @@ const handleConnectChat = () => {
           <ArrowBackIosIcon />
         </BackButton>
         <Title>
-            {partnerInfo && partnerInfo.name ? 
-                `${partnerInfo.name} ${partnerInfo.role}` 
-                : "연결 중..."}
+            {userRole && userRole === 'ROLE_COUNSELOR' ? `${clientName} 내담자` : `${counselorName} 상담사`}
           </Title>
       </HeaderContainer>
       <ChatContainer ref={chatContainerRef}>
-        {messages.map((msg, index) => (
-          <MessageWrapper key={index} $isUser={msg.sender === `${userData?.name}`}>
-            <Message $isUser={msg.sender === `${userData?.name}`} $isEmoji={msg.type === 'EMOJI'}>
-              {msg.type === 'EMOJI' ? (
-                <EmojiImage src={`/images/Emoji/${msg.content}`} alt="emoji" />
-              ) : (
-                msg.content
-              )}
-            </Message>
-          </MessageWrapper>
+      {messages.map((msg, index) => (
+          <React.Fragment key={index}>
+            {msg.type === 'LEAVE' || msg.type === 'JOIN' ? (
+              <SystemMessage>{msg.content}</SystemMessage>
+            ) : (
+              <MessageWrapper $isUser={msg.sender === `${userData?.name}`}>
+                <Message $isUser={msg.sender === `${userData?.name}`} $isEmoji={msg.type === 'EMOJI'}>
+                  {msg.type === 'EMOJI' ? (
+                    <EmojiImage src={`/images/Emoji/${msg.content}`} alt="emoji" />
+                  ) : (
+                    msg.content
+                  )}
+                </Message>
+              </MessageWrapper>
+            )}
+          </React.Fragment>
         ))}
         {showEmojiPicker && (
           <EmojiOverlay>
@@ -465,7 +452,7 @@ const handleConnectChat = () => {
             </EmojiPicker>
           </EmojiOverlay>
         )}
-        <div ref={bottomRef} /> {/* 채팅 컨테이너의 최하단을 가리키는 ref */}
+        <div ref={bottomRef} />
       </ChatContainer>
       <MessageInputContainerWrapper>
         <MessageInputContainer>

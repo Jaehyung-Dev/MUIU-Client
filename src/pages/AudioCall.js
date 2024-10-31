@@ -1,4 +1,7 @@
+// Frontend: React Component for 1:1 Audio Call Based on Role
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 import styled from 'styled-components';
 import CallIcon from '@mui/icons-material/Call';
 import CloseIcon from '@mui/icons-material/Close';
@@ -59,128 +62,112 @@ const End = styled(CloseIcon)`
 `;
 
 const AudioCall = () => {
+  const localAudioRef = useRef();
+  const remoteAudioRef = useRef();
+  const [callPartner, setCallPartner] = useState({ role: '', name: '' });
+  const [callDuration, setCallDuration] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
-  const [callDuration, setCallDuration] = useState(100);
-  const [callPartner, setCallPartner] = useState({
-    role: '상담사',
-    name: '송민교'
-  });
-  
-  const localAudioRef = useRef(null);
-  const remoteAudioRef = useRef(null);
+  const userRole = useSelector((state) => state?.user?.role || '');
+  const userName = useSelector((state) => state?.user?.name || '');
+  const [roomId, setRoomId] = useState(null);
   const peerConnection = useRef(null);
-  const webSocket = useRef(null);
-  const timerRef = useRef(null);
 
   useEffect(() => {
-    // WebSocket 연결
-    webSocket.current = new WebSocket('ws://localhost:9090/my-websocket');
-    webSocket.current.onopen = () => console.log('WebSocket 연결 성공');
-
-    // WebSocket 메시지 수신
-    webSocket.current.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      console.log('Received message:', data);
-
-      if (data.offer) {
-        console.log('Received SDP Offer');
-        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-        const answer = await peerConnection.current.createAnswer();
-        await peerConnection.current.setLocalDescription(answer);
-        webSocket.current.send(JSON.stringify({ answer }));
-        console.log('Sent SDP Answer:', answer);
-      } else if (data.answer) {
-        console.log('Received SDP Answer');
-        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
-      } else if (data.iceCandidate) {
-        console.log('Received ICE Candidate');
-        await peerConnection.current.addIceCandidate(new RTCIceCandidate(data.iceCandidate));
+    // Fetch call partner data when component mounts
+    const fetchCallPartner = async () => {
+      try {
+        const response = await axios.get(`/api/call/partner?role1=${userRole}&role2=${userRole === 'ROLE_USER' ? 'ROLE_COUNSELOR' : 'ROLE_USER'}`);
+        setCallPartner(response.data);
+        setRoomId(response.data.id);
+      } catch (error) {
+        console.error('Failed to fetch call partner', error);
       }
     };
+    fetchCallPartner();
+  }, [userRole]);
 
-    // PeerConnection 설정
-    const setupPeerConnection = async () => {
-      peerConnection.current = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+  useEffect(() => {
+    let timer;
+    if (isConnected) {
+      timer = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
+    } else {
+      clearInterval(timer);
+      setCallDuration(0);
+    }
+    return () => clearInterval(timer);
+  }, [isConnected]);
+
+  const initiateCall = async () => {
+    // Logic to start the call
+    try {
+      await axios.post('/api/call/update-status', {
+        roomId,
+        status: 'BUSY',
       });
+      setIsConnected(true);
+      // WebRTC logic to initiate the call
+      peerConnection.current = new RTCPeerConnection();
 
-      peerConnection.current.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log('Sending ICE Candidate:', event.candidate);
-          webSocket.current.send(JSON.stringify({ iceCandidate: event.candidate }));
-        }
-      };
-
-      // ICE 연결 상태 변화 감지
-      peerConnection.current.oniceconnectionstatechange = () => {
-        console.log('ICE connection state:', peerConnection.current.iceConnectionState);
-      };
-
-      // 원격 오디오 스트림 수신
-      peerConnection.current.ontrack = (event) => {
-        console.log('Received remote track');
-        remoteAudioRef.current.srcObject = event.streams[0];
-        remoteAudioRef.current.play().catch(error => {
-          console.error("Error playing remote audio:", error);
-        });
-      };
-
-      try {
-        // 로컬 오디오 스트림 설정
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Add local audio stream to the peer connection
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
         localAudioRef.current.srcObject = stream;
         stream.getTracks().forEach((track) => {
           peerConnection.current.addTrack(track, stream);
-          console.log('Added local track:', track);
         });
-        console.log('Local audio stream started');
-      } catch (error) {
-        console.error('Error accessing local audio stream:', error);
-      }
-    };
+      });
 
-    setupPeerConnection();
+      peerConnection.current.ontrack = (event) => {
+        remoteAudioRef.current.srcObject = event.streams[0];
+      };
 
-    return () => {
-      // 컴포넌트 언마운트 시 WebSocket 및 PeerConnection 종료
-      if (webSocket.current) webSocket.current.close();
-      if (peerConnection.current) peerConnection.current.close();
-    };
-  }, []);
+      // Handle ICE candidates
+      peerConnection.current.onicecandidate = (event) => {
+        if (event.candidate) {
+          // Send the candidate to the remote peer
+          // TODO: Implement signaling server logic to exchange ICE candidates
+        }
+      };
 
-  // 통화 시작
-  const initiateCall = async () => {
-    console.log('Initiating call...');
-    const offer = await peerConnection.current.createOffer();
-    await peerConnection.current.setLocalDescription(offer);
-    webSocket.current.send(JSON.stringify({ offer }));
-    console.log('Sent SDP Offer:', offer);
-    setIsConnected(true);
-
-    timerRef.current = setInterval(() => {
-      setCallDuration(prev => prev + 1);
-    }, 1000);
+      // Create an offer and set local description
+      peerConnection.current.createOffer().then((offer) => {
+        return peerConnection.current.setLocalDescription(offer);
+      }).then(() => {
+        // TODO: Send the offer to the remote peer using the signaling server
+      });
+    } catch (error) {
+      console.error('Failed to initiate call', error);
+    }
   };
 
-  // 통화 종료
   const endCall = async () => {
-    console.log('Ending call...');
-    if (peerConnection.current) {
-      peerConnection.current.close();
-      peerConnection.current = null;
+    // Logic to end the call
+    try {
+      await axios.post('/api/call/update-status', {
+        roomId,
+        status: 'IDLE',
+      });
+      setIsConnected(false);
+      // WebRTC logic to close the connection
+      if (peerConnection.current) {
+        peerConnection.current.close();
+        peerConnection.current = null;
+      }
+      if (localAudioRef.current && localAudioRef.current.srcObject) {
+        localAudioRef.current.srcObject.getTracks().forEach((track) => track.stop());
+        localAudioRef.current.srcObject = null;
+      }
+      remoteAudioRef.current.srcObject = null;
+    } catch (error) {
+      console.error('Failed to end call', error);
     }
-    setIsConnected(false);
-
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }
+  };
 
   const formatCallDuration = (duration) => {
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
   return (
