@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import { clovaApis } from '../apis/clovaApis';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import chatBackground from '../images/Chat_Background.png';
+import { useSelector } from 'react-redux';
 
 const Background = styled.div`
-  min-height: 95vh;
+  min-height: 80vh;
   background-image: url(${chatBackground});
   background-size: cover;
   background-position: center;
@@ -13,6 +14,8 @@ const Background = styled.div`
   opacity: 0.7;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const EndBar = styled.div`
@@ -23,6 +26,7 @@ const EndBar = styled.div`
   max-width: 600px;
   width: 100%;
   display: flex;
+  z-index: 2;
 
   button {
     border-radius: 5px;
@@ -33,7 +37,6 @@ const EndBar = styled.div`
     font-weight: bold;
     padding: 0.25rem;
     margin: auto 1.5rem auto auto;
-
     &:hover {
       cursor: pointer;
     }
@@ -67,84 +70,90 @@ const InputBar = styled.div`
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-right: 10px;
-
-    &:hover {
-      background-color: #F1B10D;
-    }
-
   }
 `;
 
 const Messages = styled.div`
-
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2.5rem 1rem 3.5rem;
 `;
 
 const Message = styled.div`
-  boarder-radius: 8px;
+  padding: 10px 15px;
+  border-radius: 10px;
   max-width: 65%;
+  margin: 10px;
   color: black;
-  .user-msg{
+  word-wrap: break-word;
+
+  &.user-msg {
     background-color: white;
-    margin: 0.5rem 2rem 0.5rem auto;
+    align-self: flex-end;
+    margin-right: 1.5rem;
   }
 
-  .ai-msg{
+  &.ai-msg {
     background-color: #FFE79C;
-    margin: 0.5rem auto 0.5rem 2rem;
+    align-self: flex-start;
+    margin-left: 1.5rem;
   }
 `;
 
 const AI_Chat = () => {
+  const [message, setMessage] = useState([]);
+  const [input, setInput] = useState('');
+  const navi = useNavigate();
+  const messageEndRef = useRef(null);
 
-    const [message, setMessage] = useState([]);
-    const [input, setInput] = useState('');
+  const {isLogin, role} = useSelector((state) => state.memberSlice);
 
-    const navi = useNavigate();
-
-    useEffect(() => {
-      const initialMessage = {
-        sender: 'ai',
-        text: '안녕하세요. 마음이음입니다. 무슨일로 찾아오셨나요?'
-      };
-      setMessage([initialMessage]);
-    }, []);
-
-    const handleSendMessage = async () => {
-        if(input.trim() === '')
-            return;
-
-        // 내담자 메세지 추가
-        setMessage([...message, {sender: 'user', text: input}]);
-
-        try{
-            // 내담자 메세지 전송
-            const aiReply = await clovaApis(input);
-
-            // 입력창 초기화
-            setInput('');
-
-            // AI 답장
-            setMessage(prevMessages => [...prevMessages, {sender: 'ai', text: aiReply}]);
-
-        } catch (e) {
-            alert(`알 수 없는 문제 발생`);
-            if (e.response) {
-                // 서버 응답이 2xx 범위 밖일 때 실행
-                console.log('응답 에러:', e.response.data);
-                console.log('응답 상태:', e.response.status);
-                console.log('응답 헤더:', e.response.headers);
-              } else if (e.request) {
-                // 요청이 전송되었으나 응답을 받지 못했을 때 실행
-                console.log('요청이 이루어졌으나 응답이 없음:', e.request);
-              } else {
-                // 요청 설정 중에 문제가 발생했을 때 실행
-                console.log('요청 설정 에러:', e.message);
-              }
-              console.log('전체 에러 정보:', e.config);
-        }
-
+  useEffect(() => {
+    if(!isLogin){
+      alert("로그인 후 이용 가능합니다.");
+      navi("/login");
+    } else if (role === "ROLE_COUNSELOR"){
+      navi("/ai-counseling-list");
     }
+  }, [isLogin, role, navi]);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [message]);
+
+  useEffect(() => {
+    const initialMessage = {
+      sender: 'ai',
+      text: '안녕하세요. 마음이음입니다. 무슨일로 찾아오셨나요?'
+    };
+    setMessage([initialMessage]);
+  }, []);
+
+  const handleSendMessage = async () => {
+    if (input.trim() === '') return;
+
+    setMessage([...message, { sender: 'user', text: input }]);
+
+    try {
+      const aiReply = await clovaApis(input);
+      setInput('');
+      setMessage(prevMessages => [...prevMessages, { sender: 'ai', text: aiReply }]);
+    } catch (e) {
+      console.error('Error:', e);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
   return (
     <>
       <Background>
@@ -157,15 +166,21 @@ const AI_Chat = () => {
               {msg.text}
             </Message>
           ))}
+          <div ref={messageEndRef} />
         </Messages>
         <InputBar>
-          <input type='text' placeholder='메세지를 입력하세요'
-            value={input} onChange={(e) => setInput(e.target.value)}/>
+          <input
+            type='text'
+            placeholder='메세지를 입력하세요'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
           <button onClick={handleSendMessage}>전송</button>
         </InputBar>
       </Background>
     </>
-  )
-}
+  );
+};
 
-export default AI_Chat
+export default AI_Chat;
