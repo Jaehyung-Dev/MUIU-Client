@@ -211,9 +211,15 @@ export const MindColumn = () => {
         navi('/mind-column');
     }, [dispatch, navi]);
 
+    const {role} = useSelector((state) => state.memberSlice);
+
     return (
         <>
-            <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
+            {
+                role === "ROLE_ADMIN" && (
+                    <Upload type='button' onClick={() => navi('/mind-column/post')}>업로드</Upload>
+                )
+            }
             <Cards>
                 {columns.content && columns.content.map((column, index) =>
                     <Card key={index} onClick={() => openModal(column)}>
@@ -235,10 +241,14 @@ export const MindColumn = () => {
                         <NavButton $right onClick={showNextImage}>
                             <NavigateNextIcon fontSize='large'/>    
                         </NavButton>}
-                    <AdminButton>
-                        <button onClick={() => handleEdit(card)}>수정</button>
-                        <button onClick={() => handleDelete(card)}>삭제</button>
-                    </AdminButton>
+                    {
+                        role === "ROLE_ADMIN" && (
+                            <AdminButton>
+                                <button onClick={() => handleEdit(card)}>수정</button>
+                                <button onClick={() => handleDelete(card)}>삭제</button>
+                            </AdminButton>
+                        )
+                    }
                     <PageNumber>{`${currentImageIndex + 1} / ${card.mc_img_num}`}</PageNumber>
                 </ModalContent>
             </ModalOverlay>
