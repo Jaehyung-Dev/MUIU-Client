@@ -163,15 +163,17 @@ const Fund = () => {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
           },
-          withCredentials: true // 쿠키 또는 세션 ID를 함께 보내기 위해 필요
+          withCredentials: true
         });
-        setPosts(response.data);
+        setPosts(response.data); // 서버에서 받아온 posts 데이터를 상태에 저장
+        console.log("Fetched posts:", response.data); // 콘솔에 모든 posts 데이터를 출력하여 확인
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
     };
+  
 
-    console.log(posts); // 서버로부터 받아온 모든 posts 데이터를 확인
+    console.log(`posts:`,posts); // 서버로부터 받아온 모든 posts 데이터를 확인
 
     fetchPosts();
   }, [location.state]); // location.state가 변경될 때마다 실행
@@ -204,7 +206,7 @@ const Fund = () => {
       {posts.map((post) => (
         <FundCard
           key={post.postId}
-          imageSrc={post.mainImage} 
+          imageSrc={post.mainImage}
           altText={post.title}
           title={post.title}
           date={`${post.fundStartDate} ~ ${post.fundEndDate}`}

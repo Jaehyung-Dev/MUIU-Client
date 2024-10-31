@@ -1,5 +1,6 @@
+import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useParams, useNavigate } from 'react-router-dom'; 
 import styled from 'styled-components'; 
 import DonationDetails from '../components/DonationDetails';
 import { styled as muiStyled } from '@mui/material/styles'; // MUI의 styled
@@ -181,9 +182,11 @@ const Main = styled.main`
 
 
 const FundPayment = () => {
+    const { postId } = useParams(); // postId를 URL에서 가져옴
+    const [post, setPost] = useState(null); // DB에서 받아온 데이터를 저장
     const [percentage, setPercentage] = useState('');
-    const [targetAmount] = useState(1000000);
-    const [currentAmount] = useState(400000);
+    const [targetAmount, setTargetAmount] = useState(0); 
+    const [currentAmount, setCurrentAmount] = useState(0); 
     const [totalAmount, setTotalAmount] = useState(0);
     const [charCount, setCharCount] = useState(0);
     const [name, setName] = useState('');
@@ -194,10 +197,37 @@ const FundPayment = () => {
   
     useEffect(() => {
       window.scrollTo(0, 0);
+
+      if (!postId) {
+        console.error("postId가 전달되지 않았습니다."); 
+        return;
+      }
       
-      const calculatedPercentage = (currentAmount / targetAmount) * 100;
-      setPercentage(calculatedPercentage);
-    }, [currentAmount, targetAmount]);
+      // DB에서 게시글 데이터를 가져오는 함수
+      const fetchPost = async () => {
+        try {
+          const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+            headers: {
+              'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+            }
+          });
+          const postData = response.data; 
+          setPost(postData); 
+          setPost(response.data); // post 데이터 설정
+
+          setTargetAmount(postData.targetAmount || 0);
+          setCurrentAmount(postData.currentAmount || 0);
+
+          // 퍼센트 계산
+          const calculatedPercentage = (postData.currentAmount / postData.targetAmount) * 100;
+          setPercentage(calculatedPercentage);
+        } catch (error) {
+          console.error('Error fetching post data:', error);
+        }
+      };
+
+    fetchPost();
+    }, [postId]);
 
     // 금액 추가
     const handleAmountChange = (amount) => {
@@ -250,13 +280,13 @@ const FundPayment = () => {
       }
     
       // 기부 로직 처리
-      console.log("기부 완료");
       navigate('/fund-payment-system', {
         state: {
+          postId,
           name: isAnonymous ? '익명 기부자' : name,
           totalAmount: totalAmount,
-          targetAmount: targetAmount,
-          percentage: percentage,
+          targetAmount: post?.targetAmount,
+          percentage: (post?.currentAmount / post?.targetAmount) * 100
         }
       });
     };
@@ -265,7 +295,10 @@ const FundPayment = () => {
     return (
       <Main>
         {/* DonationDetails 컴포넌트를 재사용하여 동일한 부분을 표시 */}
-        <DonationDetails percentage={percentage} targetAmount={targetAmount} />
+        <DonationDetails 
+            imageSrc={post?.mainImage} 
+            percentage={percentage} 
+            targetAmount={post?.targetAmount} />
 
         <div className="payment-box">
           <div className="payment-input-box">

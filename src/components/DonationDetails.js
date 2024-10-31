@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import fundPostImg from '../DMHM-images/fund-post-img.png'; 
-import { Height } from '@mui/icons-material';
 
 
 const PostBox = styled.div`
@@ -56,13 +55,12 @@ const TargetText = styled.p`
 `;
 
 // DonationDetails component
-const DonationDetails = ({ imageSrc, title, recipient, percentage, targetAmount }) => {
+const DonationDetails = ({ imageSrc, title, recipient, percentage = 0, targetAmount = 0 }) => {
   return (
     <>
       <PostImg 
         src={imageSrc || ''}  // 이미지가 없을 경우 빈 문자열로 설정
         alt="기부 메인 이미지" 
-        style={{ height: '200px', width: '100%', backgroundColor: '#f0f0f0', display: 'block' }} 
       />
       <PostBox>
         <PostTitle>{title}</PostTitle>
