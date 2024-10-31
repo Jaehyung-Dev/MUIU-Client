@@ -155,4 +155,4 @@ const JoinSuccess = () => {
   );
 };
 
-export default JoinSuccess;
+export default React.memo(JoinSuccess);

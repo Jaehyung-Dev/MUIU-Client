@@ -170,22 +170,33 @@ const CarouselWrapper = styled.div`
 const Banner = styled.div`
     display: flex;
     transition: transform 0.5s ease-in-out;
-    transform: ${({ currentIndex }) => `translateX(-${currentIndex * 100}%)`};
-    width: ${({ imageCount }) => `${imageCount * 100}%`};
+    transform: ${({ currentIndex }) => `translateX(-${currentIndex * 600}px)`}; /* 600px 단위로 이동 */
+    width: ${({ imageCount }) => `${imageCount * 600}px`}; /* 전체 이미지 너비 계산 */
+
+    @media screen and (max-width: 600px) {
+        transform: ${({ currentIndex }) => `translateX(-${currentIndex * 400}px)`}; /* 600px 단위로 이동 */
+        width: ${({ imageCount }) => `${imageCount * 400}px`}; /* 전체 이미지 너비 계산 */
+    }
 `;
 
 const ImageSlide = styled.div`
-    min-width: 100%;
+    position: relative;
+    width: 600px;
     height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
+
+    @media screen and (max-width: 600px) {
+        width: 400px;
+    }
 `;
 
 const SlideImage = styled.img`
-    width: 100%;
     height: 100%;
-    object-fit: cover;
+    width: 600px;
+
+    @media screen and (max-width: 600px) {
+        width: 400px;
+    }
 `;
 
 const DotsWrapper = styled.div`

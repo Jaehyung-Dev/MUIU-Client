@@ -4,12 +4,6 @@ import { Clock } from 'lucide-react';
 import TrainIcon from '@mui/icons-material/Train';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import trafficIcon from '../svg/대중교통.svg';
-import trafficHoverIcon from '../svg/대중교통-hover.svg';
-import carIcon from '../svg/자동차.svg';
-import carHoverIcon from '../svg/자동차-hover.svg';
-import walkIcon from '../svg/도보.svg';
-import walkHoverIcon from '../svg/도보-hover.svg';
 import departIcon from '../svg/출발-icon.svg';
 import arriveIcon from '../svg/도착-icon.svg';
 import changeIcon from '../svg/변경.svg';
@@ -57,26 +51,10 @@ const BackBtn = styled.button`
 
 const SelectVehicle = styled.div`
     width: 100%;
-    height: 8vh;
+    height: 30px;
     display: flex;
     background: white;
     align-items: center;
-`;
-
-const VehicleTab = styled.div`
-    flex: 1;
-    text-align: center;
-    cursor: pointer;
-
-    &:hover .tab-image {
-        opacity: 0.8;
-    }
-`;
-
-const TabImage = styled.img`
-    width: 40px;
-    height: 40px;
-    transition: opacity 0.3s;
 `;
 
 const SearchingBox = styled.div`
@@ -135,7 +113,7 @@ const SearchingInput = styled.input`
 const ChangeIcon = styled.img`
     position: absolute;
     display: flex;
-    top: 16vh;
+    top: calc(30px + 8vh);
     right: 3vw;
     cursor: pointer;
 `;
@@ -485,114 +463,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
         }
     };
     
-    // api 할당량 끝났을 때용 dummy 데이터 다 쓰면 transitData 에서 dummy로
-    const dummyTransitData = [
-        {
-            totalTime: 6000,
-            fare: {
-                regular: {
-                    totalFare: 1650,
-                },
-            },
-            legs: [
-                {
-                    mode: 'WALK',
-                    sectionTime: 120,
-                    start: {
-                        name: '출발지',
-                    },
-                    end: {
-                        name: '서울역',
-                    },
-                },
-                {
-                    mode: 'SUBWAY',
-                    sectionTime: 1800,
-                    start: {
-                        name: '서울역',
-                    },
-                    end: {
-                        name: '정부과천청사',
-                    },
-                    route: '수도권4호선',
-                },
-                {
-                    mode: 'WALK',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                },
-                {
-                    mode: 'BUS',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                    route: "일반:7",
-                },
-            ],
-        },
-        {
-            totalTime: 4600,
-            fare: {
-                regular: {
-                    totalFare: 1650,
-                },
-            },
-            legs: [
-                {
-                    mode: 'WALK',
-                    sectionTime: 120,
-                    start: {
-                        name: '출발지',
-                    },
-                    end: {
-                        name: '서울역',
-                    },
-                },
-                {
-                    mode: 'SUBWAY',
-                    sectionTime: 1800,
-                    start: {
-                        name: '서울역',
-                    },
-                    end: {
-                        name: '정부과천청사',
-                    },
-                    route: '수도권4호선',
-                },
-                {
-                    mode: 'WALK',
-                    sectionTime: 300,
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                },
-                {
-                    mode: 'BUS',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                    route: "일반:7",
-                },
-            ],
-        },
-    ];
-    
     // 시간 포맷 함수
     const formatTime = (totalSeconds) => {
         const hours = Math.floor(totalSeconds / 3600);
@@ -619,36 +489,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                 </BackBtn>
                 
                 <SelectVehicle>
-                    <VehicleTab 
-                        id="traffic" 
-                        onClick={() => setActiveTab('traffic')} 
-                    >
-                        <TabImage 
-                            src={activeTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
-                            alt="대중교통" 
-                            className="tab-image"
-                        />
-                    </VehicleTab>
-                    <VehicleTab 
-                        id="car" 
-                        onClick={() => setActiveTab('car')} 
-                    >
-                        <TabImage 
-                            src={activeTab === 'car' ? carHoverIcon : carIcon} 
-                            alt="자동차" 
-                            className="tab-image" 
-                        />
-                    </VehicleTab>
-                    <VehicleTab 
-                        id="walk" 
-                        onClick={() => setActiveTab('walk')} 
-                    >
-                        <TabImage 
-                            src={activeTab === 'walk' ? walkHoverIcon : walkIcon} 
-                            alt="도보" 
-                            className="tab-image" 
-                        />
-                    </VehicleTab>
                 </SelectVehicle>
 
                 <SearchingBox>
@@ -713,10 +553,10 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                 </SearchingBox>
 
                 <FindingResultItems>
-                    {activeTab === 'traffic' ? (
-                        Array.isArray(dummyTransitData) && dummyTransitData.length > 0 ? (
+                    {(
+                        Array.isArray(transitData) && transitData.length > 0 ? (
                             // 총 소요 시간 기준으로 정렬
-                            dummyTransitData
+                            transitData
                                 .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
                                 .map((itinerary, index) => {
                                     const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
@@ -784,8 +624,6 @@ const HS_FindRoadModal = ({ isOpen, onClose, hospitalName, mode, stations }) => 
                         ) : (
                             <div>길찾기 결과가 없습니다.</div>
                         )
-                    ) : (
-                        <div>길찾기 결과가 없습니다.</div>
                     )}
                 </FindingResultItems>
 
