@@ -228,9 +228,15 @@ export const MyPage = () => {
                 });
                 setProfileImage(`${response.data.profileImageUrl}?t=${new Date().getTime()}`);
             } catch (error) {
-                console.error('프로필 이미지 로드 오류:', error);
-                if (error.response && error.response.status === 401) {
-                    navigate('/login');
+                if(error.response) {
+                    if (error.response.status === 404) {
+                        console.log("프로필이미지가 없습니다.");
+                        setProfileImage(userProfile); // 기본 프로필 이미지 설정
+                    } else if(error.response.status === 401) {
+                        navigate('/login');
+                    }
+                } else {
+                    console.log("네트워크 또는 서버 오류 발생:", error);
                 }
             }
         };
