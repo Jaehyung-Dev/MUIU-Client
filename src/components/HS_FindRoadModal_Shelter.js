@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Clock } from 'lucide-react';
 import TrainIcon from '@mui/icons-material/Train';
@@ -17,8 +17,6 @@ import findIcon from '../svg/길찾기-hover.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import shelterData from '../JSON/shelterData.json';
-
-import HS_Walk_Shelter from '../components/HS_Walk_Shelter';
 
 const Modal = styled.div`
     display: ${(props) => (props.isShelterFindRoadOpen ? 'block' : 'none')};
@@ -256,6 +254,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
     const [userLocation, setUserLocation] = useState(null);
     const [rotation, setRotation] = useState(0);
 
+
     // 대피소 이름
     useEffect(() => {
         if (shelterName) {
@@ -325,7 +324,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
         }
     }, [shelterName, mode]);
     
-
+    
     // 출발지 입력 핸들러
     const handleDepartInputChange = (event) => {
         const value = event.target.value;
@@ -475,13 +474,148 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             console.error('API 요청 오류:', error);
         }
     };
+    
+    // 도보 길찾기 관련 상태 변수
+    const [walkData, setWalkData] = useState(null); // 도보 경로 데이터를 저장할 상태
+    const mapRef = useRef(null); // 지도 DOM 요소에 대한 참조
+    const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 상태
+
+    useEffect(() => {
+        const { naver } = window;
+
+        if (mapRef.current && !map) {
+            const departCoords = getDepartCoordinates(); // 출발지 좌표 가져오기
+            
+            if (departCoords) {
+                const mapInstance = new naver.maps.Map(mapRef.current, {
+                    center: new naver.maps.LatLng(departCoords.lat, departCoords.lng),
+                    zoom: 15,
+                    width: "100%",
+                    height: "500px",
+                });
+
+                setMap(mapInstance);
+            }
+        }
+    }, [mapRef, map]);
+
+    useEffect(() => {
+        if (walkData && map) {
+            displayWalkRoute(walkData, map);
+        }
+    }, [walkData, map]);
+
+    const fetchWalkRoutes = async (departCoords, arriveCoords) => {
+        const appKey = process.env.REACT_APP_TMAP_APP_KEY;
+        const url = 'https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1';
+
+        const body = {
+            startX: departCoords.lng,
+            startY: departCoords.lat,
+            endX: arriveCoords.lng,
+            endY: arriveCoords.lat,
+            reqCoordType: "WGS84GEO",
+            resCoordType: "EPSG3857",
+            startName: encodeURIComponent(departValue || "출발지"),
+            endName: encodeURIComponent(arriveValue || "도착지"),
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'appKey': appKey,
+                },
+                body: JSON.stringify(body),
+            });
+
+            if (!response.ok) {
+                console.error('API 요청 실패:', response.status);
+                return;
+            }
+
+            const responseData = await response.json();
+            console.log('API 응답 데이터:', responseData);
+
+            if (responseData && responseData.features) {
+                setWalkData(responseData.features); // features 배열을 상태에 저장
+            } else {
+                console.error('응답 데이터가 예상과 다릅니다:', responseData);
+            }
+        } catch (error) {
+            console.error('API 요청 오류:', error);
+        }
+    };
+
+    const displayWalkRoute = (features, map) => {
+        const { naver } = window;
+
+        // 경로를 표시할 좌표 배열
+        const path = features.flatMap(feature => {
+            if (feature.geometry.type === 'Point') {
+                const [lng, lat] = feature.geometry.coordinates; // [lng, lat] 순서
+                return new naver.maps.LatLng(lat, lng);
+            } else if (feature.geometry.type === 'LineString') {
+                return feature.geometry.coordinates.map(coord => {
+                    const [lng, lat] = coord; // [lng, lat] 순서
+                    return new naver.maps.LatLng(lat, lng);
+                });
+            }
+            return [];
+        });
+
+        if (path.length === 0) {
+            console.error('경로가 비어있습니다.');
+            return; // 경로가 비어있으면 함수 종료
+        }
+
+        // 시작 마커 생성
+        new naver.maps.Marker({
+            position: path[0],
+            map: map,
+            icon: {
+                url: '../HS_images/startMarker.svg',
+                size: new naver.maps.Size(30, 30),
+                anchor: new naver.maps.Point(15, 30),
+            },
+        });
+
+        // 도착 마커 생성
+        new naver.maps.Marker({
+            position: path[path.length - 1],
+            map: map,
+            icon: {
+                url: '../HS_images/endMarker.svg',
+                size: new naver.maps.Size(30, 30),
+                anchor: new naver.maps.Point(15, 30),
+            },
+        });
+
+        // 경로 선 표시
+        new naver.maps.Polyline({
+            path: path,
+            strokeColor: '#FF0000',
+            strokeWeight: 5,
+            map: map,
+        });
+    };
 
     const handleFindingClick = () => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
 
         if (departCoords && arriveCoords) {
-            fetchTransitRoutes(departCoords, arriveCoords);
+            if (activeTab === 'traffic') {
+                fetchTransitRoutes(departCoords, arriveCoords);
+            } else if (activeTab === 'walk') {
+                fetchWalkRoutes(departCoords, arriveCoords);
+            } else if (activeTab === 'car') {
+                console.log('자동차 모드 확인');
+            } else {
+                console.error('지원하지 않는 탭입니다:', activeTab);
+            }
         } else {
             console.error('출발지 또는 도착지 좌표를 가져올 수 없습니다.');
         }
@@ -786,24 +920,10 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                         ) : (
                             <div>길찾기 결과가 없습니다.</div>
                         )
-                    ) : activeTab === 'walk' ? (
-                        (() => {
-                            const departCoords = getDepartCoordinates();
-                            const arriveCoords = getArriveCoordinates();
-
-                            // 출발지와 도착지 좌표가 유효한지 확인
-                            if (!departCoords || !arriveCoords) {
-                                return <div>출발지 또는 도착지 좌표를 가져올 수 없습니다.</div>;
-                            }
-
-                            return (
-                                <HS_Walk_Shelter 
-                                    departCoords={departCoords} 
-                                    arriveCoords={arriveCoords} 
-                                    shelterCoordinates={shelterCoordinates} 
-                                />
-                            );
-                        })()
+                    ) : activeTab === 'walk' && walkData ? (
+                        <>
+                            <div ref={mapRef} style={{ width: '100%', height: '650px' }} />
+                        </>
                     ) : (
                         <div>길찾기 결과가 없습니다.</div>
                     )}

@@ -462,7 +462,6 @@ export const Join = () => {
       password: '',
       passwordCheck: '',
       email: '',
-
     });
     // 유효성 상태 초기화
     setUsernameChk(false);
@@ -655,12 +654,12 @@ export const Join = () => {
     setVerificationInput('');
   };
 
-  const handlePhoneNumberChange = (e) => {
+  const handlePhoneNumberChange = useCallback((e) => {
     const value = e.target.value;
     if (/^\d{0,11}$/.test(value)) {
-      setTel(e.target.value); // 전화번호 입력 상태 업데이트
+        setTel(value); // 전화번호 입력 상태 업데이트
     }
-  };
+}, []);
 
   // 2분 타이머를 관리
   useEffect(() => {
@@ -684,9 +683,14 @@ export const Join = () => {
 
   const handleSendSms = () => {
     if (isButtonDisabled) return; // 버튼이 이미 비활성화되어 있으면 동작하지 않음
+
+    if (tel === '') {
+      alert("전화번호를 입력하세요.");
+      return;
+    }
   
     setIsButtonDisabled(true);
-    setTimeLeft(120);
+    setTimeLeft(60);
 
     // 인증 번호 전송 요청
     dispatch(verifySms(tel)).then((response) => {
@@ -976,7 +980,13 @@ export const Join = () => {
                   disabled={isButtonDisabled} 
                   style={{ backgroundColor: isButtonDisabled ? 'gray' : '#ffd651' }}
                 >
-                  {isButtonDisabled ? `${timeLeft}초 후 다시 시도` : "인증번호 전송"}
+                  {isButtonDisabled ? (
+                    <>
+                      {timeLeft}초 후 <br /> 다시 시도
+                    </>
+                  ) : (
+                    "인증번호 전송"
+                  )}
                 </SmsButton>
               </PhoneNumberDiv>
               <PhoneNumberDiv>

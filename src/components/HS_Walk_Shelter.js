@@ -43,8 +43,10 @@ const HS_Walk_Shelter = ({ userLocation, departCoords, arriveCoords }) => {
                     startY: departCoords.latitude,
                     endX: arriveCoords.longitude,
                     endY: arriveCoords.latitude,
-                    startName: '출발지이름',
-                    endName: '도착지이름',
+                    reqCoordType: "WGS84GEO",        // 요청 좌표 타입
+                    resCoordType: "EPSG3857",        // 응답 좌표 타입
+                    startName: encodeURIComponent('출발지이름'), // 인코딩된 출발지 이름
+                    endName: encodeURIComponent('도착지이름'),   // 인코딩된 도착지 이름
                 };
 
                 fetch('https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1', {
@@ -56,7 +58,12 @@ const HS_Walk_Shelter = ({ userLocation, departCoords, arriveCoords }) => {
                     },
                     body: JSON.stringify(requestData),
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.features && data.features.length > 0) {
                         const coordinates = data.features[0].geometry.coordinates.map(coord => 

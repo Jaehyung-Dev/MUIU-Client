@@ -178,7 +178,6 @@ const FundDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const navigate = useNavigate();
 
-  //console.log(`postId: `, postId);  
 
   // 케밥버튼 토글
   const toggleMenu = () => {
@@ -251,9 +250,10 @@ const FundDetail = () => {
           }
         });
         const post = response.data;
+        console.log(`post뭐임`,post);
         
         // 서버에서 받은 데이터를 상태로 저장
-        setPost(post);
+        setPost(response.data);
 
         setCurrentAmount(post.currentAmount || 0);  // currentAmount가 null인 경우 0으로 설정
 
@@ -372,7 +372,7 @@ const FundDetail = () => {
         targetAmount={post.targetAmount}
       />
       
-      <button className="fund-btn" onClick={() => navigate('/fund-payment')}>
+      <button className="fund-btn" onClick={() => navigate(`/fund-payment/${post.postId}`)}>
         기부하기
       </button>
   
