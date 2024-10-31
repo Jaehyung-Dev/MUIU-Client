@@ -480,7 +480,6 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
     const mapRef = useRef(null); // 지도 DOM 요소에 대한 참조
     const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 상태
 
-    // 지도 초기화 및 출발지 중심 설정
     useEffect(() => {
         const { naver } = window;
 
@@ -489,29 +488,23 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             
             if (departCoords) {
                 const mapInstance = new naver.maps.Map(mapRef.current, {
-                    center: new naver.maps.LatLng(departCoords.lat, departCoords.lng), // 출발지 좌표로 중심 설정
+                    center: new naver.maps.LatLng(departCoords.lat, departCoords.lng),
                     zoom: 15,
                     width: "100%",
                     height: "500px",
                 });
 
                 setMap(mapInstance);
-
-                // 보행자 경로가 있을 경우 경로 표시
-                if (walkData && walkData.length > 0) {
-                    displayWalkRoute(walkData, mapInstance); // 경로 표시
-                }
             }
         }
-    }, [ mapRef, map, departValue, walkData ]);
-    
+    }, [mapRef, map]);
+
     useEffect(() => {
         if (walkData && map) {
             displayWalkRoute(walkData, map);
         }
     }, [walkData, map]);
 
-    // 도보 경로 API 호출
     const fetchWalkRoutes = async (departCoords, arriveCoords) => {
         const appKey = process.env.REACT_APP_TMAP_APP_KEY;
         const url = 'https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1';
@@ -527,8 +520,6 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             endName: encodeURIComponent(arriveValue || "도착지"),
         };
 
-        console.log('보행자 경로 요청 데이터:', body);
-
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -542,73 +533,71 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
 
             if (!response.ok) {
                 console.error('API 요청 실패:', response.status);
-                const errorData = await response.json();
-                console.error('오류 데이터:', errorData);
                 return;
             }
 
-            const data = await response.json();
-            console.log('보행자 경로 API 응답 데이터:', data);
+            const responseData = await response.json();
+            console.log('API 응답 데이터:', responseData);
 
-            if (data && data.features && data.features.length > 0) {
-                setWalkData(data.features); // 도보 경로 데이터 저장
+            if (responseData && responseData.features) {
+                setWalkData(responseData.features); // features 배열을 상태에 저장
+            } else {
+                console.error('응답 데이터가 예상과 다릅니다:', responseData);
             }
         } catch (error) {
             console.error('API 요청 오류:', error);
         }
     };
 
-    // 도보 경로 표시 함수
     const displayWalkRoute = (features, map) => {
         const { naver } = window;
-    
-        const path = []; // 경로 좌표 저장 배열
-    
-        features.forEach(feature => {
-            if (feature.geometry.type === 'LineString') {
-                // LineString의 경우, 각 좌표를 path에 추가
-                feature.geometry.coordinates.forEach(coord => {
-                    // coord는 [longitude, latitude] 형식이므로, 순서를 맞추어 추가
-                    path.push(new naver.maps.LatLng(coord[1], coord[0])); // [latitude, longitude]로 변환
+
+        // 경로를 표시할 좌표 배열
+        const path = features.flatMap(feature => {
+            if (feature.geometry.type === 'Point') {
+                const [lng, lat] = feature.geometry.coordinates; // [lng, lat] 순서
+                return new naver.maps.LatLng(lat, lng);
+            } else if (feature.geometry.type === 'LineString') {
+                return feature.geometry.coordinates.map(coord => {
+                    const [lng, lat] = coord; // [lng, lat] 순서
+                    return new naver.maps.LatLng(lat, lng);
                 });
-            } else if (feature.geometry.type === 'Point') {
-                // Point 타입의 경우, 해당 좌표를 path에 추가할 수도 있습니다.
-                path.push(new naver.maps.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]));
             }
+            return [];
         });
-    
+
         if (path.length === 0) {
             console.error('경로가 비어있습니다.');
             return; // 경로가 비어있으면 함수 종료
         }
-    
+
         // 시작 마커 생성
-        const startMarker = new naver.maps.Marker({
-            position: path[0], // 첫 번째 좌표를 시작 좌표로 설정
+        new naver.maps.Marker({
+            position: path[0],
             map: map,
             icon: {
-                url: '../HS_images/startMarker.svg', // 마커 이미지 경로
+                url: '../HS_images/startMarker.svg',
                 size: new naver.maps.Size(30, 30),
                 anchor: new naver.maps.Point(15, 30),
             },
         });
-    
+
         // 도착 마커 생성
-        const endMarker = new naver.maps.Marker({
-            position: path[path.length - 1], // 마지막 좌표를 도착 좌표로 설정
+        new naver.maps.Marker({
+            position: path[path.length - 1],
             map: map,
             icon: {
-                url: '../HS_images/endMarker.svg', // 마커 이미지 경로
+                url: '../HS_images/endMarker.svg',
                 size: new naver.maps.Size(30, 30),
                 anchor: new naver.maps.Point(15, 30),
             },
         });
-    
+
         // 경로 선 표시
         new naver.maps.Polyline({
             path: path,
-            strokeColor: '#FF0000', // 선 색상
-            strokeWeight: 5, // 선 두께
+            strokeColor: '#FF0000',
+            strokeWeight: 5,
             map: map,
         });
     };
