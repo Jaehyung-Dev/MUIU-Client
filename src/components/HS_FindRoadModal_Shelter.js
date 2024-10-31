@@ -57,26 +57,9 @@ const BackBtn = styled.button`
 
 const SelectVehicle = styled.div`
     width: 100%;
-    height: 8vh;
+    height: 30px;
     display: flex;
     background: white;
-    align-items: center;
-`;
-
-const VehicleTab = styled.div`
-    flex: 1;
-    text-align: center;
-    cursor: pointer;
-
-    &:hover .tab-image {
-        opacity: 0.8;
-    }
-`;
-
-const TabImage = styled.img`
-    width: 40px;
-    height: 40px;
-    transition: opacity 0.3s;
 `;
 
 const SearchingBox = styled.div`
@@ -135,7 +118,7 @@ const SearchingInput = styled.input`
 const ChangeIcon = styled.img`
     position: absolute;
     display: flex;
-    top: 16vh;
+    top: calc(30px + 8vh);
     right: 3vw;
     cursor: pointer;
 `;
@@ -474,260 +457,17 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             console.error('API 요청 오류:', error);
         }
     };
-    
-    // 도보 길찾기 관련 상태 변수
-    const [walkData, setWalkData] = useState(null); // 도보 경로 데이터를 저장할 상태
-    const mapRef = useRef(null); // 지도 DOM 요소에 대한 참조
-    const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 상태
-
-    useEffect(() => {
-        const { naver } = window;
-
-        if (mapRef.current && !map) {
-            const departCoords = getDepartCoordinates(); // 출발지 좌표 가져오기
-            
-            if (departCoords) {
-                const mapInstance = new naver.maps.Map(mapRef.current, {
-                    center: new naver.maps.LatLng(departCoords.lat, departCoords.lng),
-                    zoom: 15,
-                    width: "100%",
-                    height: "500px",
-                });
-
-                setMap(mapInstance);
-            }
-        }
-    }, [mapRef, map]);
-
-    useEffect(() => {
-        if (walkData && map) {
-            displayWalkRoute(walkData, map);
-        }
-    }, [walkData, map]);
-
-    const fetchWalkRoutes = async (departCoords, arriveCoords) => {
-        const appKey = process.env.REACT_APP_TMAP_APP_KEY;
-        const url = 'https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1';
-
-        const body = {
-            startX: departCoords.lng,
-            startY: departCoords.lat,
-            endX: arriveCoords.lng,
-            endY: arriveCoords.lat,
-            reqCoordType: "WGS84GEO",
-            resCoordType: "EPSG3857",
-            startName: encodeURIComponent(departValue || "출발지"),
-            endName: encodeURIComponent(arriveValue || "도착지"),
-        };
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'appKey': appKey,
-                },
-                body: JSON.stringify(body),
-            });
-
-            if (!response.ok) {
-                console.error('API 요청 실패:', response.status);
-                return;
-            }
-
-            const responseData = await response.json();
-            console.log('API 응답 데이터:', responseData);
-
-            if (responseData && responseData.features) {
-                setWalkData(responseData.features); // features 배열을 상태에 저장
-            } else {
-                console.error('응답 데이터가 예상과 다릅니다:', responseData);
-            }
-        } catch (error) {
-            console.error('API 요청 오류:', error);
-        }
-    };
-
-    const displayWalkRoute = (features, map) => {
-        const { naver } = window;
-
-        // 경로를 표시할 좌표 배열
-        const path = features.flatMap(feature => {
-            if (feature.geometry.type === 'Point') {
-                const [lng, lat] = feature.geometry.coordinates; // [lng, lat] 순서
-                return new naver.maps.LatLng(lat, lng);
-            } else if (feature.geometry.type === 'LineString') {
-                return feature.geometry.coordinates.map(coord => {
-                    const [lng, lat] = coord; // [lng, lat] 순서
-                    return new naver.maps.LatLng(lat, lng);
-                });
-            }
-            return [];
-        });
-
-        if (path.length === 0) {
-            console.error('경로가 비어있습니다.');
-            return; // 경로가 비어있으면 함수 종료
-        }
-
-        // 시작 마커 생성
-        new naver.maps.Marker({
-            position: path[0],
-            map: map,
-            icon: {
-                url: '../HS_images/startMarker.svg',
-                size: new naver.maps.Size(30, 30),
-                anchor: new naver.maps.Point(15, 30),
-            },
-        });
-
-        // 도착 마커 생성
-        new naver.maps.Marker({
-            position: path[path.length - 1],
-            map: map,
-            icon: {
-                url: '../HS_images/endMarker.svg',
-                size: new naver.maps.Size(30, 30),
-                anchor: new naver.maps.Point(15, 30),
-            },
-        });
-
-        // 경로 선 표시
-        new naver.maps.Polyline({
-            path: path,
-            strokeColor: '#FF0000',
-            strokeWeight: 5,
-            map: map,
-        });
-    };
 
     const handleFindingClick = () => {
         const departCoords = getDepartCoordinates();
         const arriveCoords = getArriveCoordinates();
 
         if (departCoords && arriveCoords) {
-            if (activeTab === 'traffic') {
-                fetchTransitRoutes(departCoords, arriveCoords);
-            } else if (activeTab === 'walk') {
-                fetchWalkRoutes(departCoords, arriveCoords);
-            } else if (activeTab === 'car') {
-                console.log('자동차 모드 확인');
-            } else {
-                console.error('지원하지 않는 탭입니다:', activeTab);
-            }
+            fetchTransitRoutes(departCoords, arriveCoords);
         } else {
             console.error('출발지 또는 도착지 좌표를 가져올 수 없습니다.');
         }
     };
-    
-    // api 할당량 끝났을 때용 dummy 데이터 다 쓰면 transitData 에서 dummy로
-    const dummyTransitData = [
-        {
-            totalTime: 6000,
-            fare: {
-                regular: {
-                    totalFare: 1650,
-                },
-            },
-            legs: [
-                {
-                    mode: 'WALK',
-                    sectionTime: 120,
-                    start: {
-                        name: '출발지',
-                    },
-                    end: {
-                        name: '서울역',
-                    },
-                },
-                {
-                    mode: 'SUBWAY',
-                    sectionTime: 1800,
-                    start: {
-                        name: '서울역',
-                    },
-                    end: {
-                        name: '정부과천청사',
-                    },
-                    route: '수도권4호선',
-                },
-                {
-                    mode: 'WALK',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                },
-                {
-                    mode: 'BUS',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                    route: "일반:7",
-                },
-            ],
-        },
-        {
-            totalTime: 4600,
-            fare: {
-                regular: {
-                    totalFare: 1650,
-                },
-            },
-            legs: [
-                {
-                    mode: 'WALK',
-                    sectionTime: 120,
-                    start: {
-                        name: '출발지',
-                    },
-                    end: {
-                        name: '서울역',
-                    },
-                },
-                {
-                    mode: 'SUBWAY',
-                    sectionTime: 1800,
-                    start: {
-                        name: '서울역',
-                    },
-                    end: {
-                        name: '정부과천청사',
-                    },
-                    route: '수도권4호선',
-                },
-                {
-                    mode: 'WALK',
-                    sectionTime: 300,
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                },
-                {
-                    mode: 'BUS',
-                    sectionTime: 300, // 도보 시간 (초)
-                    start: {
-                        name: '정부과천청사',
-                    },
-                    end: {
-                        name: '(임시)정부과천청사역6번출구',
-                    },
-                    route: "일반:7",
-                },
-            ],
-        },
-    ];
     
     // 시간 포맷 함수
     const formatTime = (totalSeconds) => {
@@ -755,36 +495,6 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                 </BackBtn>
                 
                 <SelectVehicle>
-                    <VehicleTab 
-                        id="traffic" 
-                        onClick={() => setActiveTab('traffic')}
-                    >
-                        <TabImage 
-                            src={activeTab === 'traffic' ? trafficHoverIcon : trafficIcon} 
-                            alt="대중교통" 
-                            className="tab-image"
-                        />
-                    </VehicleTab>
-                    <VehicleTab 
-                        id="car" 
-                        onClick={() => setActiveTab('car')}
-                    >
-                        <TabImage 
-                            src={activeTab === 'car' ? carHoverIcon : carIcon} 
-                            alt="자동차" 
-                            className="tab-image" 
-                        />
-                    </VehicleTab>
-                    <VehicleTab 
-                        id="walk" 
-                        onClick={() => setActiveTab('walk')}
-                    >
-                        <TabImage 
-                            src={activeTab === 'walk' ? walkHoverIcon : walkIcon} 
-                            alt="도보" 
-                            className="tab-image" 
-                        />
-                    </VehicleTab>
                 </SelectVehicle>
 
                 <SearchingBox>
@@ -849,15 +559,15 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                 </SearchingBox>
 
                 <FindingResultItems>
-                    {activeTab === 'traffic' ? (
-                        Array.isArray(dummyTransitData) && dummyTransitData.length > 0 ? (
+                    {(
+                        Array.isArray(transitData) && transitData.length > 0 ? (
                             // 총 소요 시간 기준으로 정렬
-                            dummyTransitData
+                            transitData
                                 .sort((a, b) => a.totalTime - b.totalTime) // 총 소요 시간 짧은 순서로 정렬
                                 .map((itinerary, index) => {
-                                    const totalDurationInSeconds = itinerary.totalTime;
-                                    const totalTime = formatTime(totalDurationInSeconds);
-                                    const totalFare = itinerary.fare.regular.totalFare;
+                                    const totalDurationInSeconds = itinerary.totalTime; // 전체 시간 (초)
+                                    const totalTime = formatTime(totalDurationInSeconds); // 총 시간 (시/분)
+                                    const totalFare = itinerary.fare.regular.totalFare; // 요금
 
                                     return (
                                         <TransitRouteCard key={index}>
@@ -920,12 +630,6 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                         ) : (
                             <div>길찾기 결과가 없습니다.</div>
                         )
-                    ) : activeTab === 'walk' && walkData ? (
-                        <>
-                            <div ref={mapRef} style={{ width: '100%', height: '650px' }} />
-                        </>
-                    ) : (
-                        <div>길찾기 결과가 없습니다.</div>
                     )}
                 </FindingResultItems>
             </ModalContent>
