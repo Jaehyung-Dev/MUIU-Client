@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-    min-height: 100vh;
+    min-height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

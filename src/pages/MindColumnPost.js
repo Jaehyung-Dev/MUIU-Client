@@ -85,7 +85,7 @@ const MindColumnPost = () => {
     try {
       if (editingColumn) {
         // 수정 모드일 때
-        await dispatch(update({ id: editingColumn.mc_id, data }));
+        await dispatch(update({ id: editingColumn.mc_id, formData: data }));
       } else {
         // 새 게시물 작성일 때
         await dispatch(post(data));
@@ -159,7 +159,7 @@ const MindColumnPost = () => {
         </Button>
 
         {/* 제출 버튼 */}
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button type="submit" variant="contained" color="primary" fullWidth style={{zIndex: 999}}>
           제출
         </Button>
       </form>
