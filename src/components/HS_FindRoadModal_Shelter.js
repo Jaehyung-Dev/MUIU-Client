@@ -503,7 +503,13 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
                 }
             }
         }
-    }, [ mapRef, map, departValue, walkData ]); // 출발지가 변경될 때마다 업데이트
+    }, [ mapRef, map, departValue, walkData ]);
+    
+    useEffect(() => {
+        if (walkData && map) {
+            displayWalkRoute(walkData, map);
+        }
+    }, [walkData, map]);
 
     // 도보 경로 API 호출
     const fetchWalkRoutes = async (departCoords, arriveCoords) => {
@@ -562,7 +568,7 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             if (feature.geometry.type === 'LineString') {
                 // LineString의 경우, 각 좌표를 path에 추가
                 feature.geometry.coordinates.forEach(coord => {
-                    // 각 coord는 [longitude, latitude] 형식으로 되어 있으므로, 순서를 맞추어 추가
+                    // coord는 [longitude, latitude] 형식이므로, 순서를 맞추어 추가
                     path.push(new naver.maps.LatLng(coord[1], coord[0])); // [latitude, longitude]로 변환
                 });
             } else if (feature.geometry.type === 'Point') {
@@ -571,7 +577,10 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             }
         });
     
-        if (path.length === 0) return; // 경로가 비어있으면 함수 종료
+        if (path.length === 0) {
+            console.error('경로가 비어있습니다.');
+            return; // 경로가 비어있으면 함수 종료
+        }
     
         // 시작 마커 생성
         const startMarker = new naver.maps.Marker({
@@ -622,7 +631,6 @@ const HS_FindRoadModal_Shelter = ({ isShelterFindRoadOpen, closeShelterFind, she
             console.error('출발지 또는 도착지 좌표를 가져올 수 없습니다.');
         }
     };
-    
     
     // api 할당량 끝났을 때용 dummy 데이터 다 쓰면 transitData 에서 dummy로
     const dummyTransitData = [
