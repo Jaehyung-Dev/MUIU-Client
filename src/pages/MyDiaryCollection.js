@@ -168,12 +168,20 @@ const ButtonBar = styled.div`
     width: 85%;
     box-sizing: border-box;
     margin-top: 1rem;
-    padding: 0 1rem;
     display: flex;
     justify-content: space-between;
 
     .click:hover {
         cursor: pointer;
+    }
+
+    div {
+        width: 45%;
+        background-color: white;
+        border-radius: 5px;
+        color: black;
+        text-align: center;
+        padding: 0.3rem;
     }
 `;
 
@@ -280,6 +288,7 @@ const MyDiaryCollection = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 </SearchDiv>
+
                 {searchTerm ? (
                 filteredDiaries.length > 0 ? (
                     filteredDiaries.map((diary) => (
@@ -294,8 +303,10 @@ const MyDiaryCollection = () => {
                         <WeekCalendar />
                     </CalendarDiv>
                     <ButtonBar>
-                        <TimelineIcon onClick={handleChartClick} className="click" />
-                        <CreateIcon onClick={handleWriteClick} className="click" />
+                        {/* <TimelineIcon onClick={handleChartClick} className='click'/> */}
+                    {/* <CreateIcon onClick={handleWriteClick} className='click'/> */}
+                    <div onClick={handleChartClick} className='click'>분석보기</div>
+                    <div onClick={handleWriteClick} className='click'>일기쓰기</div>
                     </ButtonBar>
                     <MD_Block /> {/* 기본 최신 일기 */}
                 </>
