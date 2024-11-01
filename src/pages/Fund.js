@@ -167,8 +167,10 @@ const Fund = () => {
           },
           withCredentials: true
         });
-        setPosts(response.data); // 서버에서 받아온 posts 데이터를 상태에 저장
-        console.log("Fetched posts:", response.data); // 콘솔에 모든 posts 데이터를 출력하여 확인
+
+        const sortedPosts = response.data.sort((a, b) => new Date(a.fundStartDate) - new Date(b.fundStartDate));
+        setPosts(sortedPosts); // 서버에서 받아온 posts 데이터를 상태에 저장
+        console.log("Fetched posts:", sortedPosts); // 콘솔에 모든 posts 데이터를 출력하여 확인
         console.log(`흠냥`,userRole);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -183,7 +185,7 @@ const Fund = () => {
 
   return (
     <Main>
-      <FundCard
+      {/* <FundCard
         imageSrc={`${process.env.PUBLIC_URL}/images/store-card1.png`}
         altText="호우피해 긴급모금 카드 이미지"
         title="호우피해 긴급모금"
@@ -203,7 +205,7 @@ const Fund = () => {
         title="전북 호우피해 구호키트 지원 캠페인"
         date="2024.7.16 ~ 2024.8.16"
         link="/fund-detail"
-      />
+      /> */}
 
       {/* 서버에서 불러온 글들을 표시하는 카드들 */}
       {posts.map((post) => (
