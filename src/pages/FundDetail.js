@@ -52,7 +52,22 @@ const Main = styled.main`
   .post-detail-content {
     font-size: 1rem;
     font-weight: 400;
-    line-height: 1.3;
+    line-height: 1.4;
+
+    p, span, h1, h2, h3, h4, h5, h6 {
+      margin: 0; /* 모든 기본 여백 제거 */
+    }
+
+    /* Quill 에디터에서 인라인 스타일로 지정한 폰트 크기 적용 */
+    .ql-size-small {
+      font-size: 0.75em;
+    }
+    .ql-size-large {
+      font-size: 1.5em;
+    }
+    .ql-size-huge {
+      font-size: 2.5em;
+    }
   }
 
   .detail-info-box .detail-info {
