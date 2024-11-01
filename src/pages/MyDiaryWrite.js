@@ -178,27 +178,27 @@ const MyDiaryWrite = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 수정 모드인지 확인 (diary_id가 있으면 수정 모드)
   const isEditing = location.state && location.state.diaryData && location.state.diaryData.diary_id;
+  const diaryId = isEditing ? location.state.diaryData.diary_id : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // 세션 스토리지에서 JWT 토큰 가져오기 및 디코딩
     const token = sessionStorage.getItem('ACCESS_TOKEN');
     if (token) {
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
     }
 
-    // MD_Block에서 전달된 데이터 가져오기
-    if (location.state && location.state.diaryData) {
+    if (isEditing) {
       const { title, content, mood } = location.state.diaryData;
       setTitle(title || '');
       setContent(content || '');
       setMood(mood || '');
       setSelectedMood(mood || '');
     }
-  }, [location.state]);
+  }, [location.state, isEditing]);
 
   const handleMoodClick = (selectedMood) => {
     setMood(selectedMood);
@@ -216,12 +216,24 @@ const MyDiaryWrite = () => {
       title,
       content,
       mood,
-      regdate: new Date().toISOString(),
+      moddate: new Date().toISOString(),
     };
 
     try {
-      const response = await WriteDiaryAPI(diaryData);
-      alert('일기가 저장되었습니다.');
+      if (isEditing && diaryId) {
+        // 수정 모드: 기존 일기를 업데이트
+        const response = await axios.put(`http://localhost:9090/diaries/${diaryId}`, diaryData, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
+          },
+        });
+        alert('일기가 수정되었습니다.');
+      } else {
+        // 새 일기 작성
+        const response = await WriteDiaryAPI(diaryData);
+        alert('일기가 저장되었습니다.');
+      }
       navigate('/my-diary-collection'); // 저장 후 페이지 이동
     } catch (error) {
       console.error('일기 저장 중 오류:', error);
@@ -242,9 +254,9 @@ const MyDiaryWrite = () => {
       <DiaryEntry>
         <DiaryTitle>
           <input
-            type='text'
-            name='title'
-            placeholder='제목'
+            type="text"
+            name="title"
+            placeholder="제목"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -252,8 +264,8 @@ const MyDiaryWrite = () => {
         <hr />
         <DiaryContent>
           <textarea
-            name='content'
-            placeholder='내용'
+            name="content"
+            placeholder="내용"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             spellCheck="false"
@@ -263,43 +275,43 @@ const MyDiaryWrite = () => {
       <EmotionSection>
         <EmotionDiv
           style={{ cursor: 'pointer' }}
-          mood='dissatisfied'
+          mood="dissatisfied"
           selectedMood={selectedMood}
           onClick={() => handleMoodClick('dissatisfied')}
         >
-          <img src={angry} alt='angry' />
+          <img src={angry} alt="angry" />
         </EmotionDiv>
         <EmotionDiv
           style={{ cursor: 'pointer' }}
-          mood='bad'
+          mood="bad"
           selectedMood={selectedMood}
           onClick={() => handleMoodClick('bad')}
         >
-          <img src={depress} alt='depress' />
+          <img src={depress} alt="depress" />
         </EmotionDiv>
         <EmotionDiv
           style={{ cursor: 'pointer' }}
-          mood='soso'
+          mood="soso"
           selectedMood={selectedMood}
           onClick={() => handleMoodClick('soso')}
         >
-          <img src={normal} alt='normal' />
+          <img src={normal} alt="normal" />
         </EmotionDiv>
         <EmotionDiv
           style={{ cursor: 'pointer' }}
-          mood='good'
+          mood="good"
           selectedMood={selectedMood}
           onClick={() => handleMoodClick('good')}
         >
-          <img src={good} alt='good' />
+          <img src={good} alt="good" />
         </EmotionDiv>
         <EmotionDiv
           style={{ cursor: 'pointer' }}
-          mood='happy'
+          mood="happy"
           selectedMood={selectedMood}
           onClick={() => handleMoodClick('happy')}
         >
-          <img src={happy} alt='happy' />
+          <img src={happy} alt="happy" />
         </EmotionDiv>
       </EmotionSection>
       <SaveBtn onClick={handleSaveDiary} style={{ cursor: 'pointer' }}>일기 저장</SaveBtn>
