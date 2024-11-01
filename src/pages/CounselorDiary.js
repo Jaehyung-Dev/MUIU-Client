@@ -142,7 +142,7 @@ const DiaryApp = () => {
     };
 
     const CounselorChart = () => {
-        navigate('/counselor-chart'); 
+        navigate('/emotion-graph'); 
     };
 
     const handleSortChange = (order) => {
