@@ -47,6 +47,7 @@ const Main = styled.main`
     justify-content: space-between;
     gap: 1rem;
     position: relative;
+    index-z: 999;
   }
 
   .calendar-input {
@@ -176,7 +177,11 @@ const CustomInput = ({ value, onClick }) => (
   </div>
 );
 
+// 폰트 크기 옵션 추가
+const fontSizeOptions = ['small', false, 'large', 'huge'];
+
 const toolbarOptions = [
+  [{ 'size': fontSizeOptions }],
   ['bold', 'italic', 'underline', 'strike'],
   [{ 'list': 'ordered'}, { 'list': 'bullet' }],
   ['link', 'image'],
@@ -200,6 +205,11 @@ const FundPost = () => {
   const [targetAmount, setTargetAmount] = useState(post.targetAmount || '');
   const [content, setContent] = useState(post.description || '');
   const quillRef = useRef(null);
+
+  // Quill 편집기에서 폰트 크기 추가
+  const modules = {
+    toolbar: toolbarOptions,
+  };
 
   // 파일 미리보기와 추가된 파일 배열 관리
   const [uploadFiles, setUploadFiles] = useState([]);
@@ -306,10 +316,8 @@ const FundPost = () => {
             onChange={(value) => setContent(value)}
             placeholder="내용을 입력하세요"
             className="react-quill-editor"
-            modules={{
-              toolbar: toolbarOptions,
-            }}
-            formats={['bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link', 'align', 'image']}
+            modules={modules}
+            formats={['size','bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link', 'align', 'image']}
           />
         </div>
 

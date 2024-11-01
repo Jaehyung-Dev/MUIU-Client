@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
@@ -148,6 +149,7 @@ const FundCard = ({ imageSrc, altText, title, date, link, postId }) => {
 const Fund = () => {
   const location = useLocation();
   const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
+  const userRole = useSelector((state) => state.memberSlice.role);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -165,8 +167,11 @@ const Fund = () => {
           },
           withCredentials: true
         });
-        setPosts(response.data); // 서버에서 받아온 posts 데이터를 상태에 저장
-        console.log("Fetched posts:", response.data); // 콘솔에 모든 posts 데이터를 출력하여 확인
+
+        const sortedPosts = response.data.sort((a, b) => new Date(a.fundStartDate) - new Date(b.fundStartDate));
+        setPosts(sortedPosts); // 서버에서 받아온 posts 데이터를 상태에 저장
+        console.log("Fetched posts:", sortedPosts); // 콘솔에 모든 posts 데이터를 출력하여 확인
+        console.log(`흠냥`,userRole);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -180,7 +185,7 @@ const Fund = () => {
 
   return (
     <Main>
-      <FundCard
+      {/* <FundCard
         imageSrc={`${process.env.PUBLIC_URL}/images/store-card1.png`}
         altText="호우피해 긴급모금 카드 이미지"
         title="호우피해 긴급모금"
@@ -200,7 +205,7 @@ const Fund = () => {
         title="전북 호우피해 구호키트 지원 캠페인"
         date="2024.7.16 ~ 2024.8.16"
         link="/fund-detail"
-      />
+      /> */}
 
       {/* 서버에서 불러온 글들을 표시하는 카드들 */}
       {posts.map((post) => (
@@ -216,9 +221,12 @@ const Fund = () => {
       ))}
 
 
-      <div className="write-button-container">
-        <Link to="/fund-post" className="write-button">글 작성하기</Link>
-      </div>
+      {/* role이 ROLE_COUNSELOR일 때만 글 작성 버튼을 렌더링 */}
+      {userRole  === 'ROLE_COUNSELOR' && (
+        <div className="write-button-container">
+          <Link to="/fund-post" className="write-button">글 작성하기</Link>
+        </div>
+      )}
 
     </Main>
   );

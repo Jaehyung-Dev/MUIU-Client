@@ -4,7 +4,7 @@ import fundPostImg from '../DMHM-images/fund-post-img.png';
 
 
 const PostBox = styled.div`
-  padding: 1.2rem;
+  padding: 0.2rem 1.2rem;
 `;
 
 const PostImg = styled.img`
