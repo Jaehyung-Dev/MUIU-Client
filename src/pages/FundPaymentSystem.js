@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; 
 import styled, { keyframes } from 'styled-components'; 
 import fundPostImg from '../DMHM-images/fund-post-img.png'; 
+import { useSelector } from 'react-redux';
 
 // Styled components
 const Main = styled.main`
@@ -187,6 +188,7 @@ const FundPaymentSystem = () => {
   const [percentage, setPercentage] = useState(0);
   const [post, setPost] = useState(null); 
   const [newPercentage, setNewPercentage] = useState(0);
+  const userId = useSelector((state) => state.memberSlice.id); // 현재 로그인한 회원의 userId
   
 
   useEffect(() => {
@@ -213,11 +215,21 @@ const FundPaymentSystem = () => {
   // 결제 성공 시 결제 내역 저장 함수
   const savePaymentRecord = async () => {
     try {
+      const today = new Date().toISOString().substring(0, 10); // "YYYY-MM-DD" 형식
+
+      console.log(`today값:`,today);
+
       await axios.post(`http://localhost:9090/api/fund/payment`, {
-        postId, // 결제 대상 게시글 ID
+        postId,            // 결제 대상 게시글 ID
         amount: totalAmount,
-        donorName: name,
+        fundDate: today,  // 오늘 날짜
+        id: userId,        // 로그인한 회원 ID
+      },{
+        headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
+        }
       });
+
       console.log("결제 내역이 성공적으로 저장되었습니다.");
     } catch (error) {
       console.error("결제 내역 저장 중 오류 발생:", error);

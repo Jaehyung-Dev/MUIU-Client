@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
@@ -148,6 +149,7 @@ const FundCard = ({ imageSrc, altText, title, date, link, postId }) => {
 const Fund = () => {
   const location = useLocation();
   const [posts, setPosts] = useState([]); // 새로 작성된 글들을 저장하는 배열
+  const userRole = useSelector((state) => state.memberSlice.role);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -167,6 +169,7 @@ const Fund = () => {
         });
         setPosts(response.data); // 서버에서 받아온 posts 데이터를 상태에 저장
         console.log("Fetched posts:", response.data); // 콘솔에 모든 posts 데이터를 출력하여 확인
+        console.log(`흠냥`,userRole);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -216,9 +219,12 @@ const Fund = () => {
       ))}
 
 
-      <div className="write-button-container">
-        <Link to="/fund-post" className="write-button">글 작성하기</Link>
-      </div>
+      {/* role이 ROLE_COUNSELOR일 때만 글 작성 버튼을 렌더링 */}
+      {userRole  === 'ROLE_COUNSELOR' && (
+        <div className="write-button-container">
+          <Link to="/fund-post" className="write-button">글 작성하기</Link>
+        </div>
+      )}
 
     </Main>
   );
