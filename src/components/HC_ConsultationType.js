@@ -74,13 +74,6 @@ const ButtonContainer = styled.div`
 `;
 
 const ConsultationType = () => {
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-
-        return () => {
-            document.body.style.overflow = 'auto'; // 페이지 벗어날 때 스크롤 복구
-        };
-    }, []);
 
     const navigate = useNavigate();
 

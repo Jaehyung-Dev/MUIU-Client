@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
 
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -64,18 +64,18 @@ const NavItem = styled(Link)`
     }
 `;
 
-const Overlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: ${({ $show }) => ($show ? 1 : 0)};
-    transition: opacity 0.3s ease;
-    z-index: 5;
-    pointer-events: ${({ $show }) => ($show ? 'auto' : 'none')};
-`;
+// const Overlay = styled.div`
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     width: 100vw;
+//     height: 100vh;
+//     background-color: rgba(0, 0, 0, 0.5);
+//     opacity: ${({ $show }) => ($show ? 1 : 0)};
+//     transition: opacity 0.3s ease;
+//     z-index: 5;
+//     pointer-events: ${({ $show }) => ($show ? 'auto' : 'none')};
+// `;
 
 const CenterNavItem = styled.div`
     position: relative;
@@ -103,52 +103,53 @@ const CenterNavItem = styled.div`
     }
 `;
 
-const MenuContainer = styled.div`
-    position: fixed; /* Nav와 동일하게 fixed로 설정 */
-    bottom: 280px; /* Nav 위에 정확한 위치 설정 */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0px;
-    height: 30px;
-    scale: 0.4;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.1);
-    display: ${({ $show }) => ($show ? 'flex' : 'none')};
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    opacity: ${(props) => (props.$show ? 1 : 0)};
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 10;
+// const MenuContainer = styled.div`
+//     position: fixed; /* Nav와 동일하게 fixed로 설정 */
+//     bottom: 280px; /* Nav 위에 정확한 위치 설정 */
+//     left: 50%;
+//     transform: translateX(-50%);
+//     width: 0px;
+//     height: 30px;
+//     scale: 0.4;
+//     border-radius: 50%;
+//     background-color: rgba(0, 0, 0, 0.1);
+//     display: ${({ $show }) => ($show ? 'flex' : 'none')};
+//     justify-content: center;
+//     align-items: center;
+//     flex-wrap: wrap;
+//     opacity: ${(props) => (props.$show ? 1 : 0)};
+//     transition: opacity 0.3s ease, transform 0.3s ease;
+//     z-index: 10;
 
-    @media (max-width: 393px) {
-        bottom: 190px;
-        scale: 0.3;
-    }
-`;
+//     @media (max-width: 393px) {
+//         bottom: 190px;
+//         scale: 0.3;
+//     }
+// `;
 
 const BottomNav = () => {
     const location = useLocation();
-    const [isActive, setIsActive] = useState(false);
+    // const [isActive, setIsActive] = useState(false);
+    const navi = useNavigate();
     const role = useSelector((state) => {
         console.log("User role:", state.memberSlice.role); // 정확한 경로로 접근 확인
         return state.memberSlice.role || null; // role에 안전하게 접근
     });
     
-    const handleCircleClick = () => {
-        setIsActive(!isActive);
-        console.log(role);
-    };
+    // const handleCircleClick = () => {
+    //     setIsActive(!isActive);
+    //     console.log(role);
+    // };
 
     return (
         <>
             {/* MenuContainer를 Nav 밖에 두고, z-index는 Nav 내용물보다 뒤로 */}
-            <MenuContainer $show={isActive}>
+            {/* <MenuContainer $show={isActive}>
                 <img src={`${process.env.PUBLIC_URL}/images/round_back.png`} alt="클릭 아이콘"/>
-            </MenuContainer>
+            </MenuContainer> */}
 
             {/* Overlay는 MenuContainer보다 뒤로 */}
-            <Overlay $show={isActive} onClick={handleCircleClick} />
+            {/* <Overlay $show={isActive} onClick={handleCircleClick} /> */}
             
             <Nav>
                 <NavItem to="/main" $active={location.pathname === '/main'}>
@@ -160,7 +161,8 @@ const BottomNav = () => {
                     <span>비대면 상담</span>
                 </NavItem>
                 {/* 중앙 원형 버튼 */}
-                <CenterNavItem className="nav-center" $isActive={isActive} onClick={handleCircleClick}>
+                {/* <CenterNavItem className="nav-center" $isActive={isActive} onClick={handleCircleClick}> */}
+                <CenterNavItem className="nav-center" onClick={() => navi("/ai-counseling")}>
                     <img src={redCall} alt="중앙 아이콘" />
                 </CenterNavItem>
                 {/* 상담사일 경우 상담사 일기 페이지로 이동, 아닐 경우 일반 일기 페이지로 이동 */}
