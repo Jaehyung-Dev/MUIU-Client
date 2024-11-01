@@ -6,7 +6,10 @@ export const post = createAsyncThunk(
     async(formData, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.post('http://localhost:9090/mind-column', formData, {
+            const response = await axios.post('http://localhost:9090/mind-column', {
+                mindColumDto : {mc_title : formData.mindColumDto.mc_title},
+                uploadFiles: formData.mindColumDto.mcfList
+            }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

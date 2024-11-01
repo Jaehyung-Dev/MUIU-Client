@@ -261,8 +261,6 @@ const MyDiaryCollection = () => {
                     <WeekCalendar />
                 </CalendarDiv>
                 <ButtonBar>
-                    {/* <TimelineIcon onClick={handleChartClick} className='click'/> */}
-                    {/* <CreateIcon onClick={handleWriteClick} className='click'/> */}
                     <div onClick={handleChartClick} className='click'>분석보기</div>
                     <div onClick={handleWriteClick} className='click'>일기쓰기</div>
                 </ButtonBar>
