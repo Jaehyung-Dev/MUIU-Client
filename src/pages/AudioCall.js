@@ -1,194 +1,193 @@
-// Frontend: React Component for 1:1 Audio Call Based on Role
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import CallIcon from '@mui/icons-material/Call';
 import CloseIcon from '@mui/icons-material/Close';
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
-const Container = styled.div`
-  background: linear-gradient(to bottom, #272727, #4b4b4b); 
-  width: 100%;
-  height: 100vh;
-  position: relative;
+const ScreenContainer = styled.div`
+    height: 100vh;
+    width: 100vw;
+    max-width: 600px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
-const Header = styled.div`
-  position: fixed;
-  top: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 0.5;
+const VideoBox = styled.div`
+    width: 130px;
+    height: 200px;
+    background-color: white;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 `;
 
-const AcceptCall = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: #4CD964;
-  border-radius: 50%;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  position: fixed;
-  bottom: 150px;
-  left: 60px;
+const StyledVideo = styled.video`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
-const Call = styled(CallIcon)`
-  color: #fff;
-  scale: 2.5;
+const ButtonGroup = styled.div`
+    display: flex;
+    gap: 20px;
+    margin-top: auto;
+    margin-bottom: 50px;
 `;
 
-const EndCall = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: #E02D2D;
-  border-radius: 50%;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  position: fixed;
-  bottom: 150px;
-  right: 60px; 
-`;
+const Button = styled.div`
+    width: 60px;
+    height: 60px;
+    background-color: ${({ color }) => color || 'gray'};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 
-const End = styled(CloseIcon)`
-  color: #fff;
-  scale: 2.5;
-`;
-
-const AudioCall = () => {
-  const localAudioRef = useRef();
-  const remoteAudioRef = useRef();
-  const [callPartner, setCallPartner] = useState({ role: '', name: '' });
-  const [callDuration, setCallDuration] = useState(0);
-  const [isConnected, setIsConnected] = useState(false);
-  const userRole = useSelector((state) => state?.user?.role || '');
-  const userName = useSelector((state) => state?.user?.name || '');
-  const [roomId, setRoomId] = useState(null);
-  const peerConnection = useRef(null);
-
-  useEffect(() => {
-    // Fetch call partner data when component mounts
-    const fetchCallPartner = async () => {
-      try {
-        const response = await axios.get(`/api/call/partner?role1=${userRole}&role2=${userRole === 'ROLE_USER' ? 'ROLE_COUNSELOR' : 'ROLE_USER'}`);
-        setCallPartner(response.data);
-        setRoomId(response.data.id);
-      } catch (error) {
-        console.error('Failed to fetch call partner', error);
-      }
-    };
-    fetchCallPartner();
-  }, [userRole]);
-
-  useEffect(() => {
-    let timer;
-    if (isConnected) {
-      timer = setInterval(() => {
-        setCallDuration((prev) => prev + 1);
-      }, 1000);
-    } else {
-      clearInterval(timer);
-      setCallDuration(0);
+    svg {
+        font-size: 30px;
+        color: ${({ iconColor }) => iconColor || 'black'};  
     }
-    return () => clearInterval(timer);
-  }, [isConnected]);
+`;
 
-  const initiateCall = async () => {
-    // Logic to start the call
-    try {
-      await axios.post('/api/call/update-status', {
-        roomId,
-        status: 'BUSY',
-      });
-      setIsConnected(true);
-      // WebRTC logic to initiate the call
-      peerConnection.current = new RTCPeerConnection();
+const VideoConsultationScreen = () => {
+    const navigate = useNavigate();
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
+    const peerConnectionRef = useRef(null);
+    const signalingSocketRef = useRef(null);
+    const [isCameraOn, setCameraOn] = useState(true);
 
-      // Add local audio stream to the peer connection
-      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-        localAudioRef.current.srcObject = stream;
-        stream.getTracks().forEach((track) => {
-          peerConnection.current.addTrack(track, stream);
-        });
-      });
+    useEffect(() => {
+        // WebSocket을 통한 Signaling 서버 연결
+        signalingSocketRef.current = new WebSocket('ws://localhost:9090/ws-signaling');
+        
+        signalingSocketRef.current.onopen = () => {
+            console.log('Connected to the signaling server');
+        };
 
-      peerConnection.current.ontrack = (event) => {
-        remoteAudioRef.current.srcObject = event.streams[0];
-      };
+        signalingSocketRef.current.onmessage = async (message) => {
+            const data = JSON.parse(message.data);
+            switch (data.type) {
+                case 'offer':
+                    await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    const answer = await peerConnectionRef.current.createAnswer();
+                    await peerConnectionRef.current.setLocalDescription(answer);
+                    sendSignal('answer', answer);
+                    break;
+                case 'answer':
+                    await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    break;
+                case 'candidate':
+                    if (data.candidate) {
+                        await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
 
-      // Handle ICE candidates
-      peerConnection.current.onicecandidate = (event) => {
-        if (event.candidate) {
-          // Send the candidate to the remote peer
-          // TODO: Implement signaling server logic to exchange ICE candidates
+        signalingSocketRef.current.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        const startVideo = async () => {
+            try {
+                const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
+
+                peerConnectionRef.current = new RTCPeerConnection({
+                    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+                });
+
+                localStream.getTracks().forEach((track) => {
+                    peerConnectionRef.current.addTrack(track, localStream);
+                });
+
+                peerConnectionRef.current.ontrack = (event) => {
+                    if (remoteVideoRef.current) {
+                        remoteVideoRef.current.srcObject = event.streams[0];
+                    }
+                };
+
+                peerConnectionRef.current.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        sendSignal('candidate', event.candidate);
+                    }
+                };
+
+                const isCaller = true; // 실제 조건에 따라 설정
+                if (isCaller) {
+                    const offer = await peerConnectionRef.current.createOffer();
+                    await peerConnectionRef.current.setLocalDescription(offer);
+                    sendSignal('offer', offer);
+                }
+            } catch (error) {
+                console.error("Error accessing media devices.", error);
+            }
+        };
+
+        startVideo();
+
+        return () => {
+            if (localVideoRef.current?.srcObject) {
+                localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+            }
+            if (peerConnectionRef.current) {
+                peerConnectionRef.current.close();
+            }
+            if (signalingSocketRef.current) {
+                signalingSocketRef.current.close();
+            }
+        };
+    }, []);
+
+    const toggleCamera = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            localVideoRef.current.srcObject.getVideoTracks().forEach((track) => {
+                track.enabled = !track.enabled;
+                setCameraOn(track.enabled);
+            });
         }
-      };
+    };
 
-      // Create an offer and set local description
-      peerConnection.current.createOffer().then((offer) => {
-        return peerConnection.current.setLocalDescription(offer);
-      }).then(() => {
-        // TODO: Send the offer to the remote peer using the signaling server
-      });
-    } catch (error) {
-      console.error('Failed to initiate call', error);
-    }
-  };
+    const sendSignal = (type, data) => {
+        if (signalingSocketRef.current && signalingSocketRef.current.readyState === WebSocket.OPEN) {
+            signalingSocketRef.current.send(JSON.stringify({
+                type,
+                sdp: data.sdp || null,
+                candidate: data.candidate || null,
+            }));
+        }
+    };
 
-  const endCall = async () => {
-    // Logic to end the call
-    try {
-      await axios.post('/api/call/update-status', {
-        roomId,
-        status: 'IDLE',
-      });
-      setIsConnected(false);
-      // WebRTC logic to close the connection
-      if (peerConnection.current) {
-        peerConnection.current.close();
-        peerConnection.current = null;
-      }
-      if (localAudioRef.current && localAudioRef.current.srcObject) {
-        localAudioRef.current.srcObject.getTracks().forEach((track) => track.stop());
-        localAudioRef.current.srcObject = null;
-      }
-      remoteAudioRef.current.srcObject = null;
-    } catch (error) {
-      console.error('Failed to end call', error);
-    }
-  };
-
-  const formatCallDuration = (duration) => {
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
-  return (
-    <>
-      <Container>
-        <Header>
-          <h4>{callPartner.role}</h4>
-          <h2>{callPartner.name}</h2>
-          <h5>{formatCallDuration(callDuration)}</h5>
-        </Header>
-        <audio ref={localAudioRef} autoPlay muted playsInline />
-        <audio ref={remoteAudioRef} autoPlay playsInline />
-        <AcceptCall onClick={initiateCall} disabled={isConnected}>
-          <Call />
-        </AcceptCall>
-        <EndCall onClick={endCall} disabled={!isConnected}>
-          <End />
-        </EndCall>
-      </Container>
-    </>
-  );
+    return (
+        <ScreenContainer>
+            <StyledVideo ref={remoteVideoRef} autoPlay playsInline />
+            <VideoBox>
+                <StyledVideo ref={localVideoRef} autoPlay playsInline muted />
+            </VideoBox>
+            <ButtonGroup>
+                <Button color="white" iconColor="black">
+                    <CallIcon />
+                </Button>
+                <Button color="red" iconColor="white" onClick={() => navigate(-1)}>
+                    <CloseIcon />
+                </Button>
+                <Button color="darkgray" iconColor="white" onClick={toggleCamera}>
+                    <CameraswitchIcon />
+                </Button>
+            </ButtonGroup>
+        </ScreenContainer>
+    );
 };
 
-export default AudioCall;
+export default VideoConsultationScreen;
