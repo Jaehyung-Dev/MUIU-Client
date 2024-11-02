@@ -130,6 +130,7 @@ const EmotionGraph = () => {
     // 상태 변수로 데이터 값 지정
     const [weeklyValues, setWeeklyValues] = useState([1,2,3,4,5]);
     const [monthlyValues, setMonthlyValues] = useState([]);
+    
 
     const periodText = ["주간", "월간", "연간"];
     const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
@@ -157,7 +158,6 @@ const EmotionGraph = () => {
     }, []);
 
     useEffect(() => {
-      console.log(userId);
       const fetchData = async () => {
           try {
               const response = await fetch(`http://localhost:9090/diaries/emotions/${userId}`, {
@@ -170,9 +170,9 @@ const EmotionGraph = () => {
 
               console.log("Fetched data:", data); // 가져온 데이터 콘솔에 출력
 
-              // 서버에서 가져온 데이터를 각각 주간 및 월간 데이터로 설정
-              // setWeeklyValues(data.weeklyValues); 
-              // setMonthlyValues(data.monthlyValues); 
+            // 서버에서 가져온 데이터를 각각 주간 및 월간 데이터로 설정
+            setWeeklyValues(data.item.weeklyValues); 
+            setMonthlyValues(data.item.monthlyValues); 
               
               setIsLoaded(true);
           } catch (error) {
@@ -228,20 +228,23 @@ const EmotionGraph = () => {
                                 ))}
                                 <GraphLine
                                     points={weeklyValues
-                                        .map(
-                                            (value, index) => `${(index + 1) * 50},${200 - value * 40}`
+                                        .map((value, index) =>
+                                            value !== 0 ? `${(index + 1) * 50},${200 - value * 40}` : null
                                         )
+                                        .filter(point => point !== null) // 0 값 제거
                                         .join(" ")}
                                 />
-                                {weeklyValues.map((value, index) => (
-                                    <GraphPoint
-                                        key={index}
-                                        cx={(index + 1) * 50}
-                                        cy={200 - value * 40}
-                                        r="5"
-                                        color={getColorByValue(value)}
-                                    />
-                                ))}
+                                {weeklyValues.map((value, index) =>
+                                    value !== 0 ? (
+                                        <GraphPoint
+                                            key={index}
+                                            cx={(index + 1) * 50}
+                                            cy={200 - value * 40}
+                                            r="5"
+                                            color={getColorByValue(value)}
+                                        />
+                                    ) : null // 0 값일 경우 렌더링하지 않음
+                                )}
                             </YearlyGraph>
                             <GraphColumnDiv>
                                 {daysOfWeek.map((day, index) => (
@@ -263,21 +266,24 @@ const EmotionGraph = () => {
                                 />
                             ))}
                             <GraphLine
-                                points={monthlyData
-                                    .map(
-                                        (value, index) => `${(index + 1) * 60},${200 - value * 40}`
+                                points={monthlyValues
+                                    .map((value, index) =>
+                                        value !== 0 ? `${(index + 1) * 60},${200 - value * 40}` : null
                                     )
+                                    .filter(point => point !== null) // 0 값 제거
                                     .join(" ")}
                             />
-                            {monthlyData.map((value, index) => (
-                                <GraphPoint
-                                    key={index}
-                                    cx={(index + 1) * 60}
-                                    cy={200 - value * 40}
-                                    r="5"
-                                    color={getColorByValue(value)}
-                                />
-                            ))}
+                            {monthlyValues.map((value, index) =>
+                                value !== 0 ? (
+                                    <GraphPoint
+                                        key={index}
+                                        cx={(index + 1) * 60}
+                                        cy={200 - value * 40}
+                                        r="5"
+                                        color={getColorByValue(value)}
+                                    />
+                                ) : null // 0 값일 경우 렌더링하지 않음
+                            )}
                         </YearlyGraph>
                         <GraphColumnDiv1>
                             {weeksOfMonth.map((week, index) => (
