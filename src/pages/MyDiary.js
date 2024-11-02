@@ -8,6 +8,7 @@ import happy from '../svg/happy.svg';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const DiaryBackground = styled.div`
     width: 100%;
@@ -148,6 +149,14 @@ export const MyDiary = () => {
     const navigate = useNavigate();
 
     const [userData, setUserData] = useState(null); 
+    const navi = useNavigate();
+    const isLoginChk = useSelector((state) => state.memberSlice.isLogin);
+
+    useEffect(() => {
+        if(!isLoginChk) {
+          navi('/');
+        }
+      }, [isLoginChk, navi]);
 
     useEffect(() => {
          // 페이지 진입 시 스크롤을 맨 위로 설정
