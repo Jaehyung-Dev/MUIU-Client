@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const SUPPORT_API_URL = 'https://www.마음이음api.site/api/support';
+const SUPPORT_API_URL = 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/support';
 
 // 문의하기 API 호출 함수
 export const sendSupportMessage = async (formData) => {

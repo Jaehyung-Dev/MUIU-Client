@@ -9,7 +9,7 @@ export const WriteDiaryAPI = async (diaryData) => {
     }
 
     console.log('Sending diary data:', diaryData);
-    const response = await axios.post('https://www.마음이음api.site/diaries/write', diaryData, {
+    const response = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/write', diaryData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -37,7 +37,7 @@ export const handleDiarySubmission = async (diaryData, userId, navigate) => {
     }
 
     // 오늘 일기가 이미 작성되었는지 확인
-    const checkResponse = await axios.get(`https://www.마음이음api.site/diaries/check-today?userId=${userId}`, {
+    const checkResponse = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/check-today?userId=${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,7 +54,7 @@ export const handleDiarySubmission = async (diaryData, userId, navigate) => {
     } else {
       // 오늘 일기가 없는 경우 새 일기 작성
       console.log('Sending diary data:', diaryData);
-      const writeResponse = await axios.post('https://www.마음이음api.site/diaries/write', diaryData, {
+      const writeResponse = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/write', diaryData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

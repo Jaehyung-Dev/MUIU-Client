@@ -139,7 +139,7 @@ const JoinAgree = () => {
     useEffect(() => {
         const fetchData = async () => {
         try {
-            const response = await fetch('https://www.마음이음api.site/members');
+            const response = await fetch('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members');
             const result = await response.json();
             setData(result);
         } catch (error) {
@@ -203,7 +203,7 @@ const JoinAgree = () => {
 
     const termsText = `
 제1조(목적)
-이 약관은 주식회사 서연 회사(전자상거래 사업자)가 운영하는 마음이음(https://www.maumieum.co.kr) 몰(이하 “몰”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리․의무 및 책임사항을 규정함을 목적으로 합니다.
+이 약관은 주식회사 서연 회사(전자상거래 사업자)가 운영하는 %EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C(https://www.maumieum.co.kr) 몰(이하 “몰”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리․의무 및 책임사항을 규정함을 목적으로 합니다.
 ※「PC통신, 무선 등을 이용하는 전자상거래에 대해서도 그 성질에 반하지 않는 한 이 약관을 준용합니다.」
 제2조(정의)
 ① “몰”이란 주식회사 서연회사가 재화 또는 용역(이하 “재화 등”이라 함)을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 등을 거래할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.

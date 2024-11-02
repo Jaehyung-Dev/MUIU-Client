@@ -221,7 +221,7 @@ const Header = () => {
                     (
                         <>
                             <Title $searchOpen={searchOpen}>
-                                <StyledLink to="/main">마음이음</StyledLink>
+                                <StyledLink to="/main">%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C</StyledLink>
                             </Title>
                             <IconContainer>
                                 <SearchIconWrapper $searchOpen={searchOpen}>

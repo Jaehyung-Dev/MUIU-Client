@@ -220,7 +220,7 @@ export const MyPage = () => {
     useEffect(() => {
         const fetchProfileImage = async () => {
             try {
-                const response = await axios.get('https://www.마음이음api.site/apis/profile/me', {
+                const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/apis/profile/me', {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
                     },
@@ -261,7 +261,7 @@ export const MyPage = () => {
                 }
     
                 // Fetch the user's name instead of username
-                const response = await axios.get(`https://www.마음이음api.site/members/${memberSlice.id}/name-role`, {
+                const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${memberSlice.id}/name-role`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },
@@ -297,7 +297,7 @@ export const MyPage = () => {
             try {
                 const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
-                    'https://www.마음이음api.site/apis/profile/upload',
+                    'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/apis/profile/upload',
                     formData,
                     {
                         headers: { 
@@ -376,7 +376,7 @@ export const MyPage = () => {
                     return;
                 }
     
-                const response = await axios.delete(`https://www.마음이음api.site/members/${userId}/delete`, {
+                const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${userId}/delete`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     }
@@ -475,7 +475,7 @@ export const MyPage = () => {
                         <ArrowForwardIosIcon style={{color:"#999"}}/>
                     </div>
                     <div className="menu-item">
-                        <span className="menu-item-text2">© 마음이음. 모든 권리 보유.</span>
+                        <span className="menu-item-text2">© %EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C. 모든 권리 보유.</span>
                     </div>
                 </div>
             </MenuList>
