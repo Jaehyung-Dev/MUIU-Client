@@ -139,7 +139,7 @@ const JoinAgree = () => {
     useEffect(() => {
         const fetchData = async () => {
         try {
-            const response = await fetch('https://www.마음이음api.site/members');
+            const response = await fetch('https://www.xn--api-248mu45ca3z.site/members');
             const result = await response.json();
             setData(result);
         } catch (error) {

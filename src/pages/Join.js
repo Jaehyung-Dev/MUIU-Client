@@ -570,7 +570,7 @@ export const Join = () => {
       }
 
       // 서버에 아이디 중복 여부 요청
-      const response = await axios.post('https://www.마음이음api.site/members/username-check', {
+      const response = await axios.post('https://www.xn--api-248mu45ca3z.site/members/username-check', {
           username: joinForm.username
       });
 

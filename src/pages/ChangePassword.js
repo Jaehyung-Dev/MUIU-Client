@@ -110,7 +110,7 @@ const ChangePassword = () => {
             }
     
             const response = await axios.post(
-                `https://www.마음이음api.site/members/${memberSlice.id}/change-password`,
+                `https://www.xn--api-248mu45ca3z.site/members/${memberSlice.id}/change-password`,
                 { currentPassword, newPassword },
                 { headers: { 'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` } }
             );
