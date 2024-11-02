@@ -475,7 +475,7 @@ export const MyPage = () => {
                         <ArrowForwardIosIcon style={{color:"#999"}}/>
                     </div>
                     <div className="menu-item">
-                        <span className="menu-item-text2">© %EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C. 모든 권리 보유.</span>
+                        <span className="menu-item-text2">© 마음이음. 모든 권리 보유.</span>
                     </div>
                 </div>
             </MenuList>
