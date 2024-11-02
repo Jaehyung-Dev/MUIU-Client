@@ -14,6 +14,7 @@ import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
 
+
 const CoverDiv = styled.div`
     width: 100%;
     height: 100%;
@@ -332,6 +333,7 @@ const MyDiaryCollection = () => {
             ) : (
                 <>
                     <CalendarDiv>
+
                         <WeekCalendar diaryData={diaryData} onSelectDate={handleSelectDate} />
                     </CalendarDiv>
                     <ButtonBar>

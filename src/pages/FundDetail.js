@@ -58,7 +58,7 @@ const Main = styled.main`
     line-height: 1.4;
 
     p, span, h1, h2, h3, h4, h5, h6 {
-      margin: 0; /* 모든 기본 여백 제거 */
+      margin: 0; /* 모든 기본 속성 제거 */
     }
 
     /* Quill 에디터에서 인라인 스타일로 지정한 폰트 크기 적용 */

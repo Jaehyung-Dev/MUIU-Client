@@ -190,6 +190,7 @@ const FundPayment = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [charCount, setCharCount] = useState(0);
     const [name, setName] = useState('');
+    const [message, setMessage] = useState("");
 
     const totalAmountRef = useRef(null); // useRef를 통해 input 요소에 접근
     const nameInputRef = useRef(null); // 기부자 성함 input을 참조하는 useRef
@@ -249,6 +250,7 @@ const FundPayment = () => {
 
     // 메세지 길이 계산
     const handleMessageChange = (e) => {
+        setMessage(e.target.value);
         setCharCount(e.target.value.length);
     };
 
@@ -286,7 +288,8 @@ const FundPayment = () => {
           name: isAnonymous ? '익명 기부자' : name,
           totalAmount: totalAmount,
           targetAmount: post?.targetAmount,
-          percentage: (post?.currentAmount / post?.targetAmount) * 100
+          percentage: (post?.currentAmount / post?.targetAmount) * 100,
+          message 
         }
       });
     };
