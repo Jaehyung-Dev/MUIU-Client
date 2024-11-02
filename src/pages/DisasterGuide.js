@@ -75,7 +75,7 @@ const DisasterMessages = () => {
 
     useEffect(() => {
         if (region) {
-            axios.get(`https://www.xn--api-248mu45ca3z.site/api/disaster-messages/category?category=${region}`)
+            axios.get(`https://www.마음이음api.site/api/disaster-messages/category?category=${region}`)
                 .then(response => {
                     console.log("Fetched Messages:", response.data);
 
