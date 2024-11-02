@@ -214,7 +214,7 @@ const FundDetail = () => {
   // 케밥 - delete버튼
   const handleDeleteClick = async () => {
     try {
-      const response = await axios.delete(`http://localhost:9090/api/fund/post/${postId}`, {
+      const response = await axios.delete(`https://www.마음이음api.site/api/fund/post/${postId}`, {
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
         }
@@ -259,7 +259,7 @@ const FundDetail = () => {
     // 게시글 데이터를 서버에서 가져오는 함수
     const fetchPostDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+        const response = await axios.get(`https://www.마음이음api.site/api/fund/post/${postId}`, {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` // 토큰을 헤더에 포함
           }

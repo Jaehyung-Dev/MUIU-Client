@@ -5,7 +5,7 @@ export const verifySms = createAsyncThunk(
     'sms/send',
     async (phoneNumber, thunkApi) => {
         try {
-            const response = await axios.post(`http://localhost:9090/sms/send/${phoneNumber}`);
+            const response = await axios.post(`https://www.마음이음api.site/sms/send/${phoneNumber}`);
             return response.data;
         } catch (e) {
             return thunkApi.rejectWithValue(e);
@@ -17,7 +17,7 @@ export const verifyCounselNum = createAsyncThunk(
     'member/counselNum',
     async (verifyNumber, thunkApi) => {
         try{
-            const response = await axios.post(`http://localhost:9090/members/counselNum/${verifyNumber}`);
+            const response = await axios.post(`https://www.마음이음api.site/members/counselNum/${verifyNumber}`);
             return response.data;
         } catch (e) {
             return thunkApi.rejectWithValue(e);
@@ -30,7 +30,7 @@ export const join = createAsyncThunk(
     async (member, thunkApi) => {
         try {
             console.log("Sending member data to server:", member);
-            const response = await axios.post('http://localhost:9090/members/join', member);
+            const response = await axios.post('https://www.마음이음api.site/members/join', member);
 
             return response.data.item;   
         } catch(e) {
@@ -43,7 +43,7 @@ export const login = createAsyncThunk(
     'members/login',
     async (member, thunkApi) => {
         try {
-            const response = await axios.post('http://localhost:9090/members/login', member);
+            const response = await axios.post('https://www.마음이음api.site/members/login', member);
 
             return response.data.item;
         } catch(e) {
@@ -57,7 +57,7 @@ export const logout = createAsyncThunk(
     async (_, thunkApi) => {
         try {
             const response = await axios.get(
-                `http://localhost:9090/members/logout`,
+                `https://www.마음이음api.site/members/logout`,
                 {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`

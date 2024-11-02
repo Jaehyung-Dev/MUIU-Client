@@ -222,7 +222,7 @@ const MyDiaryWrite = () => {
     try {
       if (isEditing && diaryId) {
         // 수정 모드: 기존 일기를 업데이트
-        const response = await axios.put(`http://localhost:9090/diaries/${diaryId}`, diaryData, {
+        const response = await axios.put(`https://www.마음이음api.site/diaries/${diaryId}`, diaryData, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
