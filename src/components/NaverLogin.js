@@ -17,7 +17,7 @@ const NaverButton = styled.button`
 
 const NaverLogin = () => {
   const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
-  const REDIRECT_URI = "https://www.xn--hz2b60wa3n.site/oauth"; // Callback URL
+  const REDIRECT_URI = "https://www.마음이음.site/oauth"; // Callback URL
   
   // Math.random()을 이용한 임의 문자열 생성 함수
   const generateState = () => {

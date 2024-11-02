@@ -6,7 +6,7 @@ export const post = createAsyncThunk(
     async(formData, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.post('https://www.xn--api-248mu45ca3z.site/mind-column', {
+            const response = await axios.post('https://www.마음이음api.site/mind-column', {
                 mindColumDto : {mc_title : formData.mindColumDto.mc_title},
                 uploadFiles: formData.mindColumDto.mcfList
             }, {
@@ -27,7 +27,7 @@ export const getList = createAsyncThunk(
     async(_, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.get('https://www.xn--api-248mu45ca3z.site/mind-column', {
+            const response = await axios.get('https://www.마음이음api.site/mind-column', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -47,7 +47,7 @@ export const update = createAsyncThunk(
     async({id, formData}, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.patch(`https://www.xn--api-248mu45ca3z.site/mind-column/${id}`, formData, {
+            const response = await axios.patch(`https://www.마음이음api.site/mind-column/${id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     'Authorization': `Bearer ${token}`
@@ -66,7 +66,7 @@ export const deleteCard = createAsyncThunk(
     async(id, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.delete(`https://www.xn--api-248mu45ca3z.site/mind-column/${id}`, {
+            const response = await axios.delete(`https://www.마음이음api.site/mind-column/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
