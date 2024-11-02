@@ -184,7 +184,7 @@ const NaverPayIcon = () => (
 const FundPaymentSystem = () => {
   const location = useLocation();
   const navigate = useNavigate(); 
-  const { totalAmount, name, postId } = location.state || { totalAmount: 0, name: '익명', postId: null }; // state에서 totalAmount 받기, 없을 경우 기본값 0
+  const { totalAmount, name, postId, message } = location.state || { totalAmount: 0, name: '익명', postId: null }; // state에서 totalAmount 받기, 없을 경우 기본값 0
   const [percentage, setPercentage] = useState(0);
   const [post, setPost] = useState(null); 
   const [newPercentage, setNewPercentage] = useState(0);
@@ -224,6 +224,8 @@ const FundPaymentSystem = () => {
         amount: totalAmount,
         fundDate: today,  // 오늘 날짜
         id: userId,        // 로그인한 회원 ID
+        fundName: name,
+        message
       },{
         headers: {
         'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
