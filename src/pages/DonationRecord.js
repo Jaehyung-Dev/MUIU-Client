@@ -111,7 +111,7 @@ const DonationRecord = () => {
         // 기부 내역 데이터를 백엔드에서 가져오기
         const fetchDonationRecords = async () => {
             try {
-                const response = await axios.get('http://localhost:9090/api/fund/records', {
+                const response = await axios.get('https://www.마음이음api.site/api/fund/records', {
                     headers: {
                         'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
                     }

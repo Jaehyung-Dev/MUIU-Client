@@ -66,7 +66,7 @@ const VideoConsultationScreen = () => {
 
     useEffect(() => {
         // WebSocket을 통한 Signaling 서버 연결
-        signalingSocketRef.current = new WebSocket('ws://localhost:9090/ws-signaling');
+        signalingSocketRef.current = new WebSocket('ws://www.마음이음api.site/ws-signaling');
         
         signalingSocketRef.current.onopen = () => {
             console.log('Connected to the signaling server');

@@ -288,7 +288,6 @@ const MyDiaryCollection = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 </SearchDiv>
-
                 {searchTerm ? (
                 filteredDiaries.length > 0 ? (
                     filteredDiaries.map((diary) => (

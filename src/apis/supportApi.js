@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const SUPPORT_API_URL = 'http://localhost:9090/api/support';
+const SUPPORT_API_URL = 'https://www.마음이음api.site/api/support';
 
 // 문의하기 API 호출 함수
 export const sendSupportMessage = async (formData) => {

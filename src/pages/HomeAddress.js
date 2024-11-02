@@ -53,7 +53,7 @@ const HomeAddress = () => {
     useEffect(() => {
         const fetchAddress = async () => {
             try {
-                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/address`);
+                const response = await axios.get(`https://www.마음이음api.site/members/${memberSlice.id}/address`);
                 setAddress(response.data.item);
             } catch (error) {
                 console.error('Error fetching address:', error);
@@ -65,7 +65,7 @@ const HomeAddress = () => {
 
     const handleSaveAddress = async () => {
         try {
-            await axios.post(`http://localhost:9090/members/${memberSlice.id}/address`, { address }, {
+            await axios.post(`https://www.마음이음api.site/members/${memberSlice.id}/address`, { address }, {
                 headers: { 
                     'Content-Type': 'application/json', 
                     'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` 
