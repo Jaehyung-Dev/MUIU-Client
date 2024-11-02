@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import DonationDetails from '../components/DonationDetails';
 import Loading from '../pages/Loading'; 
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -184,6 +187,25 @@ const MenuItem = styled.div`
   }
 `;
 
+// toast 스타일을 CSS로 커스터마이징
+const toastStyle = `
+.custom-toast {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #FFCC00;
+}
+
+.custom-progress-bar {
+  background-color: #FFCC00 !important;
+}
+`;
+
+// 스타일을 페이지에 적용
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = toastStyle;
+document.head.appendChild(styleSheet);
+
 const FundDetail = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
   const [percentage, setPercentage] = useState(0);
@@ -221,12 +243,20 @@ const FundDetail = () => {
       });
       
       if (response.status === 200) {
-        alert('게시글이 성공적으로 삭제되었습니다.');
-        navigate('/fund'); // 게시글 목록 페이지로 이동
+        toast.success('게시글이 성공적으로 삭제되었습니다!', {
+          position: "top-center",
+          autoClose: 3000,
+          className: 'custom-toast',
+        });
+        setTimeout(() => navigate('/fund'), 3000);
       }
     } catch (error) {
       console.error('게시글 삭제 중 오류 발생:', error);
-      alert('게시글 삭제에 실패했습니다.');
+      toast.error('게시글 삭제에 실패했습니다.', {
+        position: "top-center",
+        autoClose: 3000,
+        className: 'custom-toast',
+      });
     }
   };
 
@@ -275,6 +305,7 @@ const FundDetail = () => {
         // 목표 금액과 현재 금액을 기반으로 퍼센트 계산
         const calculatedPercentage = (currentAmount / post.targetAmount) * 100;
         setPercentage(calculatedPercentage);
+        console.log(`calculatedPercentage`,calculatedPercentage);
       } catch (error) {
         console.error('Error fetching post details:', error);
       }
@@ -363,6 +394,11 @@ const FundDetail = () => {
           본 모금은 한국사회복지관협회에서 가업 검토 및 기부금 집행, 사후관리를 담당하고 있습니다.
         </div>
       </div>
+      <ToastContainer 
+        toastClassName="custom-toast"
+        style={{ marginTop: '2rem' }}
+        progressClassName="custom-progress-bar"
+      /> 
     </Main>
   );
 };
