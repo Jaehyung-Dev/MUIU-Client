@@ -161,7 +161,7 @@ const Fund = () => {
     // 서버에서 post 데이터를 가져오는 API 호출
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('https://www.마음이음api.site/api/fund/posts', {
+        const response = await axios.get('https://www.xn--api-248mu45ca3z.site/api/fund/posts', {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
           },

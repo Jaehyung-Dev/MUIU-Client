@@ -140,7 +140,7 @@ const MD_Block = () => {
                 return;
             }
 
-            const response = await axios.delete(`https://www.마음이음api.site/diaries/${diaryId}`, {
+            const response = await axios.delete(`https://www.xn--api-248mu45ca3z.site/diaries/${diaryId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -177,7 +177,7 @@ const MD_Block = () => {
                         return;
                     }
 
-                    const response = await axios.get(`https://www.마음이음api.site/diaries/user/${memberSlice.id}/latest`, {
+                    const response = await axios.get(`https://www.xn--api-248mu45ca3z.site/diaries/user/${memberSlice.id}/latest`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`,

@@ -110,7 +110,7 @@ const DiaryApp = () => {
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
 
-                const response = await axios.get(`https://www.마음이음api.site/members/${memberSlice.id}/name`, {
+                const response = await axios.get(`https://www.xn--api-248mu45ca3z.site/members/${memberSlice.id}/name`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },
