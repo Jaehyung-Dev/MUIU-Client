@@ -1,13 +1,19 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import CreateIcon from '@mui/icons-material/Create';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import TimelineIcon from '@mui/icons-material/Timeline';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
 import axios from 'axios';
+
+// 기분에 따른 SVG 파일 불러오기
+import angry from '../svg/angry.svg';
+import depress from '../svg/depress.svg';
+import normal from '../svg/normal.svg';
+import good from '../svg/good.svg';
+import happy from '../svg/happy.svg';
+
 
 const CoverDiv = styled.div`
     width: 100%;
@@ -46,42 +52,13 @@ const CalendarDiv = styled.div`
     width: 80%;
     min-height: 17vh;
     background-color: white;
-    margin-top: 1rem;    
+    margin-top: 1rem;
     border-radius: 10px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    @media screen and (max-width: 600px) {
-        min-height: 20vh;
-    }
 `;
-
-const diaryData = {
-    '2024-10-02': 1,
-    '2024-10-03': 3,
-    '2024-10-05': 5,
-    '2024-10-06': 4,
-    '2024-10-07': 2,
-    '2024-10-08': 1,
-    '2024-10-11': 4,
-    '2024-10-13': 1,
-    '2024-10-15': 5,
-    '2024-10-16': 4,
-    '2024-10-18': 1,
-    '2024-10-19': 3,
-    '2024-10-20': 5,
-    '2024-10-21': 4,
-    '2024-10-22': 2,
-    '2024-10-24': 3,
-    '2024-10-25': 5,
-    '2024-10-26': 4,
-    '2024-10-28': 1,
-    '2024-10-29': 3,
-    '2024-10-30': 5,
-    '2024-10-31': 4
-};
 
 const CalendarHeader = styled.div`
     display: flex;
@@ -99,7 +76,7 @@ const HeaderTitle = styled.div`
     justify-content: center;
     flex-grow: 1;
 
-    b:hover{
+    b:hover {
         cursor: pointer;
     }
 `;
@@ -125,6 +102,7 @@ const DayBox = styled.div`
     border-radius: 50%;
     padding: 5px;
     background-color: ${({ emotion }) => getEmotionColor(emotion)};
+    cursor: pointer;
 `;
 
 const WeekDaysHeader = styled.div`
@@ -135,7 +113,6 @@ const WeekDaysHeader = styled.div`
     margin-bottom: 0.5rem;
     text-align: center;
     color: gray;
-    // font-size: 0.95rem;
 
     @media (max-width: 600px) {
         gap: 1.8rem;
@@ -146,23 +123,6 @@ const RotatingArrow = styled(ArrowDropDownIcon)`
     transition: transform 0.3s ease;
     transform: ${({ open }) => (open ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
-
-const getEmotionColor = (emotion) => {
-    switch (emotion) {
-        case 5:
-            return "#00C7BE";
-        case 4:
-            return "#34C759";
-        case 3:
-            return "#FFCC00";
-        case 2:
-            return "#FF9500";
-        case 1:
-            return "#FF3B30";
-        default:
-            return "transparent";
-    }
-};
 
 const ButtonBar = styled.div`
     width: 85%;
@@ -185,41 +145,71 @@ const ButtonBar = styled.div`
     }
 `;
 
+// 기분별 아이콘과 색상 설정
+const moodIcons = {
+    1: angry,
+    2: depress,
+    3: normal,
+    4: good,
+    5: happy,
+};
 
-const WeekCalendar = () => {
-    const navi = useNavigate();
-    const [showFullCalendar, setShowFullCalendar] = useState(false); // 전체 달력 표시 여부
+const moodMapping = {
+    "happy": 5,
+    "good": 4,
+    "soso": 3,
+    "bad": 2,
+    "dissatisfied": 1
+};
 
-    const handleChartClick = () => {
-        navi('/emotion-graph');
-    };
+const getEmotionColor = (emotion) => {
+    switch (emotion) {
+        case 5:
+            return "#00C7BE";
+        case 4:
+            return "#34C759";
+        case 3:
+            return "#FFCC00";
+        case 2:
+            return "#FF9500";
+        case 1:
+            return "#FF3B30";
+        default:
+            return "transparent";
+    }
+};
+
+// 달력 컴포넌트
+const WeekCalendar = ({ diaryData, onSelectDate }) => {
+    const [showFullCalendar, setShowFullCalendar] = useState(false);
 
     const handleDropdownClick = () => {
-        setShowFullCalendar((prev) => !prev); // 전체 달력 토글
+        setShowFullCalendar((prev) => !prev);
     };
 
-    // 둘째 주 날짜 (2024년 10월 8일 ~ 10월 14일)
-    const secondWeek = [
-        '2024-10-08', '2024-10-09', '2024-10-10',
-        '2024-10-11', '2024-10-12', '2024-10-13', '2024-10-14'
-    ];
+    const handleDateClick = (day) => {
+        if (day) onSelectDate(day);
+    };
 
     const weekDayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const fullMonthDays = [
+        ...Array(2).fill(null),
+        ...Array.from({ length: 31 }, (_, i) => `2024-10-${String(i + 1).padStart(2, '0')}`)
+    ];
 
-    // 10월 전체 날짜 (2024-10-01부터 2024-10-31까지)
-    const fullMonthDays = Array.from({ length: 31 }, (_, i) => `2024-10-${String(i + 1).padStart(2, '0')}`);
+    const secondWeek = fullMonthDays.slice(7, 14);
 
     return (
         <>
             <CalendarHeader>
                 <HeaderTitle>
                     <CalendarTodayIcon style={{ marginRight: '0.5rem' }} />
-                    <b onClick={handleChartClick}>2024년 10월</b>
+                    <b>2024년 10월</b>
                 </HeaderTitle>
                 <RotatingArrow
                     open={showFullCalendar}
-                    style={{ marginLeft: 'auto', marginRight: '15px', cursor: 'pointer' }} 
-                    onClick={handleDropdownClick} 
+                    style={{ marginLeft: 'auto', marginRight: '15px', cursor: 'pointer' }}
+                    onClick={handleDropdownClick}
                 />
             </CalendarHeader>
             <WeekDaysHeader>
@@ -228,9 +218,13 @@ const WeekCalendar = () => {
                 ))}
             </WeekDaysHeader>
             <CalendarWrapper>
-                {(showFullCalendar ? fullMonthDays : secondWeek).map((day) => (
-                    <DayBox key={day} emotion={diaryData[day]}>
-                        {new Date(day).getDate()}
+                {(showFullCalendar ? fullMonthDays : secondWeek).map((day, index) => (
+                    <DayBox
+                        key={index}
+                        emotion={day ? diaryData[day]?.mood : undefined}
+                        onClick={() => handleDateClick(day)}
+                    >
+                        {day ? new Date(day).getDate() : ''}
                     </DayBox>
                 ))}
             </CalendarWrapper>
@@ -238,10 +232,13 @@ const WeekCalendar = () => {
     );
 };
 
+// 메인 컴포넌트
 const MyDiaryCollection = () => {
     const navi = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredDiaries, setFilteredDiaries] = useState([]);
+    const [diaryData, setDiaryData] = useState({});
+    const [selectedDiary, setSelectedDiary] = useState(null);
     const [isSearching, setIsSearching] = useState(false);
 
     const handleWriteClick = () => {
@@ -251,9 +248,48 @@ const MyDiaryCollection = () => {
     const handleChartClick = () => {
         navi('/emotion-graph');
     };
-    
-     // 검색어가 변경될 때마다 API 호출
-     useEffect(() => {
+
+    const handleSelectDate = (date) => {
+        const diary = diaryData[date];
+        setSelectedDiary(diary ? diary : null);
+    };
+
+    useEffect(() => {
+        const fetchDiaryData = async () => {
+            try {
+                const token = sessionStorage.getItem('ACCESS_TOKEN');
+                const response = await axios.get('http://localhost:9090/diaries/user', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+
+                const data = response.data.items || response.data.item || [];
+                const moodData = {};
+                let latestDiary = null;
+
+                data.forEach(diary => {
+                    const date = new Date(diary.regdate).toISOString().split('T')[0];
+                    const mood = diary.mood;
+
+                    if (date && mood && moodMapping[mood] !== undefined) {
+                        moodData[date] = { ...diary, mood: moodMapping[mood] };
+                    }
+
+                    if (!latestDiary || new Date(diary.regdate) > new Date(latestDiary.regdate)) {
+                        latestDiary = diary;
+                    }
+                });
+
+                setDiaryData(moodData);
+                setSelectedDiary(latestDiary);
+            } catch (error) {
+                console.error('Error fetching diary data:', error);
+            }
+        };
+
+        fetchDiaryData();
+    }, []);
+
+    useEffect(() => {
         const fetchSearchResults = async () => {
             if (searchTerm) {
                 setIsSearching(true);
@@ -274,21 +310,18 @@ const MyDiaryCollection = () => {
         };
         fetchSearchResults();
     }, [searchTerm]);
-    
+
     return (
-            <CoverDiv>
-                <SearchDiv>
-                    <SearchIcon style={{
-                        margin: '0 1rem',
-                    }} />
-                    <input
+        <CoverDiv>
+            <SearchDiv>
+                <SearchIcon style={{ margin: '0 1rem' }} />
+                <input
                     type="text"
                     placeholder="Search"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 </SearchDiv>
-
                 {searchTerm ? (
                 filteredDiaries.length > 0 ? (
                     filteredDiaries.map((diary) => (
@@ -300,15 +333,16 @@ const MyDiaryCollection = () => {
             ) : (
                 <>
                     <CalendarDiv>
-                        <WeekCalendar />
+
+                        <WeekCalendar diaryData={diaryData} onSelectDate={handleSelectDate} />
                     </CalendarDiv>
                     <ButtonBar>
-                        {/* <TimelineIcon onClick={handleChartClick} className='click'/> */}
-                    {/* <CreateIcon onClick={handleWriteClick} className='click'/> */}
-                    <div onClick={handleChartClick} className='click'>분석보기</div>
-                    <div onClick={handleWriteClick} className='click'>일기쓰기</div>
+                        <div onClick={handleChartClick} className="click">분석보기</div>
+                        <div onClick={handleWriteClick} className="click">일기쓰기</div>
                     </ButtonBar>
-                    <MD_Block /> {/* 기본 최신 일기 */}
+                    {selectedDiary && (
+                        <MD_Block diaryData={selectedDiary} />
+                    )}
                 </>
             )}
         </CoverDiv>

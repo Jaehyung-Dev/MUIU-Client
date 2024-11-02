@@ -139,7 +139,7 @@ const MD_Block = ({ diaryData: propDiaryData }) => {
                 return;
             }
 
-            const response = await axios.delete(`http://localhost:9090/diaries/${diaryId}`, {
+            const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/${diaryId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -166,8 +166,11 @@ const MD_Block = ({ diaryData: propDiaryData }) => {
                     const memberSlice = JSON.parse(JSON.parse(persistRoot).memberSlice);
                     const userId = memberSlice.id;
 
-                    const response = await axios.get(`http://localhost:9090/diaries/user/${userId}/latest`, {
-                        headers: { 'Authorization': `Bearer ${token}` },
+                    const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/user/${memberSlice.id}/latest`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
                     });
 
                     if (response.status === 200 && response.data.item) {

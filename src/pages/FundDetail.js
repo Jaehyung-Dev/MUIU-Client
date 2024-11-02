@@ -58,7 +58,7 @@ const Main = styled.main`
     line-height: 1.4;
 
     p, span, h1, h2, h3, h4, h5, h6 {
-      margin: 0; /* 모든 기본 여백 제거 */
+      margin: 0; /* 모든 기본 속성 제거 */
     }
 
     /* Quill 에디터에서 인라인 스타일로 지정한 폰트 크기 적용 */
@@ -236,7 +236,7 @@ const FundDetail = () => {
   // 케밥 - delete버튼
   const handleDeleteClick = async () => {
     try {
-      const response = await axios.delete(`http://localhost:9090/api/fund/post/${postId}`, {
+      const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
         }
@@ -289,7 +289,7 @@ const FundDetail = () => {
     // 게시글 데이터를 서버에서 가져오는 함수
     const fetchPostDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+        const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}` // 토큰을 헤더에 포함
           }

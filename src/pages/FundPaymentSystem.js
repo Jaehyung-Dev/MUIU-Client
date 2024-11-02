@@ -184,7 +184,7 @@ const NaverPayIcon = () => (
 const FundPaymentSystem = () => {
   const location = useLocation();
   const navigate = useNavigate(); 
-  const { totalAmount, name, postId } = location.state || { totalAmount: 0, name: '익명', postId: null }; // state에서 totalAmount 받기, 없을 경우 기본값 0
+  const { totalAmount, name, postId, message } = location.state || { totalAmount: 0, name: '익명', postId: null }; // state에서 totalAmount 받기, 없을 경우 기본값 0
   const [percentage, setPercentage] = useState(0);
   const [post, setPost] = useState(null); 
   const [newPercentage, setNewPercentage] = useState(0);
@@ -197,7 +197,7 @@ const FundPaymentSystem = () => {
 
     const fetchPostData = async () => {
       try {
-          const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
+          const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
             headers: {
               'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`  // 토큰을 헤더에 추가
             }
@@ -219,11 +219,13 @@ const FundPaymentSystem = () => {
 
       console.log(`today값:`,today);
 
-      await axios.post(`http://localhost:9090/api/fund/payment`, {
+      await axios.post(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/payment`, {
         postId,            // 결제 대상 게시글 ID
         amount: totalAmount,
         fundDate: today,  // 오늘 날짜
         id: userId,        // 로그인한 회원 ID
+        fundName: name,
+        message
       },{
         headers: {
         'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
@@ -267,7 +269,7 @@ const FundPaymentSystem = () => {
               totalPayAmount: totalAmount, // 결제 금액
               taxScopeAmount: totalAmount, // 과세 대상 금액
               taxExScopeAmount: 0, // 면세 대상 금액
-              returnUrl: "http://localhost:3000/fund-payment-success" 
+              returnUrl: "https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment-success" 
             });
           });
         }
@@ -292,8 +294,8 @@ const FundPaymentSystem = () => {
                 orderId: orderId,
                 orderName: '기부',
                 customerName: name || '테스트 사용자',
-                successUrl: 'http://localhost:3000/fund-payment-success',
-                failUrl: 'http://localhost:3000/fund-payment',
+                successUrl: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment-success',
+                failUrl: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment',
               });
             } catch (error) {
               console.error("결제 요청 중 오류 발생:", error); 

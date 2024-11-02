@@ -37,6 +37,7 @@ const MindColumnPost = () => {
 
   const handleAddImage = useCallback((e) => {
     const files = e.target.files;
+
     if (files) {
       const newImagesArray = Array.from(files).map((file) => ({
         file,
@@ -72,15 +73,17 @@ const MindColumnPost = () => {
       mcfList: imageMetadata,
     }));
 
-    images.forEach((image, index) => {
-      if(image.isNew && image.file) {
-        data.append("mcfList", image.file);
-      }
-    });
+    // images.forEach((image, index) => {
+    //   if(image.isNew && image.file) {
+    //     data.append("mcfList", image.file);
+    //   }
+    // });
 
-    deletedFiles.forEach(id => {
-      data.append("deletedFiles", id);
-    });
+    // deletedFiles.forEach(id => {
+    //   data.append("deletedFiles", id);
+    // });
+
+    data.append("deleteFiles", deletedFiles);
 
     try {
       if (editingColumn) {

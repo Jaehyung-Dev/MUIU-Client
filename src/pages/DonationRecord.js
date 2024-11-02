@@ -78,21 +78,61 @@ const ConsultationList = styled.div`
 `;
 
 const ConsultationCard = styled.div`
+    p, span, h1, h2, h3, h4, h5, h6 {
+      margin: 0; /* 모든 기본 여백 제거 */
+    }
+
+    letter-spacing: 0.02em; 
+
     background-color: #fff;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 1.5rem;
+    border-radius: 12px;
     text-align: left;
     width: 100%;
     box-sizing: border-box;
-    line-height: 0.5;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 0.6rem;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .date {
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .amount {
+        font-size: 1rem;
+        color: #3A76E9;
+        font-weight: bold;
+    }
+
+    .message {
+        font-size: 0.9rem;
+        color: #666;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+    }
 `;
 
-const CardContent = styled.div`
-    flex: 1;
-`;
 
 const DonationRecord = () => {
     const navigate = useNavigate();
@@ -111,7 +151,7 @@ const DonationRecord = () => {
         // 기부 내역 데이터를 백엔드에서 가져오기
         const fetchDonationRecords = async () => {
             try {
-                const response = await axios.get('http://localhost:9090/api/fund/records', {
+                const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/records', {
                     headers: {
                         'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
                     }
@@ -147,12 +187,13 @@ const DonationRecord = () => {
                         <ConsultationList>
                             {donationRecords.map((record) => (
                                 <ConsultationCard key={record.fundId}>
-                                    <CardContent>
-                                        <strong>{record.title}</strong>
-                                        <p>일시: {new Date(record.fundDate).toLocaleDateString()}</p>
-                                        <p>금액: {record.amount.toLocaleString()}₩</p>
-                                        <p>후원자명: {record.username}</p>
-                                    </CardContent>
+                                    <div className="header">
+                                        <div className="title">{record.title}</div>
+                                        <p className="date">{new Date(record.fundDate).toLocaleDateString()}</p>
+                                    </div>
+                                    <p className="amount">금액: {record.amount.toLocaleString()}원</p>
+                                    <p>후원자명: {record.fundName}</p>
+                                    {record.message && <p className="message">메시지: {record.message}</p>}
                                 </ConsultationCard>
                             ))}
                         </ConsultationList>
