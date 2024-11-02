@@ -197,7 +197,7 @@ const FundPaymentSystem = () => {
 
     const fetchPostData = async () => {
       try {
-          const response = await axios.get(`https://www.마음이음api.site/api/fund/post/${postId}`, {
+          const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
             headers: {
               'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`  // 토큰을 헤더에 추가
             }
@@ -219,7 +219,7 @@ const FundPaymentSystem = () => {
 
       console.log(`today값:`,today);
 
-      await axios.post(`https://www.마음이음api.site/api/fund/payment`, {
+      await axios.post(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/payment`, {
         postId,            // 결제 대상 게시글 ID
         amount: totalAmount,
         fundDate: today,  // 오늘 날짜
@@ -263,11 +263,11 @@ const FundPaymentSystem = () => {
           oPay.open({
               merchantUserKey: "test-user-1234", // 테스트 사용자 식별 키
               merchantPayKey: "test-order-5678", // 테스트 주문 번호
-              productName: post?.title || "마음이음 기부", // 상품 이름
+              productName: post?.title || "%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C 기부", // 상품 이름
               totalPayAmount: totalAmount, // 결제 금액
               taxScopeAmount: totalAmount, // 과세 대상 금액
               taxExScopeAmount: 0, // 면세 대상 금액
-              returnUrl: "https://www.마음이음.site/fund-payment-success" 
+              returnUrl: "https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment-success" 
             });
           });
         }
@@ -292,8 +292,8 @@ const FundPaymentSystem = () => {
                 orderId: orderId,
                 orderName: '기부',
                 customerName: name || '테스트 사용자',
-                successUrl: 'https://www.마음이음.site/fund-payment-success',
-                failUrl: 'https://www.마음이음.site/fund-payment',
+                successUrl: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment-success',
+                failUrl: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C.site/fund-payment',
               });
             } catch (error) {
               console.error("결제 요청 중 오류 발생:", error); 
