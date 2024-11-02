@@ -6,7 +6,7 @@ export const createFundPost = createAsyncThunk(
   'fund/createFundPost',
   async (formData, thunkApi) => {
       try {
-          const response = await axios.post('https://www.마음이음api.site/api/fund/post', formData, {
+          const response = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post', formData, {
               headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                 'Content-Type': 'multipart/form-data',
@@ -25,7 +25,7 @@ export const updateFundPost = createAsyncThunk(
   'fund/updateFundPost',
   async ({ postId, postData }, thunkApi) => {
       try {
-          const response = await axios.put(`https://www.마음이음api.site/api/fund/post/${postId}`, postData, {
+          const response = await axios.put(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, postData, {
               headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                   'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const uploadImage = createAsyncThunk(
       formData.append('file', file);
 
       try {
-          const response = await axios.post('https://www.마음이음api.site/api/fund/upload', formData, {
+          const response = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/upload', formData, {
               headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                 'Content-Type': 'multipart/form-data',

@@ -14,7 +14,7 @@ module.exports = function(app) {
     app.use(
         '/api2', // api path parameter
         createProxyMiddleware({
-            target: 'https://www.마음이음api.site', // endpoint
+            target: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site', // endpoint
             changeOrigin: true,
         })
     );
@@ -23,7 +23,7 @@ module.exports = function(app) {
     app.use(
         '/socket.io', // socket.io path parameter
         createProxyMiddleware({
-            target: 'https://www.마음이음api.site', // socket.io 서버 endpoint
+            target: 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site', // socket.io 서버 endpoint
             ws: true, // WebSocket 지원
             changeOrigin: true,
         })
