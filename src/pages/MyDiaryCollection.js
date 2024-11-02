@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState, useEffect  } from 'react';
-=======
 import React, { useState, useEffect } from 'react';
->>>>>>> main
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -10,8 +6,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
 import axios from 'axios';
-<<<<<<< HEAD
-=======
 
 // 기분에 따른 SVG 파일 불러오기
 import angry from '../svg/angry.svg';
@@ -19,7 +13,7 @@ import depress from '../svg/depress.svg';
 import normal from '../svg/normal.svg';
 import good from '../svg/good.svg';
 import happy from '../svg/happy.svg';
->>>>>>> main
+
 
 const CoverDiv = styled.div`
     width: 100%;
