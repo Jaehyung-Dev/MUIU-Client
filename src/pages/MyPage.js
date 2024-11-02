@@ -220,7 +220,7 @@ export const MyPage = () => {
     useEffect(() => {
         const fetchProfileImage = async () => {
             try {
-                const response = await axios.get('http://localhost:9090/apis/profile/me', {
+                const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/apis/profile/me', {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
                     },
@@ -261,7 +261,7 @@ export const MyPage = () => {
                 }
     
                 // Fetch the user's name instead of username
-                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
+                const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${memberSlice.id}/name-role`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },
@@ -297,7 +297,7 @@ export const MyPage = () => {
             try {
                 const token = sessionStorage.getItem('ACCESS_TOKEN');
                 const response = await axios.post(
-                    'http://localhost:9090/apis/profile/upload',
+                    'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/apis/profile/upload',
                     formData,
                     {
                         headers: { 
@@ -376,7 +376,7 @@ export const MyPage = () => {
                     return;
                 }
     
-                const response = await axios.delete(`http://localhost:9090/members/${userId}/delete`, {
+                const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${userId}/delete`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     }

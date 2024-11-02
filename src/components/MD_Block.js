@@ -108,10 +108,9 @@ const moodIcons = {
     happy: happy,
 };
 
-const MD_Block = () => {
+const MD_Block = ({ diaryData: propDiaryData }) => {
     const [menuVisible, setMenuVisible] = useState(false);
-    const [diaryData, setDiaryData] = useState({ title: '', content: '', regdate: '', id: null, mood: '' });
-    const [userId, setUserId] = useState(null);
+    const [diaryData, setDiaryData] = useState(propDiaryData || null);
 
     const navigate = useNavigate();
 
@@ -140,7 +139,7 @@ const MD_Block = () => {
                 return;
             }
 
-            const response = await axios.delete(`http://localhost:9090/diaries/${diaryId}`, {
+            const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/${diaryId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -159,44 +158,31 @@ const MD_Block = () => {
     };
 
     useEffect(() => {
-        const fetchDiaryData = async () => {
-            try {
-                const persistRoot = sessionStorage.getItem('persist:root');
-                if (!persistRoot) {
-                    console.error('유저 정보 없음');
-                    return;
-                }
-
-                const parsedRoot = JSON.parse(persistRoot);
-                const memberSlice = JSON.parse(parsedRoot.memberSlice);
-
-                if (memberSlice.isLogin && memberSlice.id) {
+        if (!propDiaryData) {
+            const fetchDiaryData = async () => {
+                try {
                     const token = sessionStorage.getItem('ACCESS_TOKEN');
-                    if (!token) {
-                        console.error('JWT token not found');
-                        return;
-                    }
+                    const persistRoot = sessionStorage.getItem('persist:root');
+                    const memberSlice = JSON.parse(JSON.parse(persistRoot).memberSlice);
+                    const userId = memberSlice.id;
 
-                    const response = await axios.get(`http://localhost:9090/diaries/user/${memberSlice.id}/latest`, {
+                    const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/user/${memberSlice.id}/latest`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-                    
+
                     if (response.status === 200 && response.data.item) {
                         setDiaryData(response.data.item);
-                        console.log('Diary data set:', response.data.item);
-                    } else {
-                        console.error('일기 데이터를 가져오는 중 오류');
                     }
+                } catch (error) {
+                    console.error('오류:', error);
                 }
-            } catch (error) {
-                console.error('오류:', error);
-            }
-        };
-        fetchDiaryData();
-    }, []);
+            };
+            fetchDiaryData();
+        }
+    }, [propDiaryData]);
 
     return (
         <>

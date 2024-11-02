@@ -165,7 +165,7 @@ const Fund = () => {
     // 서버에서 post 데이터를 가져오는 API 호출
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:9090/api/fund/posts', {
+        const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/posts', {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
           },
