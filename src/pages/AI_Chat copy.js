@@ -140,8 +140,8 @@ const AI_Chat = () => {
     setMessage([...message, { sender: 'user', text: input }]);
 
     try {
+      const aiReply = await clovaApis(input);
       setInput('');
-      const aiReply = await clovaApis();
       setMessage(prevMessages => [...prevMessages, { sender: 'ai', text: aiReply }]);
     } catch (e) {
       console.error('Error:', e);
