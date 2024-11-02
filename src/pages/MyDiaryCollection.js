@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -7,6 +7,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import { useNavigate } from 'react-router-dom';
 import MD_Block from '../components/MD_Block';
+import axios from 'axios';
 
 const CoverDiv = styled.div`
     width: 100%;
@@ -239,6 +240,9 @@ const WeekCalendar = () => {
 
 const MyDiaryCollection = () => {
     const navi = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredDiaries, setFilteredDiaries] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
 
     const handleWriteClick = () => {
         navi('/my-diary-write');
@@ -247,26 +251,66 @@ const MyDiaryCollection = () => {
     const handleChartClick = () => {
         navi('/emotion-graph');
     };
-
+    
+     // 검색어가 변경될 때마다 API 호출
+     useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (searchTerm) {
+                setIsSearching(true);
+                try {
+                    const token = sessionStorage.getItem('ACCESS_TOKEN');
+                    const response = await axios.get(`http://localhost:9090/diaries/search?query=${searchTerm}`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                    setFilteredDiaries(response.data.item || []);
+                } catch (error) {
+                    console.error('Error fetching search results:', error);
+                } finally {
+                    setIsSearching(false);
+                }
+            } else {
+                setFilteredDiaries([]);
+            }
+        };
+        fetchSearchResults();
+    }, [searchTerm]);
+    
     return (
-        <>
             <CoverDiv>
                 <SearchDiv>
                     <SearchIcon style={{
                         margin: '0 1rem',
                     }} />
-                    <input type='text' placeholder='Search'></input>
+                    <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 </SearchDiv>
-                <CalendarDiv>
-                    <WeekCalendar />
-                </CalendarDiv>
-                <ButtonBar>
+                {searchTerm ? (
+                filteredDiaries.length > 0 ? (
+                    filteredDiaries.map((diary) => (
+                        <MD_Block key={diary.diary_id} diaryData={diary} />
+                    ))
+                ) : (
+                    <p>검색 결과가 없습니다.</p>
+                )
+            ) : (
+                <>
+                    <CalendarDiv>
+                        <WeekCalendar />
+                    </CalendarDiv>
+                    <ButtonBar>
+                        {/* <TimelineIcon onClick={handleChartClick} className='click'/> */}
+                    {/* <CreateIcon onClick={handleWriteClick} className='click'/> */}
                     <div onClick={handleChartClick} className='click'>분석보기</div>
                     <div onClick={handleWriteClick} className='click'>일기쓰기</div>
-                </ButtonBar>
-                <MD_Block/>
-            </CoverDiv>
-        </>
+                    </ButtonBar>
+                    <MD_Block /> {/* 기본 최신 일기 */}
+                </>
+            )}
+        </CoverDiv>
     );
 };
 

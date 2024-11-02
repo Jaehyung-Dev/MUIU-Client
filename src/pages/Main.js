@@ -352,8 +352,6 @@ const PageNumber = styled.div`
 export const Main = () => {
     const navi = useNavigate();
     const dispatch = useDispatch();
-    const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
-    const location = useLocation();
 
     const [userData, setUserData] = useState(null); 
 
@@ -453,17 +451,6 @@ export const Main = () => {
                 });
         }
     }, [titleLocation]);
-    // ------------------ 기존 코드
-    // useEffect(() => {
-    //     if (naverLoginChk) {
-    //         const params = new URLSearchParams(location.search);
-    //         const token = params.get('token');
-    //         if (naverLoginChk && token) {
-    //             sessionStorage.setItem('ACCESS_TOKEN', token);
-    //             dispatch(fetchUser(token));
-    //         }
-    //     }
-    // }, [dispatch, naverLoginChk, location]);
 
     // useEffect(() => {
     //     axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)

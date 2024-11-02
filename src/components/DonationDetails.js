@@ -54,8 +54,7 @@ const TargetText = styled.p`
   margin-top: -1.3rem;
 `;
 
-// DonationDetails component
-const DonationDetails = ({ imageSrc, title, recipient, percentage = 0, targetAmount = 0 }) => {
+const DonationDetails = ({ imageSrc, title, recipient, percentage , targetAmount = 0 }) => {
   return (
     <>
       <PostImg 
