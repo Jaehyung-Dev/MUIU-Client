@@ -129,7 +129,7 @@ const AI_Chat = () => {
   useEffect(() => {
     const initialMessage = {
       sender: 'ai',
-      text: '안녕하세요. %EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C입니다. 무슨일로 찾아오셨나요?'
+      text: '안녕하세요. 마음이음입니다. 무슨일로 찾아오셨나요?'
     };
     setMessage([initialMessage]);
   }, []);

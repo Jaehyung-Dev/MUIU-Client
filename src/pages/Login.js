@@ -236,7 +236,7 @@ export const Login = () => {
         <MainContainer>
           <LogoDiv>
             <img src={logo} alt='logo'/>
-            <p>안녕하세요<br/>%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8C입니다.</p>
+            <p>안녕하세요<br/>마음이음입니다.</p>
           </LogoDiv>
           <InputDiv>
             <InputDefault
