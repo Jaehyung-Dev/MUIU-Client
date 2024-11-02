@@ -250,7 +250,7 @@ const Chat = () => {
 
   useEffect(() => {
     if(chatRoomId) {
-    const socket = new SockJS('http://localhost:9090/ws');
+    const socket = new SockJS('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/ws');
     const client = Stomp.over(socket);
   
     client.reconnectDelay = 5000;
@@ -292,7 +292,7 @@ const Chat = () => {
   
   const createOrEnterChatRoom = async () => {
     try {
-        const apiUrl = userRole === 'ROLE_COUNSELOR' ? 'http://localhost:9090/chat/create' : 'http://localhost:9090/chat/enter';
+        const apiUrl = userRole === 'ROLE_COUNSELOR' ? 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/chat/create' : 'https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/chat/enter';
         const response = await axios.post(apiUrl, { id: userId });
 
         setChatRoomId(response.data.id);
@@ -321,7 +321,7 @@ const Chat = () => {
         return;
       }
       try {
-        const response = await axios.get(`http://localhost:9090/members/${userId}/name`, {
+        const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${userId}/name`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
           },
@@ -385,7 +385,7 @@ const Chat = () => {
       console.log('사용자가 채팅방을 떠났습니다. 상태가 IDLE로 전환되었습니다.');
       stompClient.disconnect();
       
-      axios.post(`http://localhost:9090/chat/exit/${chatRoomId}`)
+      axios.post(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/chat/exit/${chatRoomId}`)
         .then(() => console.log('Chat room status updated to exit'))
         .catch((error) => console.error('Failed to update chat room status:', error));
     } else {

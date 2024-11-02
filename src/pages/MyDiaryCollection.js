@@ -320,9 +320,8 @@ const MyDiaryCollection = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-            </SearchDiv>
-
-            {searchTerm ? (
+                </SearchDiv>
+                {searchTerm ? (
                 filteredDiaries.length > 0 ? (
                     filteredDiaries.map((diary) => (
                         <MD_Block key={diary.diary_id} diaryData={diary} />
