@@ -352,6 +352,8 @@ const PageNumber = styled.div`
 export const Main = () => {
     const navi = useNavigate();
     const dispatch = useDispatch();
+    const naverLoginChk = useSelector((state) => state.memberSlice.naverLogin);
+    const location = useLocation();
 
     const [userData, setUserData] = useState(null); 
 
@@ -441,7 +443,7 @@ export const Main = () => {
 
     useEffect(() => {
         if (titleLocation) {
-            axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/disaster-messages/category?category=${titleLocation}`)
+            axios.get(`http://localhost:9090/api/disaster-messages/category?category=${titleLocation}`)
                 .then(response => {
                     console.log(response.data);
                     setMessages(response.data.slice(0, 2));
@@ -451,6 +453,17 @@ export const Main = () => {
                 });
         }
     }, [titleLocation]);
+    // ------------------ 기존 코드
+    // useEffect(() => {
+    //     if (naverLoginChk) {
+    //         const params = new URLSearchParams(location.search);
+    //         const token = params.get('token');
+    //         if (naverLoginChk && token) {
+    //             sessionStorage.setItem('ACCESS_TOKEN', token);
+    //             dispatch(fetchUser(token));
+    //         }
+    //     }
+    // }, [dispatch, naverLoginChk, location]);
 
     // useEffect(() => {
     //     axios.get(`http://localhost:9090/api/disaster-messages/category?category=${temporaryLocation}`)
@@ -526,7 +539,7 @@ export const Main = () => {
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
 
-                const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${memberSlice.id}/name`, {
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },

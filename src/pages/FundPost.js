@@ -194,6 +194,7 @@ const FundPost = () => {
   const userId = useSelector((state) => state.memberSlice.id);
   const { imageUploadUrl = null, loading = false, error = null } = useSelector((state) => state.fund || {});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState(post.title || '');
   const [team, setTeam] = useState(post.teamName || '');
@@ -203,7 +204,6 @@ const FundPost = () => {
   const [fundEnd, setFundEnd] = useState(post.fundEndDate ? new Date(post.fundEndDate) : null);
   const [targetAmount, setTargetAmount] = useState(post.targetAmount || '');
   const [content, setContent] = useState(post.description || '');
-  const [dateError, setDateError] = useState(''); 
   const quillRef = useRef(null);
 
   // Quill 편집기에서 폰트 크기 추가
@@ -244,13 +244,6 @@ const FundPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 날짜 검증
-    if (fundEnd && fundStart && fundEnd < fundStart) {
-      setDateError("종료 날짜는 시작 날짜보다 나중이어야 합니다.");
-      return;
-    }
-
     const postData = {
       userId,
       title,
@@ -278,9 +271,7 @@ const FundPost = () => {
         console.log('게시글 등록 성공!');
         console.log('postData',postData);
       }
-
-      // 새로고침하면서 Fund 페이지로 이동
-      window.location.replace('/fund');
+      navigate('/fund', { state: postData });
     } catch (error) {
       console.error('게시글 처리 실패:', error);
     }
@@ -360,8 +351,6 @@ const FundPost = () => {
               required
             />
           </div>
-          {/* 날짜 오류 메시지 표시 */}
-          {dateError && <p style={{ color: 'red', marginTop: '0.5rem' }}>{dateError}</p>}
         </div>
 
         <input

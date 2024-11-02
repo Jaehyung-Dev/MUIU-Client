@@ -142,7 +142,7 @@ const DiaryApp = () => {
     };
 
     const CounselorChart = () => {
-        navigate('/emotion-graph'); 
+        navigate('/counselor-chart'); 
     };
 
     const handleSortChange = (order) => {
@@ -158,7 +158,7 @@ const DiaryApp = () => {
         { name: '민수정', date: new Date(2023, 10, 3) },  // 2023년 11월 3일
         { name: '정다은', date: new Date(2023, 10, 4) },  // 2023년 11월 4일
         { name: '김대휘', date: new Date(2023, 10, 5) },  // 2023년 11월 5일
-        { name: '한서준', date: new Date(2023, 10, 6) },  // 2023년 11월 6일
+        { name: '힌서준', date: new Date(2023, 10, 6) },  // 2023년 11월 6일
         { name: '반재형', date: new Date(2023, 10, 7) },  // 2023년 11월 7일
     ];
 
@@ -188,7 +188,7 @@ const DiaryApp = () => {
             {/* 카드 그리드 */}
             <CardGrid>
                 {sortedData.map((entry, index) => (
-                    <Card key={index} onClick={MyDiaryCollection}>
+                    <Card key={index} onClick={MyDiary}>
                         <div>{entry.name}</div>
                         <div style={{ fontSize: '0.8rem', color: '#999' }}>{entry.date.toLocaleDateString()}</div>
                     </Card>

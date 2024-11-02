@@ -75,7 +75,7 @@ const Oauth = () => {
     if (code && state) {
       // 백엔드로 code와 state를 전송하여 네이버 로그인 처리
       axios
-        .get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/naver-callback', {
+        .get('http://localhost:9090/members/naver-callback', {
           params: {
             code: code,
             state: state,

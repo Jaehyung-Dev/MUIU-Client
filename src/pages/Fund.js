@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFundPosts } from '../apis/fundApis';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
@@ -156,23 +155,19 @@ const Fund = () => {
     window.scrollTo(0, 0);
     
     if (location.state && location.state.postData) {
-      setPosts((prevPosts) => {
-        const updatedPosts = prevPosts.filter((post) => post.postId !== location.state.postData.postId);
-        return [location.state.postData, ...updatedPosts];
-      });
+      setPosts((prevPosts) => [...prevPosts, location.state.postData]); // postData가 있을 때만 추가
     }
 
     // 서버에서 post 데이터를 가져오는 API 호출
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/posts', {
+        const response = await axios.get('http://localhost:9090/api/fund/posts', {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
           },
           withCredentials: true
         });
 
-        // fundStartDate를 기준으로 정렬
         const sortedPosts = response.data.sort((a, b) => new Date(a.fundStartDate) - new Date(b.fundStartDate));
         setPosts(sortedPosts); // 서버에서 받아온 posts 데이터를 상태에 저장
         console.log("Fetched posts:", sortedPosts); // 콘솔에 모든 posts 데이터를 출력하여 확인
@@ -181,14 +176,37 @@ const Fund = () => {
         console.error('Error fetching posts:', error);
       }
     };
+  
 
-    fetchPosts();
     console.log(`posts:`,posts); // 서버로부터 받아온 모든 posts 데이터를 확인
 
+    fetchPosts();
   }, [location.state]); // location.state가 변경될 때마다 실행
 
   return (
     <Main>
+      {/* <FundCard
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card1.png`}
+        altText="호우피해 긴급모금 카드 이미지"
+        title="호우피해 긴급모금"
+        date="2024.6.16 ~ 2024.7.31"
+        link="/fund-detail"
+      />
+      <FundCard
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card2.png`}
+        altText="산불피해 긴급모금 카드 이미지"
+        title="산불피해 긴급모금"
+        date="2024.7.01 ~ 2024.8.01"
+        link="/fund-detail"
+      />
+      <FundCard
+        imageSrc={`${process.env.PUBLIC_URL}/images/store-card3.png`}
+        altText="산불피해 긴급모금 카드 이미지"
+        title="전북 호우피해 구호키트 지원 캠페인"
+        date="2024.7.16 ~ 2024.8.16"
+        link="/fund-detail"
+      /> */}
+
       {/* 서버에서 불러온 글들을 표시하는 카드들 */}
       {posts.map((post) => (
         <FundCard

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
+
+const animateHeight = (height) => keyframes`
+  0% {
+    height: 0;
+  }
+  100% {
+    height: ${height};
+  }
+`;
 
 const EmotionDivCover = styled.div`
   width: 100%;
@@ -63,6 +71,71 @@ const GraphDiv = styled.div`
   
 `;
 
+const InnerGraphDiv = styled.div`
+  width: 100%;
+  height: 70vh;
+  margin-top: 1rem;
+`;
+
+const CoverProgress = styled.div`
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  @media screen and (max-width: 600px) {
+    height: 55vh;
+  }
+`;
+
+const GraphRowDiv = styled.div`
+  width: 10%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  p {
+    color: gray;
+    margin: 0.1rem 0 0.1rem 1rem;
+  }
+  @media screen and (max-width: 600px) {
+    height: auto;
+    p {
+      font-size: 0.8rem;
+    }
+  }
+`;
+
+const GraphMainDiv = styled.div`
+  width: 80%;
+  height: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+`;
+
+const GraphOutline = styled.div`
+  width: 8%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: rgba(128, 128, 128, 0.1);
+  display: flex;
+  align-items: end;
+  margin: 0 1rem;
+  @media screen and (max-width: 600px) {
+    margin: 0 0.5rem;
+    height: 90%;
+  }
+`;
+
+const GraphInner = styled.div`
+  width: 100%;
+  border-radius: 20px;
+  height: ${(props) => props.height || "1%"};
+  background-color: ${(props) => props.color || "none"};
+  animation: ${animateHeight} 1s ease-in-out forwards;
+  box-shadow: 5px 0 10px rgba(0, 0, 0, 0.3);
+`;
+
 const GraphPoint = styled.circle`
   fill: ${({ color }) => color};
 `;
@@ -97,6 +170,7 @@ const GraphColumnDiv = styled.div`
   display: flex;
   justify-content: space-around;
   color: gray;
+  margin-left: 4.2rem;
   @media screen and (max-width: 393px) {
     margin-left: 3rem;
   }
@@ -125,12 +199,6 @@ const EmotionGraph = () => {
     const handleClick = (index) => setClickedIndex(index);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    const userId = useSelector((state) => state.memberSlice.id);
-
-    // 상태 변수로 데이터 값 지정
-    const [weeklyValues, setWeeklyValues] = useState([1,2,3,4,5]);
-    const [monthlyValues, setMonthlyValues] = useState([]);
-
     const periodText = ["주간", "월간", "연간"];
     const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
     const weeksOfMonth = ["1주", "2주", "3주", "4주", "5주"];
@@ -149,39 +217,22 @@ const EmotionGraph = () => {
         "12",
     ];
 
+    const weeklyData = [
+        { height: "50%", color: "#FF3B30" },
+        { height: "70%", color: "#00C7BE" },
+        { height: "30%", color: "#FFCC00" },
+        { height: "90%", color: "#34C759" },
+        { height: "60%", color: "#34C759" },
+        { height: "40%", color: "#00C7BE" },
+        { height: "80%", color: "#FF3B30" },
+    ];
+
     const monthlyData = [3, 4, 2, 5, 1];
     const yearlyData = [1, 2, 4, 5, 2, 3, 2, 1, 3, 5, 4, 1];
 
     useEffect(() => {
         setIsLoaded(true);
     }, []);
-
-    useEffect(() => {
-      console.log(userId);
-      const fetchData = async () => {
-          try {
-              const response = await fetch(`http://localhost:9090/diaries/emotions/${userId}`, {
-                headers: {
-                  Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
-              },
-              withCredentials: true,
-              }); // API 엔드포인트
-              const data = await response.json();
-
-              console.log("Fetched data:", data); // 가져온 데이터 콘솔에 출력
-
-              // 서버에서 가져온 데이터를 각각 주간 및 월간 데이터로 설정
-              // setWeeklyValues(data.weeklyValues); 
-              // setMonthlyValues(data.monthlyValues); 
-              
-              setIsLoaded(true);
-          } catch (error) {
-              console.error("Error fetching data:", error);
-          }
-      };
-
-      fetchData();  
-    }, []); // 컴포넌트가 처음 렌더링될 때만 실행
 
     const getColorByValue = (value) => {
         switch (value) {
@@ -214,42 +265,32 @@ const EmotionGraph = () => {
                 ))}
             </SelectDiv>
             <GraphDiv>
-              {clickedIndex === 0 && (
-                    <YearlyGraphContainer>
-                        <YearlyGraph viewBox="0 0 400 200">
-                            {[1, 2, 3, 4, 5].map((value, index) => (
-                                <GridLine
-                                    key={index}
-                                    x1="0"
-                                    y1={(index + 1) * 40}
-                                    x2="100%"
-                                    y2={(index + 1) * 40}
-                                />
+                {clickedIndex === 0 && (
+                    <InnerGraphDiv>
+                        <CoverProgress>
+                            <GraphRowDiv>
+                                {[5, 4, 3, 2, 1].map((value) => (
+                                    <p key={value}>{value}</p>
                                 ))}
-                                <GraphLine
-                                    points={weeklyValues
-                                        .map(
-                                            (value, index) => `${(index + 1) * 50},${200 - value * 40}`
-                                        )
-                                        .join(" ")}
-                                />
-                                {weeklyValues.map((value, index) => (
-                                    <GraphPoint
-                                        key={index}
-                                        cx={(index + 1) * 50}
-                                        cy={200 - value * 40}
-                                        r="5"
-                                        color={getColorByValue(value)}
-                                    />
+                            </GraphRowDiv>
+                            <GraphMainDiv>
+                                {weeklyData.map((data, index) => (
+                                    <GraphOutline key={index}>
+                                        <GraphInner
+                                            height={isLoaded ? data.height : "0%"}
+                                            color={data.color}
+                                        />
+                                    </GraphOutline>
                                 ))}
-                            </YearlyGraph>
-                            <GraphColumnDiv>
-                                {daysOfWeek.map((day, index) => (
-                                    <p key={index}>{day}</p>
-                                ))}
-                            </GraphColumnDiv>
-                      </YearlyGraphContainer>
-                  )}
+                            </GraphMainDiv>
+                        </CoverProgress>
+                        <GraphColumnDiv>
+                            {daysOfWeek.map((day, index) => (
+                                <p key={index}>{day}</p>
+                            ))}
+                        </GraphColumnDiv>
+                    </InnerGraphDiv>
+                )}
                 {clickedIndex === 1 && (
                     <YearlyGraphContainer>
                         <YearlyGraph viewBox="0 0 400 200">

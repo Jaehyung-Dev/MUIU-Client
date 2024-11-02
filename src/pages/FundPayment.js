@@ -206,7 +206,7 @@ const FundPayment = () => {
       // DB에서 게시글 데이터를 가져오는 함수
       const fetchPost = async () => {
         try {
-          const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
+          const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
             headers: {
               'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`
             }
