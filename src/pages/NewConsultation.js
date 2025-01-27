@@ -119,7 +119,7 @@ const NewConsultation = () => {
                 const parsedRoot = JSON.parse(persistRoot);
                 const memberSlice = JSON.parse(parsedRoot.memberSlice);
 
-                const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/members/${memberSlice.id}/name-role`, {
+                const response = await axios.get(`http://localhost:9090/members/${memberSlice.id}/name-role`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`,
                     },

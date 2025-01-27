@@ -37,7 +37,7 @@ apiClient.interceptors.request.use(config => {
 // 유저 정보 가져오기 API (userId 파라미터 없이 호출)
 export const getUserInfo = async () => {
   try {
-    const response = await apiClient.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/diaries/my-diaries`);  // API 호출
+    const response = await apiClient.get(`http://localhost:9090/diaries/my-diaries`);  // API 호출
     console.log('User info response:', response.data);  // 서버 응답 데이터 로그 출력
     alert(response.data);
     return response.data;  // 서버 응답 데이터를 반환

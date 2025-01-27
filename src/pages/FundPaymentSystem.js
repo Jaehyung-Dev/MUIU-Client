@@ -197,7 +197,7 @@ const FundPaymentSystem = () => {
 
     const fetchPostData = async () => {
       try {
-          const response = await axios.get(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/post/${postId}`, {
+          const response = await axios.get(`http://localhost:9090/api/fund/post/${postId}`, {
             headers: {
               'Authorization': `Bearer ${sessionStorage.getItem('ACCESS_TOKEN')}`  // 토큰을 헤더에 추가
             }
@@ -219,7 +219,7 @@ const FundPaymentSystem = () => {
 
       console.log(`today값:`,today);
 
-      await axios.post(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/api/fund/payment`, {
+      await axios.post(`http://localhost:9090/api/fund/payment`, {
         postId,            // 결제 대상 게시글 ID
         amount: totalAmount,
         fundDate: today,  // 오늘 날짜

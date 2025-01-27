@@ -6,7 +6,7 @@ export const post = createAsyncThunk(
     async(formData, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/mind-column', {
+            const response = await axios.post('http://localhost:9090/mind-column', {
                 mindColumDto : {mc_title : formData.mindColumDto.mc_title},
                 uploadFiles: formData.mindColumDto.mcfList
             }, {
@@ -27,7 +27,7 @@ export const getList = createAsyncThunk(
     async(_, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.get('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/mind-column', {
+            const response = await axios.get('http://localhost:9090/mind-column', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -47,7 +47,7 @@ export const update = createAsyncThunk(
     async({id, formData}, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.patch(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/mind-column/${id}`, formData, {
+            const response = await axios.patch(`http://localhost:9090/mind-column/${id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     'Authorization': `Bearer ${token}`
@@ -66,7 +66,7 @@ export const deleteCard = createAsyncThunk(
     async(id, thunkApi) => {
         try {
             const token = sessionStorage.getItem('ACCESS_TOKEN');
-            const response = await axios.delete(`https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/mind-column/${id}`, {
+            const response = await axios.delete(`http://localhost:9090/mind-column/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

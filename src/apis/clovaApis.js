@@ -10,7 +10,7 @@ export const clovaApis = async (message) => {
 
     try {
       // Spring Boot 백엔드에 사용자 메시지 전송
-      const response = await axios.post('https://www.%EB%A7%88%EC%9D%8C%EC%9D%B4%EC%9D%8Capi.site/ai-counseling', { 
+      const response = await axios.post('http://localhost:9090/ai-counseling', { 
         text: message 
     }, {
         headers: {
